@@ -16,11 +16,10 @@ Both artifacts are released in unison using synchronized semantic versioning (e.
 flowchart LR
     GitTag[Git Tag: vX.Y.Z] --> Packagist[Packagist Autodiscovery]
     GitTag --> GHRelease[GitHub Release: vX.Y.Z]
-    GHRelease --> ReleaseWorkflow[GitHub Actions release.yml]
-    ReleaseWorkflow --> Gate1[Validate PHP: Pest & Pint]
-    ReleaseWorkflow --> Gate2[Verify Tag == vue/package.json]
-    ReleaseWorkflow --> Gate3[Validate Vue: Typecheck, Lint, Test, Build]
-    ReleaseWorkflow --> NPMPublish[npm publish --provenance via OIDC]
+    GHRelease --> ReleaseWorkflow[GitHub Actions publish-npm.yml]
+    ReleaseWorkflow --> Gate1[Validate Release Version Alignment]
+    ReleaseWorkflow --> Gate2[Validate Vue: Typecheck, Lint, Test, Build]
+    ReleaseWorkflow --> NPMPublish[npm publish --access public via OIDC]
 ```
 
 1. **Composer / Packagist**: Discovers releases automatically whenever a Git tag is created. Versions are derived directly from the tag name (e.g., `v0.1.0` -> `0.1.0`). There is no separate Composer upload command or token.
@@ -61,7 +60,7 @@ npm Trusted Publishing uses short-lived OpenID Connect (OIDC) tokens issued by G
    - Configure:
      - **Organization / User**: `Zonvoir-technologies`
      - **Repository**: `laravel-inertia-table`
-     - **Workflow filename**: `release.yml`
+     - **Workflow filename**: `publish-npm.yml`
    - Save and ensure direct publishing is permitted.
 5. Confirm zero npm tokens or secrets are stored in GitHub repository secrets.
 
@@ -143,8 +142,8 @@ Open a PR, ensure all CI checks pass, obtain review approval, and merge into `ma
 6. Click **Publish release**.
 
 ### Step 7: Automated Publication
-1. GitHub Actions will trigger `.github/workflows/release.yml`.
-2. The workflow checks out tag `vX.Y.Z`, runs the PHP and Vue test suites, verifies version alignment, builds the distribution, and publishes `@zonvoir/inertia-table-vue` to npm with provenance.
+1. GitHub Actions will trigger `.github/workflows/publish-npm.yml`.
+2. The workflow checks out tag `vX.Y.Z`, verifies version alignment, runs the Vue quality gates, builds the distribution, and publishes `@zonvoir/inertia-table-vue` to npm via OIDC.
 3. Packagist automatically synchronizes the new tag `vX.Y.Z` for `zonvoir/laravel-inertia-table`.
 
 ---
@@ -163,4 +162,4 @@ Open a PR, ensure all CI checks pass, obtain review approval, and merge into `ma
   3. Create a new GitHub Release for `vX.Y.(Z+1)`.
 
 ### Atomic Releases
-Packagist and npm are independent registries. While publication is coordinated, failures in one registry cannot rollback the other. For this reason, all validation, testing, and dry-run steps run **before** any publication step in `.github/workflows/release.yml`.
+Packagist and npm are independent registries. While publication is coordinated, failures in one registry cannot rollback the other. For this reason, all validation, testing, and dry-run steps run **before** any publication step in `.github/workflows/publish-npm.yml`.

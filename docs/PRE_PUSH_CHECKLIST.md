@@ -95,5 +95,5 @@ Before creating a public release (e.g. `v0.1.0`):
 - [ ] **Tagging & Publishing**:
   - Open and merge a release preparation PR containing updated manifests and changelog.
   - Create a GitHub Release using tag `vX.Y.Z` (see [RELEASING.md](file:///Users/vis/vishal/office/projects/php/zonvoir-table/docs/RELEASING.md)).
-  - GitHub Actions `.github/workflows/release.yml` automatically validates and publishes `@zonvoir/inertia-table-vue` to npm with OIDC provenance.
+  - GitHub Actions `.github/workflows/publish-npm.yml` automatically validates and publishes `@zonvoir/inertia-table-vue` to npm via OIDC.
   - Packagist automatically triggers webhook for `zonvoir/laravel-inertia-table` from the Git tag.

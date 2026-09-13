@@ -1,0 +1,83 @@
+name: Publish Vue package
+
+on:
+  release:
+    types:
+      - published
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout released version
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+          package-manager-cache: false
+
+      - name: Verify release version
+        working-directory: vue
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          case "$RELEASE_TAG" in
+            v[0-9]*.[0-9]*.[0-9]*) ;;
+            *) echo "Invalid release tag: $RELEASE_TAG"; exit 1 ;;
+          esac
+
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          RELEASE_VERSION="${RELEASE_TAG#v}"
+
+          if [ "$PACKAGE_VERSION" != "$RELEASE_VERSION" ]; then
+            echo "package.json version ($PACKAGE_VERSION) does not match release ($RELEASE_VERSION)"
+            exit 1
+          fi
+
+          node ../scripts/verify-release-version.mjs "$RELEASE_TAG"
+
+      - name: Install dependencies
+        working-directory: vue
+        run: npm ci
+
+      - name: Run lint
+        working-directory: vue
+        run: npm run lint --if-present
+
+      - name: Run type check
+        working-directory: vue
+        run: npm run typecheck --if-present
+
+      - name: Run tests
+        working-directory: vue
+        run: npm run test --if-present
+
+      - name: Build package
+        working-directory: vue
+        run: npm run build
+
+      - name: Verify declared export targets exist
+        working-directory: vue
+        run: |
+          test -f dist/zonvoir-table.js || { echo "Missing dist/zonvoir-table.js"; exit 1; }
+          test -f dist/zonvoir-table.cjs || { echo "Missing dist/zonvoir-table.cjs"; exit 1; }
+          test -f dist/index.d.ts || { echo "Missing dist/index.d.ts"; exit 1; }
+
+      - name: Inspect publish contents
+        working-directory: vue
+        run: npm pack --dry-run
+
+      - name: Publish package
+        working-directory: vue
+        run: npm publish --access public
