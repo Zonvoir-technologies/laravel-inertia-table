@@ -1,0 +1,468 @@
+---
+const PAGE_TITLE_ID = '_top';
+---
+
+<section class="zv-home-hero" aria-labelledby={PAGE_TITLE_ID}>
+  <div class="hero-container">
+    <div class="hero-content">
+      <div class="hero-tag">
+        <span>Laravel + Inertia.js + Tailwind</span>
+      </div>
+      
+      <h1 id={PAGE_TITLE_ID} class="hero-title">
+        Tables that <br/> speak <span class="text-highlight">Laravel.</span>
+      </h1>
+      
+      <p class="hero-subtitle">
+        Define tables with expressive PHP classes and render them with our first-party Vue and Inertia adapters.
+      </p>
+      
+      <div class="hero-actions">
+        <a href="/getting-started/installation/" class="btn-primary">
+          Start building
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/api/" class="btn-secondary">
+          Browse API
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        </a>
+      </div>
+
+    
+    </div>
+    <div class="hero-image-area">
+      <picture class='hero-preview-image hero-preview-image--light'>
+        <source srcset="/hero-section.webp" type="image/webp" />
+        <img
+          src="/hero-section.png"
+          alt="Zonvoir Table dashboard preview showing searchable columns, status badges, and action buttons in Inertia Vue"
+          class="hero-preview-img"
+          width="1400"
+          height="1035"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </picture>
+      <picture class='hero-preview-image hero-preview-image--dark'>
+        <source srcset="/hero-section-dark.webp" type="image/webp" />
+        <img
+          src="/hero-section-dark.png"
+          alt="Zonvoir Table dashboard preview in dark mode"
+          class="hero-preview-img"
+          width="1400"
+          height="1035"
+          loading="lazy"
+          decoding="async"
+        />
+      </picture>
+    </div>
+  </div>
+
+  <div class="hero-features">
+    <div class="feature-card theme-red">
+      <div class="feature-icon-wrapper"><div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></div></div>
+      <span class="feature-text">Table Classes</span>
+      <div class="feature-dash"></div>
+    </div>
+    
+    <div class="feature-card theme-purple">
+      <div class="feature-icon-wrapper"><div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg></div></div>
+      <span class="feature-text">Typed Columns</span>
+      <div class="feature-dash"></div>
+    </div>
+    
+    <div class="feature-card theme-green">
+      <div class="feature-icon-wrapper"><div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div></div>
+      <span class="feature-text">Searching</span>
+      <div class="feature-dash"></div>
+    </div>
+    
+    <div class="feature-card theme-blue">
+      <div class="feature-icon-wrapper"><div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 16l-4 4-4-4M7 20V4M13 8l4-4 4 4M17 4v16"/></svg></div></div>
+      <span class="feature-text">Sorting</span>
+      <div class="feature-dash"></div>
+    </div>
+    
+    <div class="feature-card theme-red">
+      <div class="feature-icon-wrapper"><div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="18" cy="12" r="1"/><path d="M6 18h12M6 6h12"/></svg></div></div>
+      <span class="feature-text">Pagination</span>
+      <div class="feature-dash"></div>
+    </div>
+    
+    <div class="feature-card theme-purple">
+      <div class="feature-icon-wrapper"><div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></div></div>
+      <span class="feature-text">Column Visibility</span>
+      <div class="feature-dash"></div>
+    </div>
+    
+    <div class="feature-card theme-green">
+      <div class="feature-icon-wrapper"><div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5M9 10.5V9a3 3 0 0 1 6 0v1.5a4 4 0 0 0 4 4v1H5v-1a4 4 0 0 0 4-4Z"/></svg></div></div>
+      <span class="feature-text">Sticky Columns</span>
+      <div class="feature-dash"></div>
+    </div>
+    
+    <div class="feature-card theme-blue">
+      <div class="feature-icon-wrapper"><div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></div></div>
+      <span class="feature-text">Row Actions</span>
+      <div class="feature-dash"></div>
+    </div>
+    
+    <div class="feature-card theme-red">
+      <div class="feature-icon-wrapper"><div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 12 2 2 4-4"/></svg></div></div>
+      <span class="feature-text">Bulk Actions</span>
+      <div class="feature-dash"></div>
+    </div>
+    
+    <div class="feature-card theme-purple">
+      <div class="feature-icon-wrapper"><div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg></div></div>
+      <span class="feature-text">Exports</span>
+      <div class="feature-dash"></div>
+    </div>
+    
+    <div class="feature-card theme-green">
+      <div class="feature-icon-wrapper"><div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg></div></div>
+      <span class="feature-text">TypeScript</span>
+      <div class="feature-dash"></div>
+    </div>
+  </div>
+
+</section>
+
+<style>
+  .zv-home-hero {
+    padding: 80px 0;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: transparent; /* Assuming main background is handled outside */
+  }
+
+  .hero-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    width: 100%;
+  }
+
+  .hero-content {
+    flex: 1;
+    max-width: 550px;
+  }
+
+  .hero-image-area {
+    flex: 1;
+    min-width: 0;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .hero-image-area picture {
+    display: block;
+    width: 100%;
+  }
+
+  .hero-preview-img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .hero-preview-image--dark {
+    display: none;
+  }
+
+  :global(:root[data-theme='dark']) .hero-preview-image--light {
+    display: none;
+  }
+
+  :global(:root[data-theme='dark']) .hero-preview-image--dark {
+    display: block;
+  }
+
+    
+  .design-circle {
+display: block;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    z-index: 5;
+    color: #fff;
+    animation: 1s linear infinite at-ripple-pink;
+    background: #f05a45 !important;
+    border: 16px solid #fbc4bd;
+  }
+
+
+    /* Pink Animate */
+@-webkit-keyframes at-ripple-pink {
+  0% {
+    box-shadow: 0 4px 10px rgba(240, 90, 69, 0.10),
+      0 0 0 0 rgba(240, 90, 69, 0.1), 
+      0 0 0 20px rgba(240, 90, 69, 0.1),
+      0 0 0 40px rgba(240, 90, 69, 0.1);
+  }
+  100% {
+    box-shadow: 0 4px 10px rgba(240, 90, 69, 0.10),
+      0 0 0 20px rgba(240, 90, 69, 0.1), 
+      0 0 0 40px rgba(240, 90, 69, 0.1),
+      0 0 0 80px rgba(240, 90, 69, 0);
+  }
+}
+
+.feature-icon svg {
+    height: 20px;
+    width: 20px;
+}
+
+
+
+  .hero-tag {
+    display: inline-block;
+    background-color: #f05a452e;
+    color: #f05a45;
+    padding: 6px 18px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .5px;
+    margin-bottom: 24px;
+    border: 1px solid #f05a4521;
+    text-transform: uppercase;
+  }
+
+  .hero-title {
+    font-size: 64px !important;
+    line-height: 1.1 !important;
+    font-weight: 800 !important;
+    color: var(--sl-color-white) !important;
+    margin-bottom: 24px !important;
+    letter-spacing: -1.5px !important;
+    border: none !important; /* Starlight adds borders to h1 sometimes */
+  }
+
+  .text-highlight {
+    color: #f05a45;
+  }
+
+  .hero-subtitle {
+    font-size: 18px !important;
+    line-height: 1.6 !important;
+    color: var(--sl-color-gray-3) !important;
+    margin-bottom: 40px !important;
+    max-width: 520px;
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 60px;
+  }
+
+  .hero-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 28px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 50px;
+    text-decoration: none !important; /* Override starlight links */
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary {
+    background-color: #f05a45;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px 0 rgba(244, 63, 94, 0.39);
+  }
+
+  .btn-primary:hover {
+    background-color: #f05a45;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(244, 63, 94, 0.4);
+  }
+
+  .btn-secondary {
+    background-color: #ffffff;
+    color: #f05a45 !important;
+    border: 1px solid #fce7f3;
+  }
+
+  .btn-secondary:hover {
+    background-color: #fff1f2;
+    transform: translateY(-2px);
+    border-color: #fbcfe8;
+  }
+
+  .hero-features {
+     display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+
+    margin: 150px auto 0 auto;
+  }
+
+  .feature-card {
+    position: relative;
+    display: flex;
+        flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    gap: 5px;
+    height: auto;
+    background: var(--zv-surface);
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    padding: 10px;
+    border: 1px solid var(--theme-color);
+    flex: 0 0 calc((100% - 100px) / 6);
+    overflow: hidden;
+  }
+
+ 
+
+  .feature-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--theme-bg);
+    color: var(--theme-color);
+  
+ 
+  }
+
+  .feature-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .feature-text {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--sl-color-white);
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 0px;
+  }
+
+
+  /* Themes */
+  .theme-red {
+    --theme-color: #f05a45;
+    --theme-bg: #fff1f0;
+    --theme-glow: #fde8e5;
+  }
+  .theme-purple {
+    --theme-color: #a855f7;
+    --theme-bg: #faf5ff;
+    --theme-glow: #f3e8ff;
+  }
+  .theme-green {
+    --theme-color: #22c55e;
+    --theme-bg: #f0fdf4;
+    --theme-glow: #dcfce7;
+  }
+  .theme-blue {
+    --theme-color: #3b82f6;
+    --theme-bg: #eff6ff;
+    --theme-glow: #dbeafe;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .hero-container {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 100%;
+    }
+
+    .hero-title {
+      font-size: 48px !important;
+    }
+
+    .hero-subtitle {
+      max-width: 600px;
+    }
+
+    .hero-actions {
+      justify-content: center;
+    }
+
+    .hero-features {
+      justify-content: center;
+    }
+
+    .hero-image-area {
+      min-height: 300px;
+      width: 100%;
+      display: none; /* Hide on smaller screens as it's empty anyway */
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero-title {
+      font-size: 36px !important;
+    }
+    
+    .hero-actions {
+      gap: 12px;
+      margin-bottom: 40px;
+    }
+
+    .hero-actions a {
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+    
+    .hero-features {
+      gap: 20px;
+      justify-content: flex-start;
+    }
+    
+    .feature-item {
+      width: calc(50% - 10px);
+    }
+
+
+.hero-features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center !important;
+    gap: 10px !important;
+    margin: 50px auto 0;
+}
+
+.feature-card {
+ 
+    flex: 0 0 calc(33.3333% - 13.3333px);
+}
+
+.feature-text{
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.zv-home-hero {
+    padding: 10px 0;}
+
+
+
+  }
+</style>

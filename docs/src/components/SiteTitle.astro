@@ -1,0 +1,476 @@
+---
+import config from 'virtual:starlight/user-config';
+import ThemeSelect from '@astrojs/starlight/components/ThemeSelect.astro';
+import { Icon } from '@astrojs/starlight/components';
+import logo from '../assets/logo.svg';
+
+const { hasSidebar, siteTitle, siteTitleHref } = Astro.locals.starlightRoute;
+const socialLinks = config.social || [];
+type DrawerLink = { label: string; slug?: string; link?: string };
+type DrawerGroup = { label: string; items: DrawerLink[] };
+const drawerGroups = config.sidebar as unknown as DrawerGroup[];
+const currentPath = Astro.url.pathname;
+const itemHref = (item: DrawerLink) => item.link || '/' + item.slug + '/';
+---
+
+<a href={siteTitleHref} class="site-title sl-flex">
+  <img src={logo.src} width={logo.width} height={logo.height} alt={config.logo?.alt || siteTitle} />
+  <span translate="no">{siteTitle}</span>
+</a>
+
+<zv-mobile-navigation class:list={["print:hidden", { "zv-home-drawer": !hasSidebar }]}>
+    <button
+      class="zv-drawer-trigger"
+      type="button"
+      aria-label="Open navigation menu"
+      aria-controls="zv-mobile-drawer"
+      aria-expanded="false"
+    >
+      <Icon name="bars" />
+    </button>
+
+    <dialog id="zv-mobile-drawer" aria-label="Mobile navigation">
+      <div class="zv-drawer">
+        <header class="zv-drawer-header">
+          <a href="/" class="zv-drawer-brand">
+            <img src={logo.src} width={logo.width} height={logo.height} alt="Zonvoir Table" />
+            <span>Menu</span>
+          </a>
+          <button class="zv-drawer-close" type="button" aria-label="Close navigation menu">
+            <Icon name="close" />
+          </button>
+        </header>
+
+<nav class:list={['zv-drawer-nav', { 'zv-docs-nav': hasSidebar }]} aria-label="Mobile">
+          {hasSidebar ? (
+            <>
+              {drawerGroups.map((group) => (
+                <details class="zv-docs-group" open={group.items.some((item) => currentPath === itemHref(item))}>
+                  <summary>
+                    <span>{group.label}</span>
+                    <Icon name="right-arrow" />
+                  </summary>
+                  <div class="zv-docs-group-links">
+                    {group.items.map((item) => {
+                      const href = itemHref(item);
+                      const isCurrent = currentPath === href;
+                      return (
+                        <a href={href} aria-current={isCurrent ? 'page' : undefined}>
+                          <span>{item.label}</span>
+                        </a>
+                      );
+                    })}
+                  </div>
+                </details>
+              ))}
+            </>
+          ) : (
+            <>
+              <a href="/"><Icon name="star" /><span>Home</span></a>
+              <a href="/getting-started/introduction/"><Icon name="document" /><span>Documentation</span></a>
+              <a href="https://demo.zonvoir-table.com" target="_blank" rel="noopener noreferrer">
+                <Icon name="rocket" /><span>Demo</span>
+              </a>
+              <a href="/api/"><Icon name="seti:php" /><span>API Reference</span></a>
+            </>
+          )}
+        </nav>
+
+        <div class="zv-drawer-footer">
+          {socialLinks.length > 0 ? (
+            <div class="zv-drawer-socials">
+              {socialLinks.map(({ label, href, icon }) => (
+                <a href={href} rel="me" aria-label={label}><Icon name={icon} /></a>
+              ))}
+            </div>
+          ) : null}
+          <div class="zv-drawer-theme">
+            <span>Appearance</span>
+            <ThemeSelect />
+          </div>
+        </div>
+      </div>
+    </dialog>
+</zv-mobile-navigation>
+
+<script>
+  class ZvMobileNavigation extends HTMLElement {
+    trigger = this.querySelector<HTMLButtonElement>('.zv-drawer-trigger')!;
+    dialog = this.querySelector<HTMLDialogElement>('dialog')!;
+    closeButton = this.querySelector<HTMLButtonElement>('.zv-drawer-close')!;
+
+    connectedCallback() {
+      this.trigger.addEventListener('click', this.open);
+      this.closeButton.addEventListener('click', this.close);
+      this.dialog.addEventListener('click', this.closeFromBackdrop);
+      this.dialog.addEventListener('close', this.afterClose);
+      this.dialog.addEventListener('cancel', this.closeFromEscape);
+      this.dialog.querySelectorAll('a').forEach((link) => link.addEventListener('click', this.close));
+    }
+
+    disconnectedCallback() {
+      this.trigger.removeEventListener('click', this.open);
+      this.closeButton.removeEventListener('click', this.close);
+      this.dialog.removeEventListener('click', this.closeFromBackdrop);
+      this.dialog.removeEventListener('close', this.afterClose);
+      this.dialog.removeEventListener('cancel', this.closeFromEscape);
+    }
+
+    open = () => {
+      this.dialog.showModal();
+      this.trigger.setAttribute('aria-expanded', 'true');
+      document.body.setAttribute('data-zv-drawer-open', '');
+      this.closeButton.focus();
+    };
+
+    close = () => {
+      if (!this.dialog.open || this.dialog.classList.contains('is-closing')) return;
+      this.dialog.classList.add('is-closing');
+      window.setTimeout(() => this.dialog.close(), 180);
+    };
+
+    closeFromEscape = (event: Event) => {
+      event.preventDefault();
+      this.close();
+    };
+
+    closeFromBackdrop = (event: MouseEvent) => {
+      if (event.target === this.dialog) this.close();
+    };
+
+    afterClose = () => {
+      this.dialog.classList.remove('is-closing');
+      this.trigger.setAttribute('aria-expanded', 'false');
+      document.body.removeAttribute('data-zv-drawer-open');
+      this.trigger.focus();
+    };
+  }
+
+  if (!customElements.get('zv-mobile-navigation')) {
+    customElements.define('zv-mobile-navigation', ZvMobileNavigation);
+  }
+</script>
+
+<style>
+  @layer starlight.core {
+    .site-title {
+      align-items: center;
+      gap: var(--sl-nav-gap);
+      color: var(--sl-color-text-accent);
+      font-size: var(--sl-text-h4);
+      font-weight: 600;
+      text-decoration: none;
+      white-space: nowrap;
+      min-width: 0;
+    }
+
+    .site-title span { overflow: hidden; }
+
+    .site-title img {
+      width: auto;
+      max-width: 100%;
+      height: calc(var(--sl-nav-height) - 2 * var(--sl-nav-pad-y));
+      object-fit: contain;
+      object-position: 0 50%;
+    }
+
+    zv-mobile-navigation { display: none; }
+
+    @media (max-width: 49.999rem) {
+      zv-mobile-navigation { display: contents; }
+
+      .zv-drawer-trigger {
+        position: fixed;
+        inset-block-start: calc((var(--sl-nav-height) - var(--sl-menu-button-size)) / 2);
+        inset-inline-end: var(--sl-nav-pad-x);
+        z-index: calc(var(--sl-z-index-navbar) + 1);
+        display: grid;
+        place-items: center;
+        width: var(--sl-menu-button-size);
+        height: var(--sl-menu-button-size);
+        border: 0;
+        border-radius: 50%;
+        padding: 0.5rem;
+        background: var(--sl-color-white);
+        color: var(--sl-color-black);
+        box-shadow: var(--sl-shadow-md);
+        cursor: pointer;
+      }
+
+      :global(:root[data-theme='light']) .zv-drawer-trigger {
+        background: var(--sl-color-black);
+        color: var(--sl-color-white);
+      }
+
+      dialog {
+        position: fixed;
+        inset: 0;
+        width: 100dvw;
+        max-width: none;
+        height: 100dvh;
+        max-height: none;
+        border: 0;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: transparent;
+        color: var(--sl-color-white);
+      }
+
+      dialog::backdrop {
+        background: rgb(7 17 31 / 58%);
+        backdrop-filter: blur(6px);
+        animation: zv-backdrop-in 200ms ease-out;
+      }
+
+      .zv-drawer {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: auto;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        width: min(86dvw, 20rem);
+        max-width: calc(100dvw - 2.75rem);
+        height: 100%;
+        margin: 0;
+        border-inline-start: 1px solid var(--zv-line);
+        padding: 1rem;
+        background: var(--sl-color-black);
+        box-shadow: -1rem 0 3rem rgb(0 0 0 / 28%);
+        overflow: hidden;
+        isolation: isolate;
+        transform: translate3d(0, 0, 0);
+        backface-visibility: hidden;
+        will-change: transform;
+        animation: zv-drawer-in 220ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      :global(:root[data-theme='light']) .zv-drawer {
+        background: #fff;
+      }
+
+      :global(:root[data-theme='dark']) .zv-drawer {
+        background: #07111f;
+      }
+
+      .zv-drawer-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--zv-line);
+        padding-bottom: 1rem;
+      }
+
+      .zv-drawer-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        color: var(--sl-color-white);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .zv-drawer-brand img {
+        width: auto;
+        height: 2rem;
+      }
+
+      .zv-drawer-close {
+        display: grid;
+        place-items: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border: 1px solid var(--sl-color-gray-5);
+        border-radius: 50%;
+        background: transparent;
+        color: var(--sl-color-white);
+        cursor: pointer;
+      }
+
+      .zv-drawer-nav {
+        display: grid;
+        gap: 0.35rem;
+        flex: 1 1 auto;
+        min-height: 0;
+        align-content: start;
+        grid-auto-rows: max-content;
+        padding-block: 1.25rem;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-width: thin;
+      }
+
+      .zv-drawer-nav a {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        border-radius: 0.55rem;
+        padding: 0.8rem;
+        color: var(--sl-color-gray-2);
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      .zv-drawer-nav a:hover,
+      .zv-drawer-nav a:focus-visible {
+        background: var(--sl-color-accent-low);
+        color: var(--sl-color-white);
+      }
+
+      .zv-drawer-nav a :global(svg) {
+        color: var(--sl-color-accent);
+      }
+
+      .zv-docs-nav {
+        display: block;
+      }
+
+      .zv-docs-group {
+        border-bottom: 1px solid var(--zv-line);
+        padding-block: 0.25rem;
+      }
+
+      .zv-docs-group summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        border-radius: 0.55rem;
+        padding: 0.75rem 0.8rem;
+        color: var(--sl-color-white);
+        font-size: var(--sl-text-sm);
+        font-weight: 700;
+        cursor: pointer;
+        list-style: none;
+      }
+
+      .zv-docs-group summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .zv-docs-group summary :global(svg) {
+        flex: 0 0 auto;
+        color: var(--sl-color-gray-3);
+        transition: transform 160ms ease;
+      }
+
+      .zv-docs-group[open] summary :global(svg) {
+        transform: rotate(90deg);
+      }
+
+      .zv-docs-group-links {
+        display: grid;
+        gap: 0.15rem;
+        padding: 0 0 0.45rem 0.45rem;
+      }
+
+      .zv-docs-group-links a {
+        padding: 0.55rem 0.75rem;
+        color: var(--sl-color-gray-3);
+        font-size: var(--sl-text-sm);
+        font-weight: 500;
+      }
+
+      .zv-docs-group-links a[aria-current='page'] {
+        background: var(--sl-color-accent-low);
+        color: var(--sl-color-accent-high);
+        font-weight: 700;
+      }
+
+      .zv-drawer-footer {
+        display: grid;
+        flex: 0 0 auto;
+        gap: 1rem;
+        margin-top: auto;
+        border-top: 1px solid var(--zv-line);
+        padding-top: 1rem;
+      }
+
+      .zv-drawer-socials {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .zv-drawer-socials a {
+        display: grid;
+        place-items: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border: 1px solid var(--sl-color-gray-5);
+        border-radius: 50%;
+        color: var(--sl-color-accent);
+      }
+
+      .zv-drawer-theme {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        color: var(--sl-color-gray-3);
+        font-size: var(--sl-text-sm);
+      }
+
+      /* Home-only footer guard: keep Appearance and the social links fully
+         visible even on short mobile viewports. Documentation is untouched. */
+      .zv-home-drawer .zv-drawer-footer {
+        position: relative;
+        z-index: 1;
+        flex: 0 0 auto;
+        min-height: 6rem;
+        padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+        background: var(--sl-color-black);
+      }
+
+      :global(:root[data-theme='light']) .zv-home-drawer .zv-drawer-footer {
+        background: #fff;
+      }
+
+      .zv-home-drawer .zv-drawer-theme {
+        display: flex;
+        visibility: visible;
+        opacity: 1;
+      }
+
+      dialog.is-closing .zv-drawer {
+        animation: zv-drawer-out 180ms ease-in forwards;
+      }
+
+      dialog.is-closing::backdrop {
+        animation: zv-backdrop-out 180ms ease-in forwards;
+      }
+
+      @keyframes zv-drawer-in {
+        from { transform: translate3d(10%, 0, 0); }
+        to { transform: translate3d(0, 0, 0); }
+      }
+
+      @keyframes zv-drawer-out {
+        from { transform: translate3d(0, 0, 0); }
+        to { transform: translate3d(100%, 0, 0); }
+      }
+
+      @keyframes zv-backdrop-in {
+        from {
+          background: transparent;
+          backdrop-filter: blur(0);
+        }
+      }
+
+      @keyframes zv-backdrop-out {
+        to {
+          background: transparent;
+          backdrop-filter: blur(0);
+        }
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .zv-drawer { animation: none; }
+    }
+  }
+
+  :global(body[data-zv-drawer-open]) { overflow: hidden; }
+</style>

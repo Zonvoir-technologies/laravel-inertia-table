@@ -1,0 +1,54 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+
+export const prerender = true;
+---
+
+<StarlightPage
+  frontmatter={{
+    title: 'Page Not Found',
+    description: 'The requested documentation page does not exist. Search the Zonvoir Table documentation or explore core guides.',
+    template: 'splash',
+    editUrl: false,
+    head: [
+      {
+        tag: 'meta',
+        attrs: {
+          name: 'robots',
+          content: 'noindex, nofollow',
+        },
+      },
+    ],
+  }}
+>
+  <div class="zv-404-container" style="max-width: 680px; margin: 3rem auto; text-align: center;">
+    <p style="font-size: 4rem; font-weight: 800; color: var(--sl-color-accent); margin: 0 0 1rem;">404</p>
+    <h2 style="margin-bottom: 1rem;">Looking for documentation?</h2>
+    <p style="color: var(--sl-color-gray-2); font-size: 1.1rem; line-height: 1.6; margin-bottom: 2.5rem;">
+      The page you requested could not be found or may have moved. Use search above (<kbd>Ctrl</kbd>+<kbd>K</kbd> / <kbd>⌘</kbd>+<kbd>K</kbd>) or jump to a section below:
+    </p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; text-align: left; margin-bottom: 3rem;">
+      <a href="/getting-started/installation/" style="padding: 1.25rem; border-radius: 8px; border: 1px solid var(--sl-color-gray-5); background: var(--sl-color-gray-6); text-decoration: none; display: block;">
+        <strong style="display: block; color: var(--sl-color-white); margin-bottom: 0.25rem;">Installation</strong>
+        <span style="font-size: 0.875rem; color: var(--sl-color-gray-3);">Set up Laravel and Vue adapter</span>
+      </a>
+      <a href="/core-concepts/basic-usage/" style="padding: 1.25rem; border-radius: 8px; border: 1px solid var(--sl-color-gray-5); background: var(--sl-color-gray-6); text-decoration: none; display: block;">
+        <strong style="display: block; color: var(--sl-color-white); margin-bottom: 0.25rem;">Basic Usage</strong>
+        <span style="font-size: 0.875rem; color: var(--sl-color-gray-3);">Build and render your first table</span>
+      </a>
+      <a href="/core-concepts/columns/" style="padding: 1.25rem; border-radius: 8px; border: 1px solid var(--sl-color-gray-5); background: var(--sl-color-gray-6); text-decoration: none; display: block;">
+        <strong style="display: block; color: var(--sl-color-white); margin-bottom: 0.25rem;">Typed Columns</strong>
+        <span style="font-size: 0.875rem; color: var(--sl-color-gray-3);">Format and configure columns</span>
+      </a>
+      <a href="/api/" style="padding: 1.25rem; border-radius: 8px; border: 1px solid var(--sl-color-gray-5); background: var(--sl-color-gray-6); text-decoration: none; display: block;">
+        <strong style="display: block; color: var(--sl-color-white); margin-bottom: 0.25rem;">API Reference</strong>
+        <span style="font-size: 0.875rem; color: var(--sl-color-gray-3);">Classes, methods, and types</span>
+      </a>
+    </div>
+
+    <p>
+      <a href="/" style="font-weight: 600; color: var(--sl-color-accent);">← Back to Documentation Home</a>
+    </p>
+  </div>
+</StarlightPage>

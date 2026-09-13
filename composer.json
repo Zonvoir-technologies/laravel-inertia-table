@@ -1,0 +1,61 @@
+{
+    "name": "zonvoir/laravel-inertia-table",
+    "description": "Expressive data tables for Laravel, Inertia.js, and Vue.",
+    "type": "library",
+    "license": "Apache-2.0",
+    "homepage": "https://zonvoir-table.com",
+    "support": {
+        "issues": "https://github.com/Zonvoir-technologies/laravel-inertia-table/issues",
+        "source": "https://github.com/Zonvoir-technologies/laravel-inertia-table"
+    },
+    "keywords": [
+        "laravel",
+        "inertia",
+        "table",
+        "vue"
+    ],
+    "require": {
+        "php": "^8.3",
+        "illuminate/console": "^11.0|^12.0|^13.0",
+        "illuminate/database": "^11.0|^12.0|^13.0",
+        "illuminate/http": "^11.0|^12.0|^13.0",
+        "illuminate/support": "^11.0|^12.0|^13.0",
+        "maatwebsite/excel": "^3.1|^4.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.18",
+        "orchestra/testbench": "^9.0|^10.0|^11.0",
+        "pestphp/pest": "^4.0",
+        "phpunit/phpunit": "^11.5|^12.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Zonvoir\\InertiaTable\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Zonvoir\\InertiaTable\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "lint": "vendor/bin/pint --test",
+        "format": "vendor/bin/pint"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Zonvoir\\InertiaTable\\InertiaTableServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

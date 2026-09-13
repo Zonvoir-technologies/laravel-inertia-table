@@ -1,0 +1,25 @@
+{
+  "name": "@zonvoir/laravel-inertia-table-docs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build && node scripts/seo-validate.mjs",
+    "test:seo": "node scripts/seo-validate.mjs",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/sitemap": "^3.7.4",
+    "@astrojs/starlight": "^0.41.11",
+    "@astrojs/starlight-tailwind": "^5.0.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.2.10",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.8.3"
+  }
+}

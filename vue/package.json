@@ -1,0 +1,78 @@
+{
+  "name": "@zonvoir/inertia-table-vue",
+  "version": "0.1.0",
+  "description": "Vue adapter for the Zonvoir Table.",
+  "license": "Apache-2.0",
+  "keywords": [
+    "zonvoir",
+    "table",
+    "vue",
+    "inertia",
+    "laravel"
+  ],
+  "homepage": "https://github.com/Zonvoir-technologies/laravel-inertia-table#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zonvoir-technologies/laravel-inertia-table.git",
+    "directory": "vue"
+  },
+  "bugs": {
+    "url": "https://github.com/Zonvoir-technologies/laravel-inertia-table/issues"
+  },
+  "type": "module",
+  "main": "./dist/zonvoir-table.cjs",
+  "module": "./dist/zonvoir-table.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/zonvoir-table.js",
+      "require": "./dist/zonvoir-table.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage --coverage.provider=v8 --coverage.include=src/** --coverage.reporter=text --coverage.reporter=json-summary",
+    "test:watch": "vitest",
+    "typecheck": "vue-tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@inertiajs/vue3": "^2.0.0 || ^3.0.0",
+    "tailwindcss": "^3.4.0 || ^4.0.0",
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "@iconify/vue": "^5.0.1",
+    "@inertiajs/vue3": "^2.0.0",
+    "@testing-library/vue": "^8.1.0",
+    "@types/jsdom": "^21.1.7",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "@vitest/coverage-v8": "^4.1.10",
+    "@vue/compiler-sfc": "^3.5.0",
+    "@vue/eslint-config-typescript": "^14.6.0",
+    "@vue/test-utils": "^2.4.6",
+    "eslint": "^9.39.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-vue": "^10.4.0",
+    "jsdom": "^26.1.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.8.3",
+    "vite": "^8.1.5",
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "^4.1.10",
+    "vue": "^3.5.0",
+    "vue-tsc": "^3.0.3"
+  },
+  "dependencies": {
+    "tailwind-merge": "^3.6.0"
+  }
+}

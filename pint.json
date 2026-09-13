@@ -1,0 +1,33 @@
+{
+  "preset": "psr12",
+  "rules": {
+      "single_line_empty_body": false,
+      "new_with_parentheses": true,
+      "blank_line_between_import_groups": true,
+      "explicit_string_variable": true,
+      "global_namespace_import": {
+          "import_classes": true,
+          "import_constants": true,
+          "import_functions": true
+      },
+      "ordered_imports": {
+          "sort_algorithm": "alpha",
+          "imports_order": [
+              "const",
+              "class",
+              "function"
+          ]
+      },
+      "braces_position": {
+        "allow_single_line_empty_anonymous_classes": true,
+        "allow_single_line_anonymous_functions": true
+      },
+      "php_unit_test_annotation": {
+          "style": "annotation"
+      },
+      "php_unit_method_casing": {
+        "case": "camel_case"
+      },
+      "simple_to_complex_string_variable": true
+  }
+}

@@ -1,0 +1,33 @@
+---
+import EditLink from '@astrojs/starlight/components/EditLink.astro';
+import LastUpdated from '@astrojs/starlight/components/LastUpdated.astro';
+import Pagination from '@astrojs/starlight/components/Pagination.astro';
+---
+
+<footer class="zv-docs-meta-footer">
+  <div class="zv-docs-meta">
+    <EditLink />
+    <LastUpdated />
+  </div>
+  <Pagination />
+</footer>
+
+<style>
+  .zv-docs-meta-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+    padding-bottom: 2rem;
+  }
+
+  .zv-docs-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+  }
+</style>

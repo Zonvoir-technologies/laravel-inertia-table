@@ -1,0 +1,54 @@
+---
+import DefaultPageFrame from '@astrojs/starlight/components/PageFrame.astro';
+import GlobalFooter from './GlobalFooter.astro';
+---
+
+<DefaultPageFrame {...Astro.props}>
+  <slot name="header" slot="header" />
+  <slot name="sidebar" slot="sidebar" />
+  <slot />
+</DefaultPageFrame>
+<GlobalFooter />
+
+<script>
+  const updateFooterOffset = () => {
+    const footer = document.querySelector('.zv-global-footer');
+    if (!footer) {
+      document.documentElement.style.setProperty('--sl-footer-visible-height', '0px');
+      return;
+    }
+    const rect = footer.getBoundingClientRect();
+    const visibleHeight = Math.max(0, window.innerHeight - rect.top);
+    document.documentElement.style.setProperty('--sl-footer-visible-height', `${Math.round(visibleHeight)}px`);
+  };
+
+  window.addEventListener('scroll', updateFooterOffset, { passive: true });
+  window.addEventListener('resize', updateFooterOffset, { passive: true });
+  document.addEventListener('astro:page-load', updateFooterOffset);
+  document.addEventListener('DOMContentLoaded', updateFooterOffset);
+  updateFooterOffset();
+</script>
+
+<style is:global>
+  /* Give the sidebar content generous bottom spacing so the last item is never crammed */
+  #starlight__sidebar .sidebar-content {
+    padding-bottom: 4rem !important;
+  }
+
+  @media (min-width: 50rem) {
+    /* Clamps the desktop left sidebar so its bottom edge never goes behind the full-width footer */
+    #starlight__sidebar.sidebar-pane {
+      bottom: var(--sl-footer-visible-height, 0px) !important;
+      transition: bottom 0.05s ease-out;
+    }
+  }
+
+  @media (min-width: 72rem) {
+    /* Clamps the desktop right sidebar (TOC) so it also stops cleanly above the full-width footer */
+    .right-sidebar {
+      height: calc(100vh - var(--sl-footer-visible-height, 0px)) !important;
+      transition: height 0.05s ease-out;
+    }
+  }
+</style>
+

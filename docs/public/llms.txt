@@ -1,0 +1,123 @@
+# Zonvoir Table Documentation
+
+> Zonvoir Table is a developer-focused Laravel and Inertia.js (Vue 3) package for building expressive, configurable Eloquent data tables with minimal boilerplate.
+
+## Overview
+
+- **Repository**: https://github.com/Zonvoir-technologies/laravel-inertia-table
+- **Production Documentation**: https://zonvoir-table.com/
+- **Backend Stack**: PHP 8.3+, Laravel 11/12/13, Eloquent ORM
+- **Frontend Stack**: Inertia.js 2.x/3.x, Vue 3.4+, Tailwind CSS 3.4+/4.0+
+- **License**: Apache-2.0
+
+## Architecture & Core Philosophy
+
+Zonvoir Table consolidates table configuration into a single backend PHP class:
+1. The **Backend Table Class** (`Zonvoir\InertiaTable\Table`) defines Eloquent query resolution, searchable/sortable attributes, pagination mode, row actions, bulk actions, and exports.
+2. The **Normalized Payload Builder** produces a stable JSON structure consumed by frontend adapters.
+3. The **Vue Adapter** (`@zonvoir/inertia-table-vue`) renders the interactive table UI, toolbar, search input, column toggle dropdown, pagination links, and action buttons.
+
+## Quick Start
+
+### 1. Installation
+
+```bash
+# Install Laravel package
+composer require zonvoir/laravel-inertia-table
+
+# Install Vue 3 adapter
+npm install @zonvoir/inertia-table-vue
+```
+
+### 2. Stylesheet Import
+
+```ts
+import '@zonvoir/inertia-table-vue/style.css';
+```
+
+### 3. Generate a Table Class
+
+```bash
+php artisan make:zon-table UsersTable --model=User
+```
+
+### 4. Define Columns and Query
+
+```php
+namespace App\Tables;
+
+use App\Models\User;
+use Zonvoir\InertiaTable\Columns\TextColumn;
+use Zonvoir\InertiaTable\Columns\BadgeColumn;
+use Zonvoir\InertiaTable\Table;
+
+class UsersTable extends Table
+{
+    protected ?string $resource = User::class;
+    protected array|string|null $search = ['name', 'email'];
+    protected ?string $defaultSort = '-created_at';
+
+    public function columns(): array
+    {
+        return [
+            TextColumn::make('name', 'Full Name')->sortable()->searchable()->sticky(),
+            TextColumn::make('email', 'Email Address')->searchable(),
+            BadgeColumn::make('status')->colors(['active' => 'success', 'pending' => 'warning']),
+        ];
+    }
+}
+```
+
+### 5. Render in Inertia Controller & Vue Page
+
+```php
+return inertia('Users/Index', [
+    'users' => UsersTable::make(),
+]);
+```
+
+```vue
+<script setup lang="ts">
+import { ZonvoirTable } from '@zonvoir/inertia-table-vue';
+defineProps<{ users: object }>();
+</script>
+
+<template>
+  <ZonvoirTable :table="users" />
+</template>
+```
+
+## Documentation Sitemap
+
+- [Getting Started - Introduction](https://zonvoir-table.com/getting-started/introduction/)
+- [Getting Started - Requirements](https://zonvoir-table.com/getting-started/requirements/)
+- [Getting Started - Installation](https://zonvoir-table.com/getting-started/installation/)
+- [Usage - Artisan Table Generation](https://zonvoir-table.com/core-concepts/generate-tables/)
+- [Usage - Basic Usage](https://zonvoir-table.com/core-concepts/basic-usage/)
+- [Usage - Typed Columns](https://zonvoir-table.com/core-concepts/columns/)
+- [Usage - Column Visibility & Toggle](https://zonvoir-table.com/core-concepts/toggle-columns/)
+- [Usage - Column Sorting](https://zonvoir-table.com/core-concepts/sorting/)
+- [Usage - Search Queries & Filters](https://zonvoir-table.com/core-concepts/searching/)
+- [Usage - Pagination Modes](https://zonvoir-table.com/core-concepts/pagination/)
+- [Usage - Sticky Headers & Columns](https://zonvoir-table.com/core-concepts/sticky-columns/)
+- [Usage - Row Actions & Links](https://zonvoir-table.com/core-concepts/row-actions/)
+- [Usage - Bulk Actions](https://zonvoir-table.com/core-concepts/bulk-actions/)
+- [Usage - Excel & CSV Exports](https://zonvoir-table.com/core-concepts/exports/)
+- [Usage - Empty States](https://zonvoir-table.com/core-concepts/empty-state/)
+- [Usage - Images & Avatars](https://zonvoir-table.com/core-concepts/images/)
+- [Usage - Icons](https://zonvoir-table.com/core-concepts/icons/)
+- [Usage - Multiple Tables on One Page](https://zonvoir-table.com/core-concepts/multiple-tables/)
+- [Advanced - Vue Slots](https://zonvoir-table.com/advanced/slots/)
+- [Advanced - Styling & CSS Classes](https://zonvoir-table.com/advanced/styling/)
+- [Advanced - Dark Mode](https://zonvoir-table.com/advanced/dark-mode/)
+- [Advanced - TypeScript Definitions](https://zonvoir-table.com/advanced/typescript/)
+- [API Reference - Index](https://zonvoir-table.com/api/)
+- [API Reference - Table](https://zonvoir-table.com/api/table/)
+- [API Reference - Columns](https://zonvoir-table.com/api/column/)
+- [API Reference - Actions](https://zonvoir-table.com/api/actions-reference/)
+- [API Reference - Exports](https://zonvoir-table.com/api/exports/)
+- [API Reference - Builders](https://zonvoir-table.com/api/builders/)
+- [API Reference - Configuration](https://zonvoir-table.com/api/configuration/)
+- [API Reference - Frontend Vue API](https://zonvoir-table.com/api/frontend-api/)
+- [API Reference - Normalized Payload Shape](https://zonvoir-table.com/api/payload/)
+- [API Reference - Enums](https://zonvoir-table.com/api/enums/)

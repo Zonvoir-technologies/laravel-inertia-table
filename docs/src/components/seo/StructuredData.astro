@@ -1,0 +1,45 @@
+---
+import {
+  generateBreadcrumbSchema,
+  generateOrganizationSchema,
+  generateSoftwareSourceCodeSchema,
+  generateTechArticleSchema,
+  generateWebSiteSchema,
+} from '../../lib/seo/schema';
+import { siteConfig } from '../../lib/seo/config';
+
+const { entry, id } = Astro.locals.starlightRoute;
+const cleanSlug = id ? id.replace(/^\/+|\/+$/g, '').replace(/\.(md|mdx)$/, '') : '';
+const isHome = cleanSlug === '' || cleanSlug === 'index';
+const canonicalUrl = `${siteConfig.siteUrl}/${cleanSlug ? `${cleanSlug}/` : ''}`;
+
+const graph: Record<string, unknown>[] = [
+  generateOrganizationSchema(),
+  generateSoftwareSourceCodeSchema(),
+  generateWebSiteSchema(),
+];
+
+if (!isHome && cleanSlug !== '404') {
+  const breadcrumbs = generateBreadcrumbSchema(cleanSlug, entry.data.title);
+  if (breadcrumbs) {
+    graph.push(breadcrumbs);
+  }
+
+  const article = generateTechArticleSchema(
+    cleanSlug,
+    entry.data.title,
+    entry.data.description,
+    canonicalUrl
+  );
+  if (article) {
+    graph.push(article);
+  }
+}
+
+const schemaJson = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@graph': graph,
+});
+---
+
+<script type="application/ld+json" is:inline set:html={schemaJson} />

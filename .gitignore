@@ -1,0 +1,10 @@
+/vendor
+/node_modules
+/vue/node_modules
+/vue/coverage
+.idea
+/vue/dist
+/vue/test-results
+.phpunit.result.cache
+/coverage.xml
+/coverage/

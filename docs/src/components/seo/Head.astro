@@ -1,0 +1,19 @@
+---
+import Default from '@astrojs/starlight/components/Head.astro';
+import StructuredData from './StructuredData.astro';
+import { siteConfig } from '../../lib/seo/config';
+
+const { id, head } = Astro.locals.starlightRoute;
+const cleanSlug = id ? id.replace(/^\/+|\/+$/g, '').replace(/\.(md|mdx)$/, '') : '';
+const isHome = cleanSlug === '' || cleanSlug === 'index';
+
+if (isHome) {
+  const titleTag = head.find((tag) => tag.tag === 'title');
+  if (titleTag && (!titleTag.content || titleTag.content.includes('Zonvoir Table | Zonvoir Table') || titleTag.content === 'Zonvoir Table')) {
+    titleTag.content = siteConfig.defaultTitle;
+  }
+}
+---
+
+<Default><slot /></Default>
+<StructuredData />

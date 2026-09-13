@@ -1,0 +1,604 @@
+---
+import { Icon } from '@astrojs/starlight/components';
+import config from 'virtual:starlight/user-config';
+import logoLight from '../assets/logo.svg';
+import logoDark from '../assets/logo-dark.svg';
+
+interface FooterLink {
+  label: string;
+  href: string;
+  isExternal?: boolean;
+}
+
+interface FooterColumn {
+  title: string;
+  links: FooterLink[];
+}
+
+const navigationColumns: FooterColumn[] = [
+  {
+    title: 'Getting Started',
+    links: [
+      { label: 'Introduction', href: '/getting-started/introduction/' },
+      { label: 'Requirements', href: '/getting-started/requirements/' },
+      { label: 'Installation', href: '/getting-started/installation/' },
+      { label: 'Generate Tables', href: '/core-concepts/generate-tables/' },
+      { label: 'Basic Usage', href: '/core-concepts/basic-usage/' },
+    ],
+  },
+  {
+    title: 'Features & Usage',
+    links: [
+      { label: 'Columns & Formatting', href: '/core-concepts/columns/' },
+      { label: 'Sorting & Pagination', href: '/core-concepts/pagination/' },
+      { label: 'Searching & Filters', href: '/core-concepts/searching/' },
+      { label: 'Bulk & Row Actions', href: '/core-concepts/bulk-actions/' },
+      { label: 'Data Exports', href: '/core-concepts/exports/' },
+      { label: 'Sticky Columns', href: '/core-concepts/sticky-columns/' },
+    ],
+  },
+  {
+    title: 'Advanced',
+    links: [
+      { label: 'Custom Tables', href: '/advanced/custom-table/' },
+      { label: 'Dark Mode Support', href: '/advanced/dark-mode/' },
+      { label: 'Styling & Themes', href: '/advanced/styling/' },
+      { label: 'Component Slots', href: '/advanced/slots/' },
+      { label: 'Translations (i18n)', href: '/advanced/translations/' },
+      { label: 'TypeScript Types', href: '/advanced/typescript/' },
+    ],
+  },
+  {
+    title: 'API & Ecosystem',
+    links: [
+      { label: 'API Reference', href: '/api/' },
+      { label: 'Table Class API', href: '/api/table/' },
+      { label: 'Column Class API', href: '/api/column/' },
+      { label: 'Frontend Vue API', href: '/api/frontend-api/' },
+      { label: 'GitHub Repository', href: 'https://github.com/Zonvoir-technologies/laravel-inertia-table', isExternal: true },
+      { label: 'Issue Tracker', href: 'https://github.com/Zonvoir-technologies/laravel-inertia-table/issues', isExternal: true },
+    ],
+  },
+];
+
+const socialLinks = config.social || [
+  { icon: 'github', label: 'GitHub', href: 'https://github.com/Zonvoir-technologies/laravel-inertia-table' },
+  { icon: 'x.com', label: 'X', href: 'https://x.com/ZonvoirTable' },
+  { icon: 'linkedin', label: 'LinkedIn', href: 'https://in.linkedin.com/company/zonvoir-table' },
+];
+
+const year = new Date().getFullYear();
+---
+
+<footer class="zv-global-footer">
+  <div class="zv-footer-inner">
+    <!-- Main Two-Column Row (Laravel Style) -->
+    <div class="zv-footer-top">
+      <!-- Left Column: Brand, Tagline, Demo, Badges & Social Links -->
+      <div class="zv-brand-col">
+        <a href="/" class="zv-brand-logo-link" aria-label="Zonvoir Table Homepage">
+          <img
+            src={logoLight.src}
+            alt="Zonvoir Table logo"
+            width="40"
+            height="70"
+            class="zv-brand-logo zv-brand-logo--light"
+            loading="lazy"
+          />
+          <img
+            src={logoDark.src}
+            alt="Zonvoir Table logo"
+            width="40"
+            height="70"
+            class="zv-brand-logo zv-brand-logo--dark"
+            loading="lazy"
+          />
+          <span class="zv-brand-name">Zonvoir Table</span>
+        </a>
+
+        <p class="zv-brand-headline">
+          Zonvoir Table is the most expressive way to build, configure, and render Eloquent data tables.
+        </p>
+
+        <p class="zv-brand-subtext">
+          Expressive Laravel and Inertia Vue tables, keeping query orchestration and presentation tightly integrated.
+        </p>
+
+        <div class="zv-brand-cta">
+          <a
+            href="https://demo.zonvoir-table.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="zv-demo-btn"
+            aria-label="Explore interactive demo on external site"
+          >
+            <span class="zv-demo-indicator" aria-hidden="true"></span>
+            <span>Live Interactive Demo</span>
+            <span class="zv-demo-arrow" aria-hidden="true">↗</span>
+          </a>
+
+          <div class="zv-badge-group" aria-label="Ecosystem compatibility">
+            <span class="zv-badge-item">Laravel 11, 12 & 13</span>
+            <span class="zv-badge-sep" aria-hidden="true">•</span>
+            <span class="zv-badge-item">Inertia & Vue 3</span>
+            <span class="zv-badge-sep" aria-hidden="true">•</span>
+            <span class="zv-badge-item">Apache 2.0</span>
+          </div>
+        </div>
+
+        <!-- Social Icons Row (bottom of left column, matching Laravel docs) -->
+        <nav class="zv-social-row" aria-label="Social media links">
+          {
+            socialLinks.map(({ label, href, icon }) => (
+              <a
+                href={href}
+                class="zv-social-btn"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+              >
+                <Icon name={icon} />
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+
+      <!-- Right Column: 4 Navigation Columns -->
+      <nav class="zv-nav-cols" aria-label="Footer navigation">
+        {
+          navigationColumns.map((col) => (
+            <div class="zv-nav-group">
+              <h2 class="zv-col-title">{col.title}</h2>
+              <ul class="zv-link-list" role="list">
+                {col.links.map((link) => (
+                  <li>
+                    <a
+                      href={link.href}
+                      class="zv-footer-link"
+                      target={link.isExternal ? '_blank' : undefined}
+                      rel={link.isExternal ? 'noopener noreferrer' : undefined}
+                    >
+                      <span>{link.label}</span>
+                      {link.isExternal && <span class="zv-ext-icon" aria-hidden="true">↗</span>}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </nav>
+    </div>
+
+    <!-- Bottom Utility Bar: Copyright & Sitemap -->
+    <div class="zv-footer-bottom">
+      <p class="zv-copy-text">
+        © {year} Zonvoir Technologies. Released under the{' '}
+        <a
+          href="https://github.com/Zonvoir-technologies/laravel-inertia-table/blob/main/LICENSE"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="zv-legal-link"
+        >
+          Apache 2.0 License
+        </a>.
+      </p>
+
+      <div class="zv-bottom-links">
+        <a href="/sitemap-index.xml" class="zv-sitemap-link">Sitemap</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  /* ==========================================================================
+     Full-Width Laravel-Inspired Global Footer
+     ========================================================================== */
+  .zv-global-footer {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    margin-top: 0;
+    box-sizing: border-box;
+    border-top: 1px solid var(--sl-color-gray-5);
+    background-color: var(--sl-color-black);
+    background-image: radial-gradient(
+      ellipse 90% 280px at 50% 0,
+      color-mix(in srgb, var(--sl-color-accent) 8%, transparent),
+      transparent 75%
+    );
+  }
+
+  :root[data-theme='light'] .zv-global-footer {
+    background-color: #ffffff;
+    border-top-color: var(--sl-color-gray-5);
+    background-image: radial-gradient(
+      ellipse 90% 280px at 50% 0,
+      color-mix(in srgb, var(--sl-color-accent) 6%, transparent),
+      transparent 75%
+    );
+  }
+
+  /* Glowing accent hairline across the very top */
+  .zv-global-footer::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      color-mix(in srgb, var(--sl-color-accent) 40%, transparent) 20%,
+      var(--sl-color-accent) 50%,
+      color-mix(in srgb, var(--sl-color-accent) 40%, transparent) 80%,
+      transparent 100%
+    );
+    opacity: 0.85;
+    pointer-events: none;
+  }
+
+  .zv-footer-inner {
+    width: 100%;
+    max-width: 90rem;
+    margin: 0 auto;
+    padding: 4.5rem 2rem 2.5rem;
+    box-sizing: border-box;
+  }
+
+  /* ==========================================================================
+     Top Section: Two Major Halves (Brand Left ~32%, Nav Right ~68%)
+     ========================================================================== */
+  .zv-footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 4rem;
+  }
+
+  /* Left Brand Column */
+  .zv-brand-col {
+    flex: 0 0 32%;
+    max-width: 30rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .zv-brand-logo-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    width: fit-content;
+    margin-bottom: 1.25rem;
+    text-decoration: none;
+  }
+
+  .zv-brand-logo {
+    height: var(--zv-logo-height, 90px);
+    width: auto;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .zv-brand-name {
+    font-size: 1.625rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: var(--sl-color-white);
+    white-space: nowrap;
+    transition: color 0.15s ease;
+  }
+
+  .zv-brand-logo-link:hover .zv-brand-name {
+    color: var(--sl-color-accent);
+  }
+
+  :root[data-theme='dark'] .zv-brand-logo--light {
+    display: none;
+  }
+  :root[data-theme='dark'] .zv-brand-logo--dark {
+    display: block;
+  }
+  :root[data-theme='light'] .zv-brand-logo--light {
+    display: block;
+  }
+  :root[data-theme='light'] .zv-brand-logo--dark {
+    display: none;
+  }
+
+  /* Prominent Laravel-style red/coral headline */
+  .zv-brand-headline {
+    margin: 0 0 0.85rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--sl-color-accent);
+  }
+
+  .zv-brand-subtext {
+    margin: 0 0 1.5rem;
+    font-size: var(--sl-text-sm);
+    line-height: 1.6;
+    color: var(--sl-color-gray-3);
+  }
+
+  .zv-brand-cta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .zv-demo-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    width: fit-content;
+    padding: 0.55rem 1.15rem;
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--sl-color-accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--sl-color-accent) 35%, transparent);
+    color: var(--sl-color-white);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 2px 10px color-mix(in srgb, var(--sl-color-accent) 12%, transparent);
+    transition: all 0.2s ease;
+  }
+
+  .zv-demo-btn:hover {
+    background: color-mix(in srgb, var(--sl-color-accent) 22%, transparent);
+    border-color: var(--sl-color-accent);
+    color: var(--sl-color-white);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--sl-color-accent) 30%, transparent);
+  }
+
+  .zv-demo-indicator {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--sl-color-accent);
+    box-shadow: 0 0 8px var(--sl-color-accent);
+  }
+
+  .zv-demo-arrow {
+    font-size: 0.75rem;
+    opacity: 0.85;
+    transition: transform 0.15s ease;
+  }
+
+  .zv-demo-btn:hover .zv-demo-arrow {
+    transform: translate(1px, -1px);
+  }
+
+  .zv-badge-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--sl-color-gray-4);
+  }
+
+  .zv-badge-item {
+    font-weight: 500;
+    color: var(--sl-color-gray-3);
+  }
+
+  .zv-badge-sep {
+    opacity: 0.5;
+  }
+
+  /* Social buttons row at bottom of left column */
+  .zv-social-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .zv-social-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    color: var(--sl-color-gray-3);
+    background: color-mix(in srgb, var(--sl-color-gray-5) 45%, transparent);
+    border: 1px solid color-mix(in srgb, var(--sl-color-gray-5) 60%, transparent);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .zv-social-btn:hover {
+    color: #ffffff;
+    background: var(--sl-color-accent);
+    border-color: var(--sl-color-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--sl-color-accent) 35%, transparent);
+  }
+
+  .zv-social-btn :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  /* ==========================================================================
+     Right Column: 4 Navigation Columns (Grid)
+     ========================================================================== */
+  .zv-nav-cols {
+    flex: 1 1 65%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem 1.5rem;
+  }
+
+  .zv-nav-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .zv-col-title {
+    margin: 0 0 1.25rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--sl-color-gray-2);
+  }
+
+  :root[data-theme='light'] .zv-col-title {
+    color: var(--sl-color-white);
+  }
+
+  .zv-link-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .zv-footer-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    width: fit-content;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+    text-decoration: none;
+    transition: color 0.15s ease, transform 0.15s ease;
+  }
+
+  .zv-footer-link:hover {
+    color: var(--sl-color-accent);
+    transform: translateX(3px);
+  }
+
+  .zv-ext-icon {
+    font-size: 0.75rem;
+    opacity: 0.65;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+
+  .zv-footer-link:hover .zv-ext-icon {
+    opacity: 1;
+    transform: translate(1px, -1px);
+  }
+
+  /* ==========================================================================
+     Bottom Bar: Copyright & Sitemap
+     ========================================================================== */
+  .zv-footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    padding-top: 2.25rem;
+    margin-top: 3.5rem;
+    border-top: 1px solid color-mix(in srgb, var(--sl-color-gray-5) 60%, transparent);
+  }
+
+  .zv-copy-text {
+    margin: 0;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-xs);
+    line-height: 1.5;
+  }
+
+  .zv-legal-link {
+    color: var(--sl-color-gray-2);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .zv-legal-link:hover {
+    color: var(--sl-color-accent);
+  }
+
+  .zv-bottom-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .zv-sitemap-link {
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-xs);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  .zv-sitemap-link:hover {
+    color: var(--sl-color-accent);
+  }
+
+  /* Keyboard focus states */
+  .zv-global-footer a:focus-visible {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* ==========================================================================
+     Responsive Breakpoints
+     ========================================================================== */
+  @media (max-width: 68rem) {
+    .zv-footer-top {
+      flex-direction: column;
+      gap: 3rem;
+    }
+
+    .zv-brand-col {
+      flex: 1 1 100%;
+      max-width: 100%;
+    }
+
+    .zv-nav-cols {
+      width: 100%;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2.5rem 1.75rem;
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .zv-footer-inner {
+      padding: 3.5rem 1.25rem 2rem;
+    }
+
+    .zv-brand-name {
+      font-size: 1.35rem;
+    }
+
+    .zv-nav-cols {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .zv-footer-bottom {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .zv-global-footer *,
+    .zv-global-footer *::before,
+    .zv-global-footer *::after {
+      transition: none !important;
+      transform: none !important;
+      animation: none !important;
+    }
+  }
+</style>
