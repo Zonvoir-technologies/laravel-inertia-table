@@ -1,7 +1,7 @@
 {
   "name": "@zonvoir/inertia-table-vue",
   "version": "0.1.0",
-  "description": "Vue adapter for the Zonvoir Table.",
+  "description": "Vue adapter for Zonvoir Table.",
   "license": "Apache-2.0",
   "keywords": [
     "zonvoir",
@@ -10,7 +10,7 @@
     "inertia",
     "laravel"
   ],
-  "homepage": "https://github.com/Zonvoir-technologies/laravel-inertia-table#readme",
+  "homepage": "https://zonvoir-table.com",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Zonvoir-technologies/laravel-inertia-table.git",
@@ -20,6 +20,7 @@
     "url": "https://github.com/Zonvoir-technologies/laravel-inertia-table/issues"
   },
   "type": "module",
+  "sideEffects": false,
   "main": "./dist/zonvoir-table.cjs",
   "module": "./dist/zonvoir-table.js",
   "types": "./dist/index.d.ts",
@@ -43,7 +44,8 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage --coverage.provider=v8 --coverage.include=src/** --coverage.reporter=text --coverage.reporter=json-summary",
     "test:watch": "vitest",
-    "typecheck": "vue-tsc --noEmit"
+    "typecheck": "vue-tsc --noEmit",
+    "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
     "@inertiajs/vue3": "^2.0.0 || ^3.0.0",

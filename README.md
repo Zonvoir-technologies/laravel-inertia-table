@@ -210,9 +210,27 @@ Example payload:
 }
 ```
 
-## Install In A Laravel App
+## Installation
 
-Point Composer and npm at this package path or publish it to its own repository later.
+### Standard Installation
+
+Install the Laravel backend package via Composer:
+
+```bash
+composer require zonvoir/laravel-inertia-table
+```
+
+Install the Vue adapter package via npm:
+
+```bash
+npm install @zonvoir/inertia-table-vue
+```
+
+> **Architecture Note**: Zonvoir Table decouples backend table querying and hydration (`zonvoir/laravel-inertia-table`) from frontend presentation adapters (`@zonvoir/inertia-table-vue`). React and Svelte adapters will be available in future releases. Both packages are version-synchronized.
+
+### Local Development / Monorepo Linking
+
+If developing locally or linking directly from a local path:
 
 If the package lives inside your Laravel app:
 
