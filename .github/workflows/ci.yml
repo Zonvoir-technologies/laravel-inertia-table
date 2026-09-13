@@ -134,14 +134,14 @@ jobs:
 
       - name: Assert no legacy namespace references
         run: |
-          if git grep -i "Zonvoir\\\\ZonvoirTable"; then
+          if git grep -i "Zonvoir\\\\ZonvoirTable" -- ':!.github'; then
             echo "Found legacy Zonvoir\\ZonvoirTable namespace references!"
             exit 1
           fi
 
       - name: Assert no legacy package references
         run: |
-          if git grep "zonvoir/zonvoir-table"; then
+          if git grep "zonvoir/zonvoir-table" -- ':!.github'; then
             echo "Found legacy zonvoir/zonvoir-table package references!"
             exit 1
           fi
