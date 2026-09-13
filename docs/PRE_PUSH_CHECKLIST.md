@@ -63,17 +63,25 @@ npm run build
 cd ..
 ```
 
+### D. Release Version Alignment Check
+
+```bash
+# Verify Git release tag matches vue/package.json and vue/package-lock.json version
+node scripts/verify-release-version.mjs v0.1.0
+```
+
 ---
 
 ## 2. Release Checklist Items
 
-Before tagging a public release (e.g. `v0.1.0`):
+Before creating a public release (e.g. `v0.1.0`):
 
 - [ ] **Changelog**: [CHANGELOG.md](file:///Users/vis/vishal/office/projects/php/zonvoir-table/CHANGELOG.md) is updated with all notable changes under the target release header, adhering to [Keep a Changelog](https://keepachangelog.com/).
 - [ ] **Package Metadata**:
-  - `composer.json` has valid version or branches matching release constraints.
+  - `composer.json` has valid license (`Apache-2.0`) and no hardcoded version.
   - `vue/package.json` version matches the release milestone (e.g., `0.1.0`).
-  - License SPDX identifier is `Apache-2.0` in `composer.json` and `vue/package.json`.
+  - `vue/package-lock.json` is synchronized (`npm install --package-lock-only`).
+  - License SPDX identifier is `Apache-2.0` in both manifests.
 - [ ] **License Files**:
   - Root `LICENSE` exists with Apache License 2.0 and correct copyright notice (`Copyright 2026 Zonvoir Technologies Pvt Ltd`).
   - `vue/LICENSE` exists with identical Apache License 2.0 terms.
@@ -85,7 +93,7 @@ Before tagging a public release (e.g. `v0.1.0`):
 - [ ] **Continuous Integration**:
   - All CI workflows pass on GitHub Actions across the PHP matrix (8.3, 8.4), Vue build/typecheck/lint/test, and Docs build/SEO checks.
 - [ ] **Tagging & Publishing**:
-  - Git tag created (e.g. `git tag -a v0.1.0 -m "Release v0.1.0"`).
-  - Push tag to remote (`git push origin v0.1.0`).
-  - Packagist automatically triggers webhook for `zonvoir/laravel-inertia-table`.
-  - Vue adapter published to npm: `cd vue && npm publish --access public`.
+  - Open and merge a release preparation PR containing updated manifests and changelog.
+  - Create a GitHub Release using tag `vX.Y.Z` (see [RELEASING.md](file:///Users/vis/vishal/office/projects/php/zonvoir-table/docs/RELEASING.md)).
+  - GitHub Actions `.github/workflows/release.yml` automatically validates and publishes `@zonvoir/inertia-table-vue` to npm with OIDC provenance.
+  - Packagist automatically triggers webhook for `zonvoir/laravel-inertia-table` from the Git tag.

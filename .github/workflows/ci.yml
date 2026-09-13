@@ -72,6 +72,12 @@ jobs:
       - name: Build production distribution
         run: npm run build
 
+      - name: Verify declared export targets exist
+        run: |
+          test -f dist/zonvoir-table.js || { echo "Missing dist/zonvoir-table.js"; exit 1; }
+          test -f dist/zonvoir-table.cjs || { echo "Missing dist/zonvoir-table.cjs"; exit 1; }
+          test -f dist/index.d.ts || { echo "Missing dist/index.d.ts"; exit 1; }
+
       - name: Packaging dry-run
         run: npm pack --dry-run
 
@@ -131,6 +137,15 @@ jobs:
         run: |
           grep -q '"license": "Apache-2.0"' composer.json || { echo "composer.json license is not Apache-2.0"; exit 1; }
           grep -q '"license": "Apache-2.0"' vue/package.json || { echo "vue/package.json license is not Apache-2.0"; exit 1; }
+
+      - name: Verify canonical package names
+        run: |
+          grep -q '"name": "zonvoir/laravel-inertia-table"' composer.json || { echo "composer.json name is incorrect"; exit 1; }
+          grep -q '"name": "@zonvoir/inertia-table-vue"' vue/package.json || { echo "vue/package.json name is incorrect"; exit 1; }
+
+      - name: Verify release version script logic
+        run: |
+          node scripts/verify-release-version.mjs v0.1.0
 
       - name: Assert no legacy namespace references
         run: |
