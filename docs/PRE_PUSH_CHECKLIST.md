@@ -67,7 +67,7 @@ cd ..
 
 ```bash
 # Verify Git release tag matches vue/package.json and vue/package-lock.json version
-node scripts/verify-release-version.mjs v0.1.0
+node scripts/verify-release-version.mjs v1.0.1
 ```
 
 ---

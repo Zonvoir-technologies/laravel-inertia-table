@@ -145,7 +145,8 @@ jobs:
 
       - name: Verify release version script logic
         run: |
-          node scripts/verify-release-version.mjs v0.1.0
+          CURRENT_VERSION=$(node -p "require('./vue/package.json').version")
+          node scripts/verify-release-version.mjs "v${CURRENT_VERSION}"
 
       - name: Assert no legacy namespace references
         run: |
