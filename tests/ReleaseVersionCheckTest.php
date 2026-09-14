@@ -10,7 +10,7 @@ uses(TestCase::class);
 
 test('release version checker succeeds when git tag matches package version', function (): void {
     $script = dirname(__DIR__) . '/scripts/verify-release-version.mjs';
-    $process = new Process(['node', $script, 'v0.1.0']);
+    $process = new Process(['node', $script, 'v1.0.1']);
     $process->run();
 
     expect($process->isSuccessful())->toBeTrue();
@@ -19,7 +19,7 @@ test('release version checker succeeds when git tag matches package version', fu
 
 test('release version checker succeeds with GITHUB_REF_NAME env var', function (): void {
     $script = dirname(__DIR__) . '/scripts/verify-release-version.mjs';
-    $process = new Process(['node', $script], env: ['GITHUB_REF_NAME' => 'v0.1.0']);
+    $process = new Process(['node', $script], env: ['GITHUB_REF_NAME' => 'v1.0.1']);
     $process->run();
 
     expect($process->isSuccessful())->toBeTrue();
