@@ -104,6 +104,7 @@ export default defineConfig({
             { label: 'Introduction', slug: 'getting-started/introduction' },
             { label: 'Requirements', slug: 'getting-started/requirements' },
             { label: 'Installation', slug: 'getting-started/installation' },
+            { label: 'Troubleshooting', slug: 'getting-started/troubleshooting' },
           ],
         },
         {
@@ -141,6 +142,7 @@ export default defineConfig({
             { label: 'Table Icons', slug: 'advanced/table-icons' },
             { label: 'Template Refs', slug: 'advanced/template-refs' },
             { label: 'TypeScript', slug: 'advanced/typescript' },
+            { label: 'Configuration', slug: 'advanced/configuration' },
           ],
         },
         {

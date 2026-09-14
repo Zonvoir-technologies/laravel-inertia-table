@@ -1,6 +1,6 @@
 # Zonvoir Table
 
-Foundation package for a reusable Laravel + Inertia table system with framework-specific frontend adapters.
+Expressive Laravel and Inertia Vue tables, keeping query orchestration and presentation tightly integrated.
 
 ## Requirements
 
@@ -10,46 +10,18 @@ Inertia.js 2.x or 3.x
 Vue 3.4+
 Tailwind CSS 3.4+ or 4.0+
 
-## Structure
-
-- `src/`: Laravel package core, including package config
-- `vue/`: standalone Vue adapter package
-- `docs/`: architecture, release, and roadmap notes
-
-## Local Development
-
-### PHP package
-
-```bash
-composer install
-composer test
-```
-
-### Vue adapter
-
-```bash
-cd vue
-npm install
-npm run build
-npm run test
-```
-
-## Foundation Guarantees
-
-- Laravel package auto-discovers through Composer, publishes config from `src/config`, and exposes its core service through the service provider
-- Backend tables can be declared by extending `Zonvoir\InertiaTable\Table` with registered columns, typed default state, request hydration, and normalized payload transport
-- Vue builds as an independent adapter package
-- A local checklist is available in `docs/PRE_PUSH_CHECKLIST.md` before publishing
-
 ## Backend Table Definition
 
 ```php
+use App\Models\User;
 use Zonvoir\InertiaTable\Columns\TextColumn;
 use Zonvoir\InertiaTable\Table;
 use Zonvoir\InertiaTable\TableState;
 
 class UsersTable extends Table
 {
+    protected ?string $resource = User::class;
+
     public function columns(): array
     {
         return [
@@ -59,14 +31,6 @@ class UsersTable extends Table
             TextColumn::create('email', 'Email Address')
                 ->searchable(),
         ];
-    }
-
-    public function defaultState(): TableState
-    {
-        return new TableState(
-            perPage: 25,
-            sort: 'name',
-        );
     }
 }
 ```
@@ -169,44 +133,105 @@ $jobs = JobsTable::make()->named('jobs');
 This produces independent query string namespaces such as:
 
 ```text
-?users[page]=2&users[sort]=name&jobs[page]=3
+?users[page]=2&users[direction]=asc&users[sort]=name&jobs[page]=3
 ```
 
 Example payload:
 
 ```json
 {
-  "name": "users",
-  "state": {
-    "page": 1,
-    "perPage": 25,
-    "sort": "name",
-    "direction": "asc"
-  },
-  "meta": {
+    "name": "users",
+    "results": {
+        "data": [
+            {
+                "_column_urls": {},
+                "_column_images": {},
+                "_primary_key": 1,
+                "id": 1,
+                "name": "Ada Lovelace",
+                "_selectable": true,
+                "_actions": []
+            }
+        ],
+        "current_page": 1,
+        "per_page": 25,
+        "from": 1,
+        "to": 1,
+        "total": 1,
+        "last_page": 1,
+        "on_first_page": true,
+        "on_last_page": true
+    },
+    "meta": {
+        "columns": [],
+        "pagination": {},
+        "queryString": {}
+    },
+    "search": [],
     "columns": [
-      {
-        "key": "name",
-        "name": "name",
-        "type": "text",
-        "label": "Name",
-        "visible": true,
-        "sortable": true,
-        "searchable": false,
-        "toggleable": true,
-        "sticky": false,
-        "alignment": null,
-        "width": null,
-        "minWidth": null,
-        "maxWidth": null,
-        "labelClass": null,
-        "cellClass": null,
-        "defaultValue": null,
-        "export": [],
-        "meta": {}
-      }
-    ]
-  }
+        {
+            "type": "text",
+            "header": "Name",
+            "attribute": "name",
+            "sortable": true,
+            "toggleable": true,
+            "alignment": "left",
+            "visibleByDefault": true,
+            "meta": {
+                "hidden": false,
+                "sortable": true,
+                "toggleable": true,
+                "stickable": false,
+                "defaultToSticky": false
+            },
+            "wrap": false,
+            "tooltip": null,
+            "truncate": null,
+            "headerClass": null,
+            "cellClass": null,
+            "stickable": false
+        }
+    ],
+    "actions": [],
+    "exports": [],
+    "state": {
+        "columns": {
+            "name": true
+        },
+        "perPage": 25,
+        "search": null,
+        "sort": "name",
+        "sticky": []
+    },
+    "pagination": true,
+    "paginationType": "full",
+    "perPageOptions": [
+        15,
+        25,
+        50
+    ],
+    "defaultPerPage": 25,
+    "defaultSort": "name",
+    "debounceTime": 300,
+    "reloadProps": [],
+    "hasActions": false,
+    "hasBulkActions": false,
+    "hasExports": false,
+    "hasExportsThatLimitsToSelectedRows": false,
+    "hasFilters": false,
+    "hasSearch": true,
+    "hasToggleableColumns": true,
+    "scrollPositionAfterPageChange": "topOfPage",
+    "autofocus": "search",
+    "emptyState": false,
+    "stickyHeader": false,
+    "rowSelectionKey": "id",
+    "selectable": true,
+    "persistRowSelectionAcrossPages": false,
+    "selection": {
+        "mode": "page"
+    },
+    "inDefaultState": true
 }
 ```
 
@@ -228,78 +253,6 @@ npm install @zonvoir/inertia-table-vue
 
 > **Architecture Note**: Zonvoir Table decouples backend table querying and hydration (`zonvoir/laravel-inertia-table`) from frontend presentation adapters (`@zonvoir/inertia-table-vue`). React and Svelte adapters will be available in future releases. Both packages are version-synchronized.
 
-### Local Development / Monorepo Linking
-
-If developing locally or linking directly from a local path:
-
-If the package lives inside your Laravel app:
-
-```json
-{
-  "repositories": [
-    {
-      "type": "path",
-      "url": "packages/laravel-inertia-table",
-      "options": {
-        "symlink": true
-      }
-    }
-  ]
-}
-```
-
-If your Laravel app and this package are sibling folders, for example:
-
-```text
-Herd/
-  my-laravel-app/
-  laravel-inertia-table/
-```
-
-Use the sibling path instead:
-
-```json
-{
-  "repositories": [
-    {
-      "type": "path",
-      "url": "../laravel-inertia-table",
-      "options": {
-        "symlink": true
-      }
-    }
-  ]
-}
-```
-
-Then require the Laravel package:
-
-```bash
-composer require zonvoir/laravel-inertia-table:@dev
-```
-
-Build the Vue adapter before installing it into your Laravel app:
-
-```bash
-cd ../laravel-inertia-table/vue
-npm install
-npm run build
-```
-
-Then install the Vue adapter from your Laravel app.
-
-If the package lives inside your Laravel app:
-
-```bash
-npm install ./packages/laravel-inertia-table/vue
-```
-
-If your Laravel app and this package are sibling folders:
-
-```bash
-npm install ../laravel-inertia-table/vue
-```
-
 Import it in your app:
 
 ```ts
@@ -313,7 +266,7 @@ For Tailwind CSS 4:
 ```css
 @import "tailwindcss";
 
-@source "../../vendor/zonvoir/laravel-inertia-table/vue/**/*.{js,vue}";
+@source "../../node_modules/@zonvoir/inertia-table-vue/**/*.{js,vue}";
 ```
 
 For Tailwind CSS 3.4, add the package path to `content` in `tailwind.config.js`:
@@ -323,7 +276,7 @@ For Tailwind CSS 3.4, add the package path to `content` in `tailwind.config.js`:
 module.exports = {
   content: [
     './resources/**/*.{blade.php,js,ts,vue}',
-    './vendor/zonvoir/laravel-inertia-table/vue/**/*.{js,vue}',
+    './node_modules/@zonvoir/inertia-table-vue/**/*.{js,vue}',
   ],
 };
 ```

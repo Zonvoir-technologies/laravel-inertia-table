@@ -31,11 +31,11 @@ Pass each table payload to its own `ZonvoirTable` component:
 
 ```vue
 <script setup lang="ts">
-import { ZonvoirTable } from '@zonvoir/inertia-table-vue';
+import { ZonvoirTable, type TableResource } from '@zonvoir/inertia-table-vue';
 
 defineProps<{
-  users: object;
-  jobs: object;
+  users: TableResource;
+  jobs: TableResource;
 }>();
 </script>
 

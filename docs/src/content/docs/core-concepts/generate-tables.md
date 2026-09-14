@@ -96,6 +96,50 @@ The generated `$resource` property tells Zonvoir Table which Eloquent model the 
 protected ?string $resource = User::class;
 ```
 
+## Custom directory and paths
+
+You have multiple ways to generate tables in custom directories and namespaces.
+
+### 1. Direct path in the table name
+
+You can pass the full relative path directly in the command (using either forward slashes or backslashes):
+
+```bash
+php artisan make:zon-table app/Http/Controllers/UserTable
+```
+
+This generates the file directly at that location (e.g. `app/Http/Controllers/UserTable.php`) with the corresponding namespace (e.g. `app\Http\Controllers\`).
+
+### 2. Using the `--path` option
+
+You can also specify the target directory with the `--path` option:
+
+```bash
+php artisan make:zon-table UsersTable --path="app/DataTables"
+```
+
+You can omit the leading `app/` if you prefer:
+
+```bash
+php artisan make:zon-table UsersTable --path="DataTables"
+```
+
+You can combine `--path` with `--model`:
+
+```bash
+php artisan make:zon-table UsersTable --path="app/DataTables" --model=User
+```
+
+### 3. Configuring the default directory in config
+
+To change the default directory for all future `make:zon-table` commands, publish the configuration file and set `tables_path` in `config/zonvoir-table.php`:
+
+```php
+'tables_path' => 'app/DataTables',
+```
+
+The table class namespace is automatically derived from this path (e.g. `App\DataTables`). Command-line options like `--path` or direct argument paths always take precedence over the configuration.
+
 ## Adding columns
 
 After generating the table, define the columns you want to display inside `columns()`:

@@ -36,9 +36,9 @@ abstract class Table implements Arrayable, JsonSerializable
     /**
      * @var array<int, int|string>|null
      */
-    protected ?array $perPageOptions = [15, 30, 50, 100];
+    protected ?array $perPageOptions = null;
 
-    protected ?int $defaultPerPage = 15;
+    protected ?int $defaultPerPage = null;
 
     protected bool $scrollToTop = true;
 
@@ -393,11 +393,22 @@ abstract class Table implements Arrayable, JsonSerializable
 
     public function pagination(): PaginationConfiguration
     {
+        $defaultPerPage = $this->defaultPerPage ?? config('zonvoir-table.pagination.default_per_page');
+        $perPageOptions = $this->perPageOptions ?? config('zonvoir-table.pagination.per_page_options');
+
+        $resolvedDefaultPerPage = (int) ($defaultPerPage ?: 15);
+        $resolvedPerPageOptions = is_array($perPageOptions) ? $perPageOptions : [15, 30, 50, 100];
+
+        if ($this->perPageOptions === null && ! in_array($resolvedDefaultPerPage, $resolvedPerPageOptions, true)) {
+            $resolvedPerPageOptions[] = $resolvedDefaultPerPage;
+            sort($resolvedPerPageOptions);
+        }
+
         return PaginationConfiguration::make(
             enabled: $this->pagination,
             type: $this->paginationType,
-            defaultPerPage: $this->defaultPerPage ?? (int) config('zonvoir-table.pagination.default_per_page'),
-            perPageOptions: $this->perPageOptions ?? config('zonvoir-table.pagination.per_page_options'),
+            defaultPerPage: $resolvedDefaultPerPage,
+            perPageOptions: $resolvedPerPageOptions,
             scrollToTop: $this->scrollToTop,
         );
     }

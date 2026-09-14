@@ -65,10 +65,10 @@ Render the table payload with the frontend adapter:
 
 ```vue
 <script setup lang="ts">
-import { ZonvoirTable } from '@zonvoir/inertia-table-vue';
+import { ZonvoirTable, type TableResource } from '@zonvoir/inertia-table-vue';
 
 const props = defineProps<{
-  users: object;
+  users: TableResource;
 }>();
 </script>
 

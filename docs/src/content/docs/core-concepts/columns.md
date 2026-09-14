@@ -429,14 +429,30 @@ The Vue adapter calculates the number from the row position and the paginator of
 ---
 ## ActionColumn
 
-`ActionColumn` controls where row actions are rendered inside the table.
+`ActionColumn` controls where [row actions](/core-concepts/row-actions/) are rendered inside the table.
+
+By default, actions are not displayed in a dropdown (`->asDropdown()` is not the default). Instead, they are rendered inline as individual buttons or links according to each action's configuration (such as its URL, variant, color, or icon).
 
 ```php
 use Zonvoir\InertiaTable\Columns\ActionColumn;
 
+// Default: actions rendered inline as buttons or links
+ActionColumn::make();
+```
+
+If you want your actions grouped inside a dropdown menu, you can add `->asDropdown()`:
+
+```php
+use Zonvoir\InertiaTable\Columns\ActionColumn;
+
+// Group actions into a dropdown menu
 ActionColumn::make()
     ->asDropdown();
 ```
+
+:::note
+Dropdown presentation is not enabled by default. If you omit `->asDropdown()`, your actions will appear inline as buttons or links based on each action's definition. Add `->asDropdown()` only when you want actions collapsed into a dropdown menu.
+:::
 
 For example, a row may expose actions such as:
 
@@ -446,7 +462,7 @@ Edit
 Delete
 ```
 
-The actual actions are defined by your table's action configuration, while `ActionColumn` controls their placement inside the row.
+The actual actions are defined by your table's [action configuration](/core-concepts/row-actions/), while `ActionColumn` controls their placement and presentation inside the row.
 
 ---
 
@@ -489,3 +505,4 @@ public function columns(): array
 
 - [`Column` API Reference](/api/column/)
 - [`Table::columns()` API Reference](/api/table/#override-hooks)
+- [Row Actions Guide](/core-concepts/row-actions/)

@@ -8,9 +8,18 @@ use Symfony\Component\Process\Process;
 
 uses(TestCase::class);
 
+function getVuePackageVersion(): string
+{
+    $packageJsonPath = dirname(__DIR__) . '/vue/package.json';
+    $packageJson = json_decode((string) file_get_contents($packageJsonPath), true);
+
+    return (string) ($packageJson['version'] ?? '');
+}
+
 test('release version checker succeeds when git tag matches package version', function (): void {
     $script = dirname(__DIR__) . '/scripts/verify-release-version.mjs';
-    $process = new Process(['node', $script, 'v0.1.0']);
+    $version = getVuePackageVersion();
+    $process = new Process(['node', $script, "v{$version}"]);
     $process->run();
 
     expect($process->isSuccessful())->toBeTrue();
@@ -19,7 +28,8 @@ test('release version checker succeeds when git tag matches package version', fu
 
 test('release version checker succeeds with GITHUB_REF_NAME env var', function (): void {
     $script = dirname(__DIR__) . '/scripts/verify-release-version.mjs';
-    $process = new Process(['node', $script], env: ['GITHUB_REF_NAME' => 'v0.1.0']);
+    $version = getVuePackageVersion();
+    $process = new Process(['node', $script], env: ['GITHUB_REF_NAME' => "v{$version}"]);
     $process->run();
 
     expect($process->isSuccessful())->toBeTrue();

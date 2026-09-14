@@ -71,17 +71,16 @@ hero:
 <span class="ln">7</span>  <b>final class</b> UsersTable <b>extends</b> Table
 <span class="ln">8</span>  {
 <span class="ln">9</span>     <b>protected</b> ?string $resource = User::class;
-<span class="ln">10</span>     <b>protected</b> array|string|null $search = ['name', 'email'];
-<span class="ln">11</span>     <b>protected</b> ?string $defaultSort = 'name';
-<span class="ln">12</span>
-<span class="ln">13</span>     <b>public function</b> columns(): array
-<span class="ln">14</span>     {
-<span class="ln">15</span>         <b>return</b> [
-<span class="ln">16</span>             TextColumn::make('name', 'Full Name')->searchable(),
-<span class="ln">17</span>             TextColumn::make('email')->searchable(),
-<span class="ln">18</span>         ];
-<span class="ln">19</span>     }
-<span class="ln">20</span>  }</code></pre>
+<span class="ln">10</span>     <b>protected</b> ?string $defaultSort = 'name';
+<span class="ln">11</span>
+<span class="ln">12</span>     <b>public function</b> columns(): array
+<span class="ln">13</span>     {
+<span class="ln">14</span>         <b>return</b> [
+<span class="ln">15</span>             TextColumn::make('name')->searchable(),
+<span class="ln">16</span>             TextColumn::make('email')->searchable(),
+<span class="ln">17</span>         ];
+<span class="ln">18</span>     }
+<span class="ln">19</span>  }</code></pre>
 
 <div class="floating-tags">
                     <div class="tag tag-red">
@@ -319,7 +318,7 @@ outline: 4px solid var(--theme-bg);
     padding: 5px 15px;
     border-radius: 49px;
 
-  
+
 
 
 }
@@ -398,7 +397,7 @@ outline: 4px solid var(--theme-bg);
     font-size: 13px;
     font-weight: 600;
     letter-spacing: .5px;
-    margin-bottom: 24px; 
+    margin-bottom: 24px;
     border: 1px solid #f05a4521;
     text-transform: uppercase;}
 

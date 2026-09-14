@@ -1,6 +1,6 @@
 {
   "name": "@zonvoir/inertia-table-vue",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "description": "Vue adapter for Zonvoir Table.",
   "license": "Apache-2.0",
   "keywords": [
