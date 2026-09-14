@@ -7,6 +7,23 @@ Row actions let users perform operations on a specific record directly from the 
 
 Define row actions by returning `Action` objects from your table's `actions()` method.
 
+Use [`ActionColumn`](/core-concepts/columns/#actioncolumn) when you want to control where those actions appear in the table.
+
+```php
+use Zonvoir\InertiaTable\Columns\ActionColumn;
+
+// Default: actions rendered inline as buttons or links
+ActionColumn::make();
+
+// Or group them into a dropdown menu
+ActionColumn::make()
+    ->asDropdown();
+```
+
+This lets you keep the action definitions separate from their table presentation.
+
+By default, actions appear inline as buttons or links according to each action's configuration. If you want them grouped into a dropdown menu, add `->asDropdown()`. For more information, see the [ActionColumn documentation](/core-concepts/columns/#actioncolumn).
+
 ## Define a row action
 
 ```php
@@ -226,8 +243,8 @@ Action::make('remote', handle: fn (Employee $employee) => $employee->update(['is
     ->name(fn (Employee $employee) => $employee->is_remote ? 'Remove remote' : 'Make remote')
     ->confirm(
         title: fn (Employee $employee) => $employee->is_remote ? 'Remove employee remote' : 'Make employee remote',
-        message: fn (Employee $employee) => $employee->is_remote 
-            ? 'Are you sure you want to remove remote status for :name?' 
+        message: fn (Employee $employee) => $employee->is_remote
+            ? 'Are you sure you want to remove remote status for :name?'
             : 'Are you sure you want to mark :name as remote?',
         confirmButton: fn (Employee $employee) => $employee->is_remote ? 'Yes, remove remote' : 'Yes, make remote',
     );
@@ -291,24 +308,10 @@ public function actions(): array
 }
 ```
 
-## Row actions and ActionColumn
-
-Row actions are defined through `actions()`.
-
-Use `ActionColumn` when you want to control where those actions appear in the table.
-
-```php
-use Zonvoir\InertiaTable\Columns\ActionColumn;
-
-ActionColumn::make()
-    ->asDropdown();
-```
-
-This lets you keep the action definitions separate from their table presentation.
-
 ## Related guides
 
 - [Row Links](/core-concepts/row-links/)
 - [Bulk Actions](/core-concepts/bulk-actions/)
 - [Icons](/core-concepts/icons/)
 - [Columns](/core-concepts/columns/)
+- [ActionColumn](/core-concepts/columns/#actioncolumn)
