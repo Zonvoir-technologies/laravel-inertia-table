@@ -77,10 +77,10 @@ On your Vue page, import the `ZonvoirTable` component and pass the table payload
 
 ```vue
 <script setup lang="ts">
-import { ZonvoirTable } from '@zonvoir/inertia-table-vue';
+import { ZonvoirTable, type TableResource } from '@zonvoir/inertia-table-vue';
 
 defineProps<{
-  users: object;
+  users: TableResource;
 }>();
 </script>
 

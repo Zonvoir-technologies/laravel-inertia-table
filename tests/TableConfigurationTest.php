@@ -181,3 +181,127 @@ it('clones resource builders before applying them', function (): void {
     expect($table->query()->pluck('title')->all())->toBe(['Visible'])
         ->and($baseQuery->pluck('title')->all())->toBe(['Visible']);
 });
+
+it('resolves pagination from configuration when table properties are not defined', function (): void {
+    config([
+        'zonvoir-table.pagination.default_per_page' => 25,
+        'zonvoir-table.pagination.per_page_options' => [10, 25, 50],
+    ]);
+
+    $table = new class () extends Table {
+        protected ?string $resource = TestPost::class;
+
+        public function columns(): array
+        {
+            return [TextColumn::make('title')];
+        }
+    };
+
+    expect($table->pagination()->defaultPerPage())->toBe(25)
+        ->and($table->pagination()->perPageOptions())->toBe([10, 25, 50]);
+});
+
+it('allows table properties defaultPerPage and perPageOptions to override configuration', function (): void {
+    config([
+        'zonvoir-table.pagination.default_per_page' => 25,
+        'zonvoir-table.pagination.per_page_options' => [10, 25, 50],
+    ]);
+
+    $table = new class () extends Table {
+        protected ?string $resource = TestPost::class;
+
+        protected ?int $defaultPerPage = 40;
+
+        protected ?array $perPageOptions = [20, 40, 80];
+
+        public function columns(): array
+        {
+            return [TextColumn::make('title')];
+        }
+    };
+
+    expect($table->pagination()->defaultPerPage())->toBe(40)
+        ->and($table->pagination()->perPageOptions())->toBe([20, 40, 80]);
+});
+
+it('resolves pagination when only defaultPerPage is defined on table', function (): void {
+    config([
+        'zonvoir-table.pagination.default_per_page' => 15,
+        'zonvoir-table.pagination.per_page_options' => [10, 20, 30],
+    ]);
+
+    $table = new class () extends Table {
+        protected ?string $resource = TestPost::class;
+
+        protected ?int $defaultPerPage = 20;
+
+        public function columns(): array
+        {
+            return [TextColumn::make('title')];
+        }
+    };
+
+    expect($table->pagination()->defaultPerPage())->toBe(20)
+        ->and($table->pagination()->perPageOptions())->toBe([10, 20, 30]);
+});
+
+it('auto-includes defaultPerPage in perPageOptions when perPageOptions is not defined on table', function (): void {
+    config([
+        'zonvoir-table.pagination.default_per_page' => 15,
+        'zonvoir-table.pagination.per_page_options' => [15, 30, 50],
+    ]);
+
+    $table = new class () extends Table {
+        protected ?string $resource = TestPost::class;
+
+        protected ?int $defaultPerPage = 25;
+
+        public function columns(): array
+        {
+            return [TextColumn::make('title')];
+        }
+    };
+
+    expect($table->pagination()->defaultPerPage())->toBe(25)
+        ->and($table->pagination()->perPageOptions())->toBe([15, 25, 30, 50]);
+});
+
+it('resolves pagination when only perPageOptions is defined on table', function (): void {
+    config([
+        'zonvoir-table.pagination.default_per_page' => 20,
+        'zonvoir-table.pagination.per_page_options' => [10, 20, 30],
+    ]);
+
+    $table = new class () extends Table {
+        protected ?string $resource = TestPost::class;
+
+        protected ?array $perPageOptions = [20, 50, 100];
+
+        public function columns(): array
+        {
+            return [TextColumn::make('title')];
+        }
+    };
+
+    expect($table->pagination()->defaultPerPage())->toBe(20)
+        ->and($table->pagination()->perPageOptions())->toBe([20, 50, 100]);
+});
+
+it('falls back to defaults when config values are missing or null', function (): void {
+    config([
+        'zonvoir-table.pagination.default_per_page' => null,
+        'zonvoir-table.pagination.per_page_options' => null,
+    ]);
+
+    $table = new class () extends Table {
+        protected ?string $resource = TestPost::class;
+
+        public function columns(): array
+        {
+            return [TextColumn::make('title')];
+        }
+    };
+
+    expect($table->pagination()->defaultPerPage())->toBe(15)
+        ->and($table->pagination()->perPageOptions())->toBe([15, 30, 50, 100]);
+});

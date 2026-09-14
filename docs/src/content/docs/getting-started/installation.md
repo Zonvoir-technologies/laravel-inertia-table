@@ -100,10 +100,10 @@ And render it with the Vue adapter:
 
 ```vue
 <script setup lang="ts">
-import { ZonvoirTable } from '@zonvoir/inertia-table-vue';
+import { ZonvoirTable, type TableResource } from '@zonvoir/inertia-table-vue';
 
 defineProps<{
-  users: object;
+  users: TableResource;
 }>();
 </script>
 
