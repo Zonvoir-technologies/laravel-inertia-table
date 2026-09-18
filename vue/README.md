@@ -1,206 +1,73 @@
 # @zonvoir/inertia-table-vue
 
-Vue adapter package for Zonvoir Table.
+Vue 3 adapter package for [Zonvoir Table](https://zonvoir-table.com).
 
-## Install
+Zonvoir Table is an expressive Laravel and Inertia table system that tightly integrates backend query orchestration with frontend presentation. This package provides the Vue 3 component, headless composables, and styling utilities.
+
+- **Documentation**: [https://zonvoir-table.com](https://zonvoir-table.com)
+- **Laravel Companion Package**: [`zonvoir/laravel-inertia-table`](https://packagist.org/packages/zonvoir/laravel-inertia-table)
+
+---
+
+## Installation
+
+Install the companion Laravel package via Composer:
+
+```bash
+composer require zonvoir/laravel-inertia-table
+```
+
+Install the Vue adapter package via npm:
 
 ```bash
 npm install @zonvoir/inertia-table-vue
 ```
 
-## Development
+---
 
-```bash
-cd vue
-npm install
-npm run build
-npm run test
-npm run typecheck
-```
+## Tailwind CSS Setup
 
-## Exports
+Configure Tailwind CSS to scan the package so that all component utility classes are generated.
 
-- `ZonvoirTable`
-- `Table`
-- `useTable`
-- `useActions`
-- `normalizeTable`
-- `configureTable`
-- `TableApi`
-- `UseActionsApi`
-- `TableColumn`
-- `TableRow`
-- `TableResource`
+### Tailwind CSS 4
 
-
-## Headless Usage
-
-Build a custom layout by importing the composables directly. `useTable` owns normalized rows, columns, visibility, pagination, sorting, search, sticky columns, and loading state. `useActions` owns selected keys and action execution for custom list, card, or grid views.
-
-```vue
-<script setup lang="ts">
-import { useActions, useTable } from '@zonvoir/inertia-table-vue';
-
-const props = defineProps<{ users: Record<string, unknown> }>();
-
-const table = useTable(props.users);
-const actions = useActions(props.users);
-</script>
-
-<template>
-  <section>
-    <button type="button" @click="table.setSearch('active')">Search active</button>
-    <button type="button" @click="actions.toggleItem('*')">Toggle visible rows</button>
-
-    <article v-for="row in table.rows.value" :key="row.id">
-      <strong>{{ row.name }}</strong>
-    </article>
-  </section>
-</template>
-```
-
-Filters and exports are not part of the headless API yet because those systems are not implemented in the adapter.
-
-## Template Refs
-
-Attach a ref to the default table when you want the packaged UI but need to drive it from custom buttons, keyboard shortcuts, or sibling components.
-
-```vue
-<script setup lang="ts">
-import { ref } from 'vue';
-import { ZonvoirTable } from '@zonvoir/inertia-table-vue';
-
-const tableRef = ref<InstanceType<typeof ZonvoirTable>>();
-
-const showEmail = () => tableRef.value?.toggleColumn('email');
-const searchAda = () => tableRef.value?.setSearch('Ada');
-</script>
-
-<template>
-  <button type="button" @click="searchAda">Find Ada</button>
-  <button type="button" @click="showEmail">Toggle Email</button>
-  <ZonvoirTable ref="tableRef" :table="users" />
-</template>
-```
-
-The exposed API includes `state`, `rows`, `columns`, `visibleColumns`, `pagination`, `sorting`, `search`, `selectedItems`, `setSearch`, `setPerPage`, `setSort`, `toggleColumn`, `makeSticky`, `undoSticky`, `putState`, `toggleItem`, `clearSelection`, and `performAction`.
-
-## Styles
-Configure Tailwind to scan the package so it generates the utility classes used by the components.
-
-When installing from npm:
-
-For Tailwind CSS 4:
+Add the `@source` directive to your main stylesheet (e.g. `resources/css/app.css`):
 
 ```css
 @import "tailwindcss";
 
-@source "../../node_modules/@zonvoir/inertia-table-vue/dist/**/*.js";
+@source "../../node_modules/@zonvoir/inertia-table-vue/**/*.{js,vue}";
 ```
 
-For Tailwind CSS 3.4, add the package path to `content` in `tailwind.config.js`:
+### Tailwind CSS 3.4
+
+Add the package path to `content` in `tailwind.config.js`:
 
 ```js
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     './resources/**/*.{blade.php,js,ts,vue}',
-    './node_modules/@zonvoir/inertia-table-vue/dist/**/*.js',
+    './node_modules/@zonvoir/inertia-table-vue/**/*.{js,vue}',
   ],
 };
 ```
 
-When linking directly to the Laravel package repository:
+---
 
-For Tailwind CSS 4:
+## Basic Usage
 
-```css
-@source "../../vendor/zonvoir/laravel-inertia-table/vue/**/*.{js,vue}";
-```
+Render a fully interactive table with query synchronization, pagination, sorting, search, and selection with a single component.
 
-For Tailwind CSS 3.4:
-
-```js
-'./vendor/zonvoir/laravel-inertia-table/vue/**/*.{js,vue}',
-```
-
-### Dark mode
-
-The adapter uses Tailwind's `dark:` utilities. Enable class-based dark mode in the consuming application, then add the `dark` class to an ancestor of the table.
-
-For Tailwind CSS 4, add this to your CSS after importing Tailwind:
-
-```css
-@custom-variant dark (&:is(.dark *));
-```
-
-For Tailwind CSS 3.4, add this to `tailwind.config.js`:
-
-```js
-darkMode: 'class',
-```
-
-### Custom dynamic colors
-
-The `color` option can produce Tailwind class names dynamically. If you use a custom color such as `olive`, register it and explicitly generate its utilities. Add any additional color name to the Tailwind theme and to the matching `@source inline` list (v4) or `safelist` pattern (v3.4).
-
-For Tailwind CSS 4:
-
-```css
-@theme {
-  --color-olive-50: #f7f8ef;
-  --color-olive-100: #eef0dc;
-  --color-olive-200: #dde2ba;
-  --color-olive-300: #c5cc8e;
-  --color-olive-400: #abb463;
-  --color-olive-500: #8f9948;
-  --color-olive-600: #707a38;
-  --color-olive-700: #565e2e;
-  --color-olive-800: #474d2a;
-  --color-olive-900: #3d4227;
-}
-
-@source inline("{,hover:,focus-visible:,disabled:}{bg,border,text,ring}-{slate,gray,zinc,neutral,stone,red,orange,amber,yellow,lime,green,emerald,teal,cyan,sky,blue,indigo,violet,purple,fuchsia,pink,rose,olive}-{50,100,200,300,400,500,600,700,800,900}");
-```
-
-For Tailwind CSS 3.4:
-
-```js
-module.exports = {
-  theme: {
-    extend: {
-      colors: {
-        olive: {
-          50: '#f7f8ef',
-          100: '#eef0dc',
-          200: '#dde2ba',
-          300: '#c5cc8e',
-          400: '#abb463',
-          500: '#8f9948',
-          600: '#707a38',
-          700: '#565e2e',
-          800: '#474d2a',
-          900: '#3d4227',
-        },
-      },
-    },
-  },
-  safelist: [
-    {
-      pattern: /^(bg|border|text|ring)-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|olive)-(50|100|200|300|400|500|600|700|800|900)$/,
-      variants: ['hover', 'focus-visible', 'disabled'],
-    },
-  ],
-};
-```
-
-## Customization
-
-The Vue adapter ships behavior plus sensible defaults. Use it as-is, override specific presentation details, or replace major regions with slots while keeping sorting, pagination, search, selection, actions, and URL behavior from the package.
+### In your Inertia Vue Page
 
 ```vue
 <script setup lang="ts">
-import { ZonvoirTable } from '@zonvoir/inertia-table-vue';
+import { ZonvoirTable, type TableResource } from '@zonvoir/inertia-table-vue';
+
+defineProps<{
+  users: TableResource;
+}>();
 </script>
 
 <template>
@@ -208,7 +75,71 @@ import { ZonvoirTable } from '@zonvoir/inertia-table-vue';
 </template>
 ```
 
-Configure global defaults once during app setup. Individual values merge with the defaults, so you can override one label, icon, or class without redefining the full table UI.
+> **Note**: `Table` and `InertiaTable` are also exported as aliases for `ZonvoirTable`.
+
+---
+
+## Customization
+
+The Vue adapter ships with clean, accessible defaults. Use it as-is, customize presentation details, set global options, or override regions with slots.
+
+### Slots
+
+Slots allow you to replace or augment parts of the table while retaining built-in state, sorting, search, and pagination logic:
+
+```vue
+<template>
+  <ZonvoirTable :table="users">
+    <!-- Custom Toolbar -->
+    <template #toolbar="{ tableApi }">
+      <UserTableToolbar :table-api="tableApi" />
+    </template>
+
+    <!-- Custom Column Header -->
+    <template #header="{ column }">
+      <span class="font-bold uppercase tracking-wider">{{ column.label }}</span>
+    </template>
+
+    <!-- Custom Cell Rendering (scoped by column attribute) -->
+    <template #cell(email)="{ row }">
+      <a :href="`mailto:${row.email}`" class="text-indigo-600 hover:underline">
+        {{ row.email }}
+      </a>
+    </template>
+
+    <!-- Custom Empty State -->
+    <template #emptyState>
+      <div class="py-12 text-center text-gray-500">
+        No matching users found.
+      </div>
+    </template>
+  </ZonvoirTable>
+</template>
+```
+
+Supported slots:
+- `toolbar`, `beforeSearch`, `afterSearch`, `column-toggle`, `actions`
+- `header`, `table`, `thead`, `tbody`, `row`, `cell(attribute)`
+- `emptyState`, `loadingState`, `pagination`
+
+### Per-Table Configuration (`config` prop)
+
+Pass a `config` object to an individual table to customize labels, classes, icons, or dark mode:
+
+```vue
+<ZonvoirTable
+  :table="users"
+  :config="{
+    labels: { rowsPerPage: 'Rows' },
+    classes: { root: 'embedded-table shadow-sm' },
+    darkMode: true,
+  }"
+/>
+```
+
+### Global Configuration (`configureTable`)
+
+Configure application-wide defaults once during app initialization (e.g. in `app.ts`):
 
 ```ts
 import { configureTable } from '@zonvoir/inertia-table-vue';
@@ -220,8 +151,8 @@ configureTable({
     actions: 'app:more',
   },
   labels: {
-    search: 'Find users',
-    noResults: 'No users match this view.',
+    search: 'Find records...',
+    noResults: 'No records match this view.',
     selectedRows: (count) => `${count} selected`,
   },
   classes: {
@@ -234,42 +165,146 @@ configureTable({
 });
 ```
 
-Use the `config` prop for one table when local presentation should win over global configuration.
+### Dark Mode
 
-```vue
-<ZonvoirTable
-  :table="users"
-  :config="{
-    labels: { rowsPerPage: 'Rows' },
-    classes: { root: 'embedded-table' },
-    darkMode: true,
-  }"
-/>
+The adapter uses Tailwind's `dark:` utilities.
+
+- **Tailwind CSS 4**: Add `@custom-variant dark (&:is(.dark *));` to your CSS.
+- **Tailwind CSS 3.4**: Add `darkMode: 'class'` to your `tailwind.config.js`.
+
+Then add the `dark` class to an ancestor element of the table (or set `darkMode: true` in your table configuration).
+
+### Custom Dynamic Colors
+
+If you use custom theme colors for badges, buttons, or highlights, ensure Tailwind includes those dynamic utility classes:
+
+**Tailwind CSS 4:**
+```css
+@theme {
+  --color-olive-500: #8f9948;
+  --color-olive-600: #707a38;
+}
+
+@source inline("{,hover:,focus-visible:,disabled:}{bg,border,text,ring}-{olive}-{50,100,200,300,400,500,600,700,800,900}");
 ```
 
-Slots take precedence over configured defaults. Existing slots such as `toolbar`, `beforeSearch`, `afterSearch`, `column-toggle`, `actions`, `table`, `thead`, `tbody`, `emptyState`, `pagination`, and `cell(attribute)` remain supported. Additional presentation slots include `header`, `row`, and `loadingState`.
-
-```vue
-<ZonvoirTable :table="users">
-  <template #toolbar="{ tableApi }">
-    <UserTableToolbar :table-api="tableApi" />
-  </template>
-
-  <template #header="{ column }">
-    <span class="tracking-wide uppercase">{{ column.label }}</span>
-  </template>
-
-  <template #cell(email)="{ row }">
-    <a :href="`mailto:${row.email}`">{{ row.email }}</a>
-  </template>
-
-  <template #emptyState>
-    <tbody><tr><td>No matching users.</td></tr></tbody>
-  </template>
-</ZonvoirTable>
+**Tailwind CSS 3.4:**
+Add the pattern to `safelist` in `tailwind.config.js`:
+```js
+module.exports = {
+  safelist: [
+    {
+      pattern: /^(bg|border|text|ring)-(olive)-(50|100|200|300|400|500|600|700|800|900)$/,
+      variants: ['hover', 'focus-visible', 'disabled'],
+    },
+  ],
+};
 ```
 
-For a completely custom visual design, replace larger regions such as `toolbar`, `thead`, `tbody`, or `pagination` and call the exposed `tableApi` methods from your own controls. The package still owns normalized table state and behavior; the consuming application owns visual identity.
+---
+
+## Advanced Usage
+
+### Template Refs
+
+Attach a `ref` to the table component to trigger actions from external buttons, keyboard shortcuts, or sibling components:
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { ZonvoirTable } from '@zonvoir/inertia-table-vue';
+
+const tableRef = ref<InstanceType<typeof ZonvoirTable>>();
+
+const searchAda = () => tableRef.value?.setSearch('Ada');
+const showEmail = () => tableRef.value?.toggleColumn('email');
+</script>
+
+<template>
+  <div class="flex gap-2 mb-4">
+    <button type="button" @click="searchAda">Find Ada</button>
+    <button type="button" @click="showEmail">Toggle Email</button>
+  </div>
+
+  <ZonvoirTable ref="tableRef" :table="users" />
+</template>
+```
+
+Exposed methods and properties on `tableRef.value`:
+`state`, `rows`, `columns`, `visibleColumns`, `pagination`, `sorting`, `search`, `selectedItems`, `setSearch`, `setPerPage`, `setSort`, `toggleColumn`, `makeSticky`, `undoSticky`, `putState`, `toggleItem`, `clearSelection`, `performAction`.
+
+### Headless Usage (`useTable`, `useActions`)
+
+For completely custom layouts (cards, grids, or mobile lists), you can consume the reactive composables directly without using the packaged table template:
+
+```vue
+<script setup lang="ts">
+import { useActions, useTable, type TableResource } from '@zonvoir/inertia-table-vue';
+
+const props = defineProps<{ users: TableResource }>();
+
+const table = useTable(props.users);
+const actions = useActions(props.users);
+</script>
+
+<template>
+  <section>
+    <input
+      :value="table.search.value"
+      placeholder="Search..."
+      @input="e => table.setSearch((e.target as HTMLInputElement).value)"
+    />
+
+    <button type="button" @click="actions.toggleItem('*')">
+      Toggle all rows
+    </button>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+      <article v-for="row in table.rows.value" :key="row.id" class="p-4 border rounded shadow-sm">
+        <strong>{{ row.name }}</strong>
+        <p>{{ row.email }}</p>
+      </article>
+    </div>
+  </section>
+</template>
+```
+
+---
+
+## Exports Reference
+
+### Components
+- `ZonvoirTable` (main table component)
+- `Table` (alias for `ZonvoirTable`)
+- `InertiaTable` (alias for `ZonvoirTable`)
+
+### Composables & Helpers
+- `useTable` (reactive table state, pagination, sorting, search)
+- `useActions` (row selection and action dispatch)
+- `normalizeTable` (payload normalization helper)
+- `configureTable` (global table configuration)
+- `visitUrl` (Inertia visit wrapper)
+
+### TypeScript Types
+- `TableResource`
+- `TableDefinition`
+- `TableColumn`
+- `TableRow`
+- `TableApi`
+- `UseActionsApi`
+- `TableConfiguration`
+- `TableClasses`
+- `TableLabels`
+- `TableIcons`
+
+---
+
+## Documentation
+
+Comprehensive documentation, interactive examples, and API guides are available at:
+[https://zonvoir-table.com](https://zonvoir-table.com)
+
+---
 
 ## License
 
