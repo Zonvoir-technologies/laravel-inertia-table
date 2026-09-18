@@ -300,7 +300,10 @@ const visitResolvedUrl = (value: TableUrlValue | undefined, event: MouseEvent): 
     return;
   }
 
-  visitUrl(link.url);
+  visitUrl(link.url, {
+    preserveScroll: link.preserveScroll ?? false,
+    preserveState: link.preserveState ?? false
+  });
 };
 
 const handleRowClick = (row: T, column: TableColumn | null, event: MouseEvent): void => {

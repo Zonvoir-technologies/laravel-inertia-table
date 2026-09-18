@@ -58,8 +58,8 @@ describe('Table Interactions', () => {
     await link.trigger('click');
 
     expect(router.visit).toHaveBeenCalledWith('/users/1/edit', expect.objectContaining({
-      preserveScroll: true,
-      preserveState: true
+      preserveScroll: false,
+      preserveState: false
     }));
     expect(wrapper.emitted('cell-click')?.[0]?.[0]).toMatchObject({
       row: { id: 1, name: 'Ada' },
@@ -111,8 +111,58 @@ describe('Table Interactions', () => {
     await wrapper.find('tbody td[data-column="name"]').trigger('click');
 
     expect(router.visit).toHaveBeenCalledWith('/users/1/edit', expect.objectContaining({
-      preserveScroll: true,
-      preserveState: true
+      preserveScroll: false,
+      preserveState: false
+    }));
+  });
+
+  it.each([
+    { flags: {}, preserveScroll: false, preserveState: false },
+    { flags: { preserveScroll: true }, preserveScroll: true, preserveState: false },
+    { flags: { preserveState: true }, preserveScroll: false, preserveState: true },
+    { flags: { preserveScroll: true, preserveState: true }, preserveScroll: true, preserveState: true },
+    { flags: { preserveScroll: false, preserveState: false }, preserveScroll: false, preserveState: false }
+  ])('honors backend row URL flags: $flags', async ({ flags, preserveScroll, preserveState }) => {
+    const wrapper = mount(Table, {
+      props: {
+        table: {
+          name: 'Users',
+          columns: [{ attribute: 'name', label: 'Name' }],
+          rows: [{ id: 1, name: 'Ada', _url: { url: '/users/1/edit', target: null, ...flags } }]
+        }
+      }
+    });
+
+    await wrapper.find('tbody td[data-column="name"]').trigger('click');
+
+    expect(router.visit).toHaveBeenCalledWith('/users/1/edit', expect.objectContaining({
+      preserveScroll,
+      preserveState
+    }));
+  });
+
+  it.each([
+    { flags: {}, preserveScroll: false, preserveState: false },
+    { flags: { preserveScroll: true }, preserveScroll: true, preserveState: false },
+    { flags: { preserveState: true }, preserveScroll: false, preserveState: true },
+    { flags: { preserveScroll: true, preserveState: true }, preserveScroll: true, preserveState: true },
+    { flags: { preserveScroll: false, preserveState: false }, preserveScroll: false, preserveState: false }
+  ])('honors backend column URL flags: $flags', async ({ flags, preserveScroll, preserveState }) => {
+    const wrapper = mount(Table, {
+      props: {
+        table: {
+          name: 'Users',
+          columns: [{ attribute: 'name', label: 'Name' }],
+          rows: [{ id: 1, name: 'Ada', _column_urls: { name: { url: '/users/1/edit', target: null, ...flags } } }]
+        }
+      }
+    });
+
+    await wrapper.find('tbody td[data-column="name"] a').trigger('click');
+
+    expect(router.visit).toHaveBeenCalledWith('/users/1/edit', expect.objectContaining({
+      preserveScroll,
+      preserveState
     }));
   });
 

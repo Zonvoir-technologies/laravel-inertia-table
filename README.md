@@ -10,6 +10,52 @@ Inertia.js 2.x or 3.x
 Vue 3.4+
 Tailwind CSS 3.4+ or 4.0+
 
+## Installation
+
+### Standard Installation
+
+Install the Laravel backend package via Composer:
+
+```bash
+composer require zonvoir/laravel-inertia-table
+```
+
+Install the Vue adapter package via npm:
+
+```bash
+npm install @zonvoir/inertia-table-vue
+```
+
+> **Architecture Note**: Zonvoir Table decouples backend table querying and hydration (`zonvoir/laravel-inertia-table`) from frontend presentation adapters (`@zonvoir/inertia-table-vue`). React and Svelte adapters will be available in future releases. Both packages are version-synchronized.
+
+Import it in your app:
+
+```ts
+import { ZonvoirTable } from '@zonvoir/inertia-table-vue';
+```
+
+Configure Tailwind to scan the package so it generates the utility classes used by the components.
+
+For Tailwind CSS 4:
+
+```css
+@import "tailwindcss";
+
+@source "../../node_modules/@zonvoir/inertia-table-vue/**/*.{js,vue}";
+```
+
+For Tailwind CSS 3.4, add the package path to `content` in `tailwind.config.js`:
+
+```js
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    './resources/**/*.{blade.php,js,ts,vue}',
+    './node_modules/@zonvoir/inertia-table-vue/**/*.{js,vue}',
+  ],
+};
+```
+
 ## Backend Table Definition
 
 ```php
@@ -233,52 +279,6 @@ Example payload:
     },
     "inDefaultState": true
 }
-```
-
-## Installation
-
-### Standard Installation
-
-Install the Laravel backend package via Composer:
-
-```bash
-composer require zonvoir/laravel-inertia-table
-```
-
-Install the Vue adapter package via npm:
-
-```bash
-npm install @zonvoir/inertia-table-vue
-```
-
-> **Architecture Note**: Zonvoir Table decouples backend table querying and hydration (`zonvoir/laravel-inertia-table`) from frontend presentation adapters (`@zonvoir/inertia-table-vue`). React and Svelte adapters will be available in future releases. Both packages are version-synchronized.
-
-Import it in your app:
-
-```ts
-import { ZonvoirTable } from '@zonvoir/inertia-table-vue';
-```
-
-Configure Tailwind to scan the package so it generates the utility classes used by the components.
-
-For Tailwind CSS 4:
-
-```css
-@import "tailwindcss";
-
-@source "../../node_modules/@zonvoir/inertia-table-vue/**/*.{js,vue}";
-```
-
-For Tailwind CSS 3.4, add the package path to `content` in `tailwind.config.js`:
-
-```js
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: [
-    './resources/**/*.{blade.php,js,ts,vue}',
-    './node_modules/@zonvoir/inertia-table-vue/**/*.{js,vue}',
-  ],
-};
 ```
 
 ### Dark mode

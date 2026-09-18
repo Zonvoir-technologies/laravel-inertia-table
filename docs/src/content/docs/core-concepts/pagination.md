@@ -18,12 +18,7 @@ class UsersTable extends Table
 {
     protected PaginationType $paginationType = PaginationType::Standard;
 
-    protected ?array $perPageOptions = [
-        15,
-        30,
-        50,
-        100,
-    ];
+    protected ?array $perPageOptions = [15, 30, 50, 100];
 
     protected ?int $defaultPerPage = 30;
 }
@@ -57,15 +52,15 @@ This is the default and is usually the best choice for general-purpose tables.
 
 It provides information such as:
 
-- Current page
-- Last page
-- Total records
-- Previous and next pages
+- First and last page
+- Previous and next page
+- Current page number (X in `Page X of Y`)
+- Total number of pages (Y in `Page X of Y`)
 
 Example navigation:
 
 ```text
-Previous  1  2  3  4  5  Next
+Page X of Y First Previous Next Last
 ```
 
 ## Simple pagination
@@ -116,12 +111,7 @@ Cursor pagination works best when the query has a stable and deterministic order
 Use `$perPageOptions` to control the values available in the rows-per-page selector.
 
 ```php
-protected ?array $perPageOptions = [
-    10,
-    25,
-    50,
-    100,
-];
+protected ?array $perPageOptions = [ 10, 25, 50, 100 ];
 ```
 
 Users can select one of these values from the table controls.
@@ -192,12 +182,7 @@ class UsersTable extends Table
 {
     protected PaginationType $paginationType = PaginationType::Standard;
 
-    protected ?array $perPageOptions = [
-        10,
-        25,
-        50,
-        100,
-    ];
+    protected ?array $perPageOptions = [ 10, 25, 50, 100 ];
 
     protected ?int $defaultPerPage = 25;
 }
@@ -206,15 +191,11 @@ class UsersTable extends Table
 For a larger dataset, you might prefer:
 
 ```php
-final class ActivityTable extends Table
+class ActivityTable extends Table
 {
     protected PaginationType $paginationType = PaginationType::Cursor;
 
-    protected ?array $perPageOptions = [
-        25,
-        50,
-        100,
-    ];
+    protected ?array $perPageOptions = [ 25, 50, 100 ];
 
     protected ?int $defaultPerPage = 50;
 }
