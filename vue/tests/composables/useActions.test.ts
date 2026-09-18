@@ -90,7 +90,7 @@ describe('useActions remaining branches', () => {
     actions.performAction({ key: 'show', label: 'Show', type: 'link', url: { url: '/users/a' } });
     actions.performAction({ key: 'edit', label: 'Edit', type: 'link', url: { url: '/users/a/edit', method: 'put', preserveScroll: false, preserveState: true } });
 
-    expect(router.visit).toHaveBeenNthCalledWith(1, '/users/a', { method: 'get', preserveScroll: undefined, preserveState: undefined });
+    expect(router.visit).toHaveBeenNthCalledWith(1, '/users/a', { method: 'get', preserveScroll: false, preserveState: false });
     expect(router.visit).toHaveBeenNthCalledWith(2, '/users/a/edit', { method: 'put', preserveScroll: false, preserveState: true });
   });
 

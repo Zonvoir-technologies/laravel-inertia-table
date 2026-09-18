@@ -41,14 +41,7 @@ use Zonvoir\InertiaTable\Table;
 
 class UsersTable extends Table
 {
-    // Configure as class property default
     protected PaginationType $paginationType = PaginationType::Standard;
-
-    public function configure(): void
-    {
-        // Or set fluently in configure()
-        $this->paginationType(PaginationType::Cursor);
-    }
 }
 ```
 
@@ -111,12 +104,6 @@ use Zonvoir\InertiaTable\Table;
 class InvoicesTable extends Table
 {
     protected ?string $defaultSort = '-created_at';
-
-    public function configure(): void
-    {
-        // Fluent configuration with typed Direction
-        $this->defaultSort('created_at', Direction::DESCENDING);
-    }
 }
 ```
 
@@ -156,7 +143,7 @@ public function actions(): array
         Action::make('publish')
             ->label('Publish')
             ->variant(ButtonVariant::Solid)
-            ->color(TableColor::Primary),
+            ->variantColor(TableColor::Primary),
     ];
 }
 ```
@@ -186,9 +173,9 @@ BadgeColumn::make('order_status')
     ->label('Status')
     ->variant(BadgeVariant::Ghost)
     ->colors([
-        TableColor::Success => 'completed',
-        TableColor::Warning => 'pending',
-        TableColor::Danger => 'canceled',
+        'completed' => TableColor::Success,
+        'pending' => TableColor::Warning,
+        'canceled' => TableColor::Danger,
     ]);
 ```
 
@@ -231,15 +218,15 @@ use Zonvoir\InertiaTable\Enums\TableColor;
 // Styling actions with semantic colors
 Action::make('delete')
     ->label('Delete')
-    ->color(TableColor::Destructive)
+    ->variantColor(TableColor::Destructive)
     ->confirm('Are you sure you want to delete this record?');
 
 // Mapping badge colors
 BadgeColumn::make('role')
     ->colors([
-        TableColor::Purple => 'admin',
-        TableColor::Indigo => 'editor',
-        TableColor::Gray => 'subscriber',
+        'admin' => TableColor::Primary,
+        'editor' => TableColor::Indigo,
+        'subscriber' => TableColor::Gray,
     ]);
 ```
 
@@ -265,10 +252,9 @@ BadgeColumn::make('role')
 use Zonvoir\InertiaTable\Action;
 use Zonvoir\InertiaTable\Enums\HttpMethod;
 
+
 Action::make('archive')
-    ->label('Archive')
-    ->url(fn ($row) => route('users.archive', $row))
-    ->method(HttpMethod::PATCH);
+    ->url(fn ($row) => (new Url())->route('users.archive', $row)->method(HttpMethod::PATCH));
 ```
 
 ---
@@ -302,7 +288,7 @@ use Zonvoir\InertiaTable\Enums\ImageSize;
 
 ImageColumn::make('avatar')
     ->label('Avatar')
-    ->size(ImageSize::Large);
+    ->image('avatar', fn (Image $image) => $image->size(ImageSize::Large));
 ```
 
 ---
@@ -325,6 +311,9 @@ use Zonvoir\InertiaTable\Columns\TextColumn;
 use Zonvoir\InertiaTable\Enums\ImagePosition;
 
 TextColumn::make('author')
-    ->image(fn ($row) => $row->avatar_url)
-    ->imagePosition(ImagePosition::Start);
+    ->image(fn (User $user, Image $image) => $image
+        ->url($user->avatar_url)
+        ->rounded()
+        ->position(ImagePosition::End)
+    );
 ```

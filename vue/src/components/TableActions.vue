@@ -82,8 +82,8 @@ const performAction = (action: TableAction): void => {
 
     visitUrl(action.url.url, {
       method: action.url.method ?? 'get',
-      preserveScroll: action.url.preserveScroll,
-      preserveState: action.url.preserveState
+      preserveScroll: action.url.preserveScroll ?? false,
+      preserveState: action.url.preserveState ?? false
     });
     return;
   }

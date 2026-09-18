@@ -110,7 +110,10 @@ const handleLinkClick = (event: MouseEvent): void => {
   }
 
   event.preventDefault();
-  visitUrl(link.url);
+  visitUrl(link.url, {
+    preserveScroll: link.preserveScroll ?? false,
+    preserveState: link.preserveState ?? false
+  });
 };
 
 const cellClasses: ComputedRef<string> = computed((): string =>

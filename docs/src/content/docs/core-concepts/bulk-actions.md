@@ -16,9 +16,7 @@ use Zonvoir\InertiaTable\Action;
 
 Action::make('Archive selected')
     ->asBulkAction()
-    ->handle(
-        fn ($records) => $records->each->archive()
-    );
+    ->handle(fn (User $user) => $user->archive());
 ```
 
 When rows are selected, the action becomes available from the table's bulk action area.
@@ -33,9 +31,7 @@ The handler receives the selected records.
 Action::make('Archive')
     ->icon('mdi:archive')
     ->asBulkAction()
-    ->handle(
-        fn ($records) => $records->each->archive()
-    );
+    ->handle(fn (User $user) => $user->archive());
 ```
 
 Use this when the same operation should be available for both an individual record and multiple selected records.
@@ -49,9 +45,7 @@ Action::make('Delete selected')
     ->onlyAsBulkAction()
     ->asDangerButton()
     ->confirm('Delete selected records?')
-    ->handle(
-        fn ($records) => $records->each->delete()
-    );
+    ->handle(fn (User $user) => $user->delete());
 ```
 
 The action will not appear as an individual row action.
@@ -70,9 +64,7 @@ For example, an archive operation might be useful both individually and in bulk:
 ```php
 Action::make('Archive')
     ->asBulkAction()
-    ->handle(
-        fn ($records) => $records->each->archive()
-    );
+    ->handle(fn (User $user) => $user->archive());
 ```
 
 While an operation specifically designed around a selection can remain bulk-only:
@@ -80,9 +72,7 @@ While an operation specifically designed around a selection can remain bulk-only
 ```php
 Action::make('Delete selected')
     ->onlyAsBulkAction()
-    ->handle(
-        fn ($records) => $records->each->delete()
-    );
+    ->handle(fn (User $user) => $user->delete());
 ```
 
 ## Confirmation
@@ -97,9 +87,7 @@ Action::make('Delete selected')
         'Delete selected records?',
         'This action cannot be undone.'
     )
-    ->handle(
-        fn ($records) => $records->each->delete()
-    );
+    ->handle(fn (User $user) => $user->delete());
 ```
 
 The frontend adapter displays the confirmation before the action is submitted.
@@ -113,9 +101,7 @@ Specify the strategy when configuring the bulk action:
 ```php
 Action::make('Delete selected')
     ->onlyAsBulkAction(strategy: 'chunk')
-    ->handle(
-        fn ($records) => $records->each->delete()
-    );
+    ->handle(fn (User $user) => $user->delete());
 ```
 
 Supported strategies are:
@@ -136,9 +122,7 @@ For most bulk actions, `chunkById` is the recommended strategy.
 ```php
 Action::make('Archive selected')
     ->onlyAsBulkAction(strategy: 'chunkById')
-    ->handle(
-        fn ($records) => $records->each->archive()
-    );
+    ->handle(fn (User $user) => $user->archive());
 ```
 
 Processing records in chunks avoids loading a large selection into memory at once.
@@ -150,9 +134,7 @@ Use the `chunk` strategy when standard query chunking is more appropriate for yo
 ```php
 Action::make('Archive selected')
     ->onlyAsBulkAction(strategy: 'chunk')
-    ->handle(
-        fn ($records) => $records->each->archive()
-    );
+    ->handle(fn (User $user) => $user->archive());
 ```
 
 ## Complete example
@@ -177,9 +159,7 @@ public function actions(): array
                 'Archive selected records?',
                 'You can restore them later.'
             )
-            ->handle(
-                fn ($records) => $records->each->archive()
-            ),
+            ->handle(fn (User $user) => $user->archive()),
 
         Action::make('Delete selected')
             ->icon('lucide:trash-2')
@@ -189,9 +169,7 @@ public function actions(): array
                 'Delete selected records?',
                 'This action cannot be undone.'
             )
-            ->handle(
-                fn ($records) => $records->each->delete()
-            ),
+            ->handle(fn (User $user) => $user->delete()),
     ];
 }
 ```

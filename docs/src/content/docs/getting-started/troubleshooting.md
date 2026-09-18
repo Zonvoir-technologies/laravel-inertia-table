@@ -133,4 +133,3 @@ The footer still displays "Page 3 of 10" while the payload only contains 2 recor
 ```text
 // Paste any console errors, network response errors, or Laravel log traces here
 ```
-```

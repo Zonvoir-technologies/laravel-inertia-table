@@ -164,10 +164,12 @@ Export::make('Audit Log')
 
 // Redirect to a specific route
 Export::make('Orders')
+    ->queue()
     ->redirectToRoute('reports.index', ['status' => 'pending']);
 
 // Custom URL or redirect callback
 Export::make('Invoices')
+    ->queue()
     ->redirect('/dashboard');
 ```
 
