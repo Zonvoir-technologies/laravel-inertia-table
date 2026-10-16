@@ -79,9 +79,9 @@ const tableDefinition: ComputedRef<TableDefinition<T>> = computed((): TableDefin
   isTableDefinition(props.table) ? props.table : normalizeTable<T>(props.table ?? {})
 );
 provideTableContext(tableDefinition);
-const handleCustomAction = (action: TableAction, keys: TableRowKey[], onFinish: () => void): void => {
+const handleCustomAction = (action: TableAction, keys: TableRowKey[], onFinish: () => void, hasChildListener = false): void => {
   emit('custom-action', action, keys, onFinish);
-  if (!(instance?.vnode.props?.onCustomAction || instance?.vnode.props?.onCustomActionOnce)) onFinish();
+  if (!hasChildListener && !(instance?.vnode.props?.onCustomAction || instance?.vnode.props?.onCustomActionOnce)) onFinish();
 };
 provideCustomActionHandler(handleCustomAction);
 

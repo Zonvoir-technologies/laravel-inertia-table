@@ -11,7 +11,9 @@ export const provideTableContext = <T extends TableRow>(table: ComputedRef<Table
 };
 
 export const useTableContext = (): TableContext | null => inject(tableContextKey, null);
-const customActionKey: InjectionKey<CustomActionHandler> = Symbol('ZonvoirCustomAction');
+type NestedCustomActionHandler = (...args: [...Parameters<CustomActionHandler>, hasChildListener?: boolean]) => void;
 
-export const provideCustomActionHandler = (handler: CustomActionHandler): void => provide(customActionKey, handler);
-export const useCustomActionHandler = (): CustomActionHandler | null => inject(customActionKey, null);
+const customActionKey: InjectionKey<NestedCustomActionHandler> = Symbol('ZonvoirCustomAction');
+
+export const provideCustomActionHandler = (handler: NestedCustomActionHandler): void => provide(customActionKey, handler);
+export const useCustomActionHandler = (): NestedCustomActionHandler | null => inject(customActionKey, null);

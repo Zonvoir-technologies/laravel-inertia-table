@@ -87,14 +87,12 @@ const performAction = (action: TableAction): void => {
       keys,
       loadingAction,
       (action, keys, onFinish) => {
+        const hasChildListener = Boolean(instance?.vnode.props?.onCustomAction || instance?.vnode.props?.onCustomActionOnce);
         emit('custom-action', action, keys, onFinish);
 
         if (customActionHandler) {
-          customActionHandler(action, keys, onFinish);
-        } else if (
-          !instance?.vnode.props?.onCustomAction &&
-          !instance?.vnode.props?.onCustomActionOnce
-        ) {
+          customActionHandler(action, keys, onFinish, hasChildListener);
+        } else if (!hasChildListener) {
           onFinish();
         }
       },
