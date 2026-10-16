@@ -1,4 +1,5 @@
 import { inject, provide, type ComputedRef, type InjectionKey } from 'vue';
+import type { CustomActionHandler } from './useActions';
 import type { TableDefinition, TableRow } from '../types/table';
 
 type TableContext = ComputedRef<TableDefinition>;
@@ -10,3 +11,7 @@ export const provideTableContext = <T extends TableRow>(table: ComputedRef<Table
 };
 
 export const useTableContext = (): TableContext | null => inject(tableContextKey, null);
+const customActionKey: InjectionKey<CustomActionHandler> = Symbol('ZonvoirCustomAction');
+
+export const provideCustomActionHandler = (handler: CustomActionHandler): void => provide(customActionKey, handler);
+export const useCustomActionHandler = (): CustomActionHandler | null => inject(customActionKey, null);

@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, type ComputedRef, type Ref } from 'vue';
+import { computed, getCurrentInstance, ref, type ComputedRef, type Ref } from 'vue';
+import { performCustomAction } from '../composables/useActions';
+import { useCustomActionHandler } from '../composables/useTableContext';
 import { router } from '@inertiajs/vue3';
 import type { TableAction, TableMetaValue, TableDefinition, TableRow, TableRowKey } from '../types/table';
 import { visitUrl } from '../helpers/visitUrl';
@@ -31,8 +33,12 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
+  'custom-action': [action: TableAction, keys: TableRowKey[], onFinish: () => void];
   executed: [payload: ActionExecutionPayload];
 }>();
+
+const instance = getCurrentInstance();
+const customActionHandler = useCustomActionHandler();
 
 const loadingAction: Ref<string | null> = ref(null);
 const actionConfirmDialog: Ref<InstanceType<typeof TableActionConfirmDialog> | null> = ref(null);
@@ -72,7 +78,29 @@ const performAction = (action: TableAction): void => {
   }
 
   if (!action.endpoint || action.type === 'custom') {
-    emit('executed', { action });
+    const keys = props.row
+      ? [keyForRow()].filter((key): key is TableRowKey => key !== null)
+      : props.selectedKeys;
+
+    performCustomAction(
+      action,
+      keys,
+      loadingAction,
+      (action, keys, onFinish) => {
+        emit('custom-action', action, keys, onFinish);
+
+        if (customActionHandler) {
+          customActionHandler(action, keys, onFinish);
+        } else if (
+          !instance?.vnode.props?.onCustomAction &&
+          !instance?.vnode.props?.onCustomActionOnce
+        ) {
+          onFinish();
+        }
+      },
+      (payload) => emit('executed', payload),
+    );
+
     return;
   }
 

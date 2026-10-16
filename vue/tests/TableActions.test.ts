@@ -9,6 +9,26 @@ import { installTableTestHooks, makeTableDefinition } from './tableTestUtils';
 installTableTestHooks();
 
 describe('Table Actions', () => {
+  it('forwards custom row actions with keys and keeps loading until finished', async () => {
+    const onCustomAction = vi.fn();
+    const action = { key: 'preview', label: 'Preview', type: 'custom' as const, meta: { using: 'previewer' } };
+    const wrapper = mount(Table, { props: { onCustomAction, selectable: false, table: {
+      rowSelectionKey: 'uuid', columns: [{ attribute: 'actions', label: 'Actions', type: 'action' }],
+      rows: [{ uuid: 'user-a', _actions: [action] }]
+    } } });
+    const button = wrapper.get('tbody td[data-column="actions"] button');
+    await button.trigger('click');
+    expect(onCustomAction).toHaveBeenCalledWith(expect.objectContaining(action), ['user-a'], expect.any(Function));
+    expect(button.attributes('disabled')).toBeDefined();
+    expect(router.visit).not.toHaveBeenCalled();
+    const finish = onCustomAction.mock.calls[0][2];
+    finish();
+    finish();
+    await nextTick();
+    expect(button.attributes('disabled')).toBeUndefined();
+    expect(wrapper.findComponent(TableActions).emitted('executed')).toHaveLength(1);
+  });
+
   it('renders icon-only row action buttons while preserving action labels for accessibility', () => {
     const wrapper = mount(Table, {
       props: {

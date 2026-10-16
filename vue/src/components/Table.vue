@@ -2,7 +2,7 @@
 import { computed, getCurrentInstance, nextTick, onBeforeUnmount, onMounted, ref, useSlots, watch, type ComponentInternalInstance, type ComputedRef, type Ref, type Slots } from 'vue';
 import { useTable, type TableApi } from '../composables/useTable';
 import { useActions, type UseActionsApi } from '../composables/useActions';
-import { provideTableContext } from '../composables/useTableContext';
+import { provideTableContext, provideCustomActionHandler } from '../composables/useTableContext';
 import { normalizeTable } from '../helpers/normalizeTable';
 import { visitUrl } from '../helpers/visitUrl';
 import type { TableAction, TableCellValue, TableColumn, TableDefinition, TableExport, TableEmptyState, TableErrorState as TableErrorStateConfig, TableMetaValue, TablePagination, TableResource, TableRow, TableRowKey, TableSorting, TableUrl, TableUrlValue } from '../types/table';
@@ -50,6 +50,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
+  'custom-action': [action: TableAction, keys: TableRowKey[], onFinish: () => void];
   'row-click': [row: T, column: TableColumn | null, event: MouseEvent];
   'cell-click': [payload: CellClickPayload<T>];
   'search-change': [value: string];
@@ -78,6 +79,11 @@ const tableDefinition: ComputedRef<TableDefinition<T>> = computed((): TableDefin
   isTableDefinition(props.table) ? props.table : normalizeTable<T>(props.table ?? {})
 );
 provideTableContext(tableDefinition);
+const handleCustomAction = (action: TableAction, keys: TableRowKey[], onFinish: () => void): void => {
+  emit('custom-action', action, keys, onFinish);
+  if (!(instance?.vnode.props?.onCustomAction || instance?.vnode.props?.onCustomActionOnce)) onFinish();
+};
+provideCustomActionHandler(handleCustomAction);
 
 const tableApi: TableApi<T> = useTable<T>(tableDefinition);
 const tableElement: Ref<HTMLTableElement | null> = ref(null);
@@ -135,6 +141,7 @@ const selectedRowKeys: ComputedRef<TableRowKey[]> = computed((): TableRowKey[] =
 const bulkActions: ComputedRef<TableAction[]> = computed((): TableAction[] => tableDefinition.value.actions.filter((action: TableAction): boolean => Boolean(action.bulk) && !action.hidden));
 const exportActions: ComputedRef<TableExport[]> = computed((): TableExport[] => tableDefinition.value.exports.filter((exportAction: TableExport): boolean => !exportAction.hidden));
 const actionsApi: UseActionsApi = useActions<T>(tableDefinition, {
+  onCustomAction: handleCustomAction,
   selectedKeys: selectedRowKeys,
   selectionMode
 });

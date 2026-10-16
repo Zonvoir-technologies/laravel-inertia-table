@@ -134,7 +134,40 @@ Action::make('Preview')
     ->icon('heroicons:eye');
 ```
 
-Custom actions can be handled by the frontend when you need application-specific behavior that does not map directly to navigation or a backend operation.
+Listen for `custom-action` on the table. The handler receives the action, an array of row keys, and an `onFinish` callback. Call `onFinish()` to clear the loading state, including when your operation fails.
+
+```php
+Action::make('Activate', key: 'activate_user')
+    ->meta(['using' => 'customActivator']);
+
+// The fluent identifier method is also supported:
+Action::make('Delete')->key('delete_user');
+```
+
+```vue
+<script setup>
+import { Table } from '@zonvoir/inertia-table-vue';
+
+async function handleCustomAction(action, keys, onFinish) {
+    try {
+        if (action.key === 'activate_user') {
+            // Perform your frontend operation using keys.
+            // Additional metadata is available as action.meta.using.
+        }
+    } finally {
+        onFinish();
+    }
+}
+</script>
+
+<template>
+    <Table :table="users" @custom-action="handleCustomAction" />
+</template>
+```
+
+This event works for row and bulk actions. Row actions receive the row key; bulk actions receive the selected keys. Selecting all matching records does not fetch off-page keys for a custom action. Actions with confirmation dialogs dispatch only after confirmation. With no listener, the action finishes immediately.
+
+For a custom table built with `useActions`, pass the same handler as `useActions(table, { onCustomAction: handleCustomAction })`. Identifiers use `key` / `action.key`, rather than `id`.
 
 ## Action types
 
