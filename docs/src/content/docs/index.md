@@ -71,7 +71,7 @@ hero:
 <div class="terminal-window" aria-label="UsersTable PHP and Vue example">
 <div class="terminal-bar">
 <div class="terminal-dots"><span></span><span></span><span></span></div>
-<div class="terminal-tabs" role="tablist" aria-label="Code language tabs"><label for="hero-code-php" class="hero-tab-btn tab-btn-php" role="tab" tabindex="0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg><span class="tab-label">UsersTable.php</span></label><label for="hero-code-vue" class="hero-tab-btn tab-btn-vue" role="tab" tabindex="0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M2 3h3.5L12 14 18.5 3H22L12 21 2 3z" fill="#41B883"/><path d="M6.5 3h3.5L12 7 14 3h3.5L12 11.5 6.5 3z" fill="#35495E"/></svg><span class="tab-label">UsersIndex.vue</span></label></div>
+<div class="terminal-tabs"><label for="hero-code-php" class="hero-tab-btn tab-btn-php"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg><span class="tab-label">UsersTable.php</span></label><label for="hero-code-vue" class="hero-tab-btn tab-btn-vue"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M2 3h3.5L12 14 18.5 3H22L12 21 2 3z" fill="#41B883"/><path d="M6.5 3h3.5L12 7 14 3h3.5L12 11.5 6.5 3z" fill="#35495E"/></svg><span class="tab-label">UsersIndex.vue</span></label></div>
 </div>
 
 <div class="hero-code-pane pane-php">
@@ -286,7 +286,7 @@ hero:
 <div class="zv-free-card-icon">
 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 16l-4 4-4-4M7 20V4M13 8l4-4 4 4M17 4v16"/></svg>
 </div>
-<h3>Multi-Column Sorting</h3>
+<h3>Per-Column Sorting</h3>
 <p>Direction-aware sorting with descending defaults (<code>-column</code>), custom sort callbacks, and URL state preservation.</p>
 <a href="/core-concepts/sorting/" class="zv-card-link">Sorting Guide →</a>
 </div>
@@ -339,7 +339,7 @@ hero:
 <div class="zv-faq-list">
 <div class="zv-faq-item">
 <h3>Is Zonvoir Table really free for commercial projects?</h3>
-<p>Yes. Zonvoir Table is 100% free and open-source software licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noopener noreferrer">Apache License 2.0</a>. There is no "Pro" version, paid license, or feature gating. You can use it in commercial SaaS apps, internal dashboards, and client deliverables with no restrictions.</p>
+<p>Yes. Zonvoir Table is 100% free and open-source software licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noopener noreferrer">Apache License 2.0</a>. There is no "Pro" version, paid license, or feature gating. You can use it in commercial SaaS apps, internal dashboards, and client deliverables subject to the Apache License 2.0 conditions.</p>
 </div>
 
 <div class="zv-faq-item">

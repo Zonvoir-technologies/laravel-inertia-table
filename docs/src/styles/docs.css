@@ -2760,6 +2760,12 @@ main>.content-panel:first-child h1 {
   font-weight: 600;
 }
 
+#hero-code-php:focus-visible ~ .terminal-window .tab-btn-php,
+#hero-code-vue:focus-visible ~ .terminal-window .tab-btn-vue {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
 /* Tab panes */
 .hero-code-pane {
   display: none;
