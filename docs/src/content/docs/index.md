@@ -1,6 +1,6 @@
 ---
 title: Expressive Laravel & Inertia Vue Data Tables
-description: Build expressive, configurable Eloquent data tables for Laravel and Inertia Vue with typed columns, live search, sorting, pagination, and actions.
+description: Laravel data table package for Inertia.js and Vue 3. Build server-side Eloquent tables with live search, sorting, pagination, and bulk actions.
 template: splash
 head:
     - tag: title
