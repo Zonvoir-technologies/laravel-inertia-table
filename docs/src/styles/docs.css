@@ -2593,15 +2593,185 @@ main>.content-panel:first-child h1 {
 .zv-code-wrapper .terminal-window {
   overflow: hidden;
   border: 0 !important;
-  border-radius: 9px;
   border-radius: 16px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.02);
 }
 
 .zv-code-wrapper .terminal-bar {
-
+  display: flex;
+  align-items: center;
+  min-height: 48px;
   border-bottom: 1px solid #f3f4f6cc !important;
-  padding: 20px 25px !important;
+  padding: 8px 18px !important;
+  box-sizing: border-box;
+}
+
+[data-theme="dark"] .zv-code-wrapper .terminal-bar {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: var(--zv-surface-2);
+}
+
+[data-theme="light"] .zv-code-wrapper .terminal-bar {
+  border-bottom: 1px solid #fcddd8 !important;
+  background: #fff5f2;
+}
+
+/* Hero Code Tabs */
+.zv-terminal-shell {
+  position: relative;
+}
+
+.hero-tab-radio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.terminal-dots {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.45rem !important;
+  flex-shrink: 0 !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+}
+
+.terminal-dots span {
+  display: block !important;
+  width: 0.65rem !important;
+  height: 0.65rem !important;
+  border-radius: 999px !important;
+  flex-shrink: 0 !important;
+  margin: 0 !important;
+}
+
+.terminal-tabs {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  margin: 0 0 0 1.15rem !important;
+  padding: 3px !important;
+  border-radius: 9px !important;
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-sizing: border-box !important;
+}
+
+[data-theme="dark"] .terminal-tabs {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.hero-tab-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  height: 28px !important;
+  margin: 0 !important;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+  padding: 0 12px !important;
+  border-radius: 6px !important;
+  font-family: var(--zv-font-mono) !important;
+  font-size: 0.78rem !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  vertical-align: middle !important;
+  color: var(--sl-color-gray-4);
+  background: transparent;
+  border: 1px solid transparent;
+  box-sizing: border-box !important;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.hero-tab-btn svg {
+  display: block !important;
+  width: 14px !important;
+  height: 14px !important;
+  margin: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+.hero-tab-btn .tab-label,
+.terminal-tabs span.tab-label {
+  display: inline-block !important;
+  line-height: 1 !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  color: inherit !important;
+  background: transparent !important;
+  border: none !important;
+  margin: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+.hero-tab-btn:hover {
+  color: var(--sl-color-white);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+:root[data-theme='light'] .hero-tab-btn:hover {
+  color: #111827;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Active tab state when PHP is checked */
+#hero-code-php:checked ~ .terminal-window .tab-btn-php {
+  color: #ffffff;
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  font-weight: 600;
+}
+
+:root[data-theme='light'] #hero-code-php:checked ~ .terminal-window .tab-btn-php {
+  color: #f05a45;
+  background: #ffffff;
+  border-color: rgba(240, 90, 69, 0.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  font-weight: 600;
+}
+
+/* Active tab state when Vue is checked */
+#hero-code-vue:checked ~ .terminal-window .tab-btn-vue {
+  color: #ffffff;
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  font-weight: 600;
+}
+
+:root[data-theme='light'] #hero-code-vue:checked ~ .terminal-window .tab-btn-vue {
+  color: #f05a45;
+  background: #ffffff;
+  border-color: rgba(240, 90, 69, 0.2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  font-weight: 600;
+}
+
+/* Tab panes */
+.hero-code-pane {
+  display: none;
+  min-height: 480px;
+}
+
+#hero-code-php:checked ~ .terminal-window .pane-php {
+  display: block;
+}
+
+#hero-code-vue:checked ~ .terminal-window .pane-vue {
+  display: block;
 }
 
 /* Syntax Highlighting */
@@ -2625,21 +2795,15 @@ main>.content-panel:first-child h1 {
   color: var(--code-method);
 }
 
-
-
-
-
-
 /* Floating Tags */
 .floating-tags {
   position: absolute;
-  top: 32%;
+  top: 50%;
   right: -56px;
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
   gap: 8px;
-
 }
 
 .floating-tags .tag {

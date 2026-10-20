@@ -2,9 +2,9 @@ export const siteConfig = {
   name: 'Zonvoir Table',
   siteUrl: 'https://zonvoir-table.com',
   titleTemplate: '%s | Zonvoir Table',
-  defaultTitle: 'Zonvoir Table — Expressive Laravel & Inertia Vue Data Tables',
+  defaultTitle: 'Zonvoir Table — Free Laravel Inertia Table for Vue',
   defaultDescription:
-    'Expressive Laravel data table package for Inertia.js and Vue 3. Build server-side Eloquent tables with live search, sorting, pagination, and bulk actions.',
+    'Build Laravel Inertia tables with Zonvoir Table, a free, open-source Vue data table package with server-side search, sorting and pagination.',
   defaultKeywords: [
     'laravel data table',
     'laravel table',
@@ -39,7 +39,7 @@ export const siteConfig = {
     logo: 'https://zonvoir-table.com/favicon.ico',
     github: 'https://github.com/Zonvoir-technologies',
     x: 'https://x.com/ZonvoirTable',
-    linkedin: 'https://in.linkedin.com/company/zonvoir-technologies',
+    linkedin: 'https://in.linkedin.com/company/zonvoir-table',
   },
   repository: 'https://github.com/Zonvoir-technologies/laravel-inertia-table',
   license: 'https://www.apache.org/licenses/LICENSE-2.0',

@@ -28,6 +28,7 @@ export function generateSoftwareSourceCodeSchema() {
     programmingLanguage: ['PHP', 'Vue', 'TypeScript'],
     codeRepository: siteConfig.repository,
     license: siteConfig.license,
+    isAccessibleForFree: true,
     description: siteConfig.defaultDescription,
     keywords: siteConfig.defaultKeywords.join(', '),
     runtimePlatform: 'PHP 8.3+, Laravel 11/12/13, Inertia.js 2.x/3.x, Vue 3.4+, Tailwind CSS 3.4+/4.0+',

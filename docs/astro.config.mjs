@@ -21,7 +21,7 @@ export default defineConfig({
         alt: 'Zonvoir Table Logo',
       },
       favicon: '/favicon.ico',
-      description: 'Expressive Laravel data table package for Inertia.js and Vue 3. Build server-side Eloquent tables with live search, sorting, pagination, and bulk actions.',
+      description: 'Build Laravel Inertia tables with Zonvoir Table, a free, open-source Vue data table package with server-side search, sorting and pagination.',
       head: [
         {
           tag: 'script',
