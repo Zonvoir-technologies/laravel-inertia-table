@@ -6,15 +6,19 @@ const PAGE_TITLE_ID = '_top';
   <div class="hero-container">
     <div class="hero-content">
       <div class="hero-tag">
-        <span>Laravel + Inertia.js + Tailwind</span>
+        <span>Free &amp; Open Source (Apache 2.0) • Laravel + Inertia.js + Vue 3</span>
       </div>
       
       <h1 id={PAGE_TITLE_ID} class="hero-title">
-        Tables that <br/> speak <span class="text-highlight">Laravel.</span>
+        Free Laravel Inertia <br/> Tables for <span class="text-highlight">Vue.</span>
       </h1>
       
       <p class="hero-subtitle">
-        Define tables with expressive PHP classes and render them with our first-party Vue and Inertia adapters.
+        Zonvoir Table is a free, open-source Laravel Inertia table package for Vue applications. Define tables in PHP using Eloquent, then render searchable, sortable, paginated tables with the Vue adapter.
+      </p>
+
+      <p class="hero-brand-note">
+        Tables that speak Laravel.
       </p>
       
       <div class="hero-actions">
@@ -22,7 +26,11 @@ const PAGE_TITLE_ID = '_top';
           Start building
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
-        <a href="/api/" class="btn-secondary">
+        <a href="https://demo.zonvoir-table.com" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+          Live Demo
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+        <a href="/api/" class="btn-outline">
           Browse API
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
         </a>
@@ -255,9 +263,19 @@ display: block;
     max-width: 520px;
   }
 
+  .hero-brand-note {
+    font-size: 15px !important;
+    font-style: italic;
+    color: var(--sl-color-accent) !important;
+    margin: -24px 0 36px 0 !important;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
   .hero-actions {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 16px;
     margin-bottom: 60px;
   }
@@ -297,6 +315,19 @@ display: block;
     background-color: #fff1f2;
     transform: translateY(-2px);
     border-color: #fbcfe8;
+  }
+
+  .btn-outline {
+    background-color: transparent;
+    color: var(--sl-color-gray-2) !important;
+    border: 1px solid var(--sl-color-gray-5);
+  }
+
+  .btn-outline:hover {
+    background-color: color-mix(in srgb, var(--sl-color-gray-5) 35%, transparent);
+    color: var(--sl-color-white) !important;
+    transform: translateY(-2px);
+    border-color: var(--sl-color-accent);
   }
 
   .hero-features {

@@ -21,7 +21,7 @@ export default defineConfig({
         alt: 'Zonvoir Table Logo',
       },
       favicon: '/favicon.ico',
-      description: 'Documentation for Zonvoir Table, the Laravel and Inertia Vue package for expressive, configurable Eloquent data tables.',
+      description: 'Build Laravel Inertia tables with Zonvoir Table, a free, open-source Vue data table package with server-side search, sorting and pagination.',
       head: [
         {
           tag: 'script',
@@ -48,6 +48,28 @@ export default defineConfig({
             document.addEventListener('DOMContentLoaded', revealApiSidebar);
             document.addEventListener('astro:page-load', revealApiSidebar);
           `,
+        },
+        {
+          tag: 'meta',
+          attrs: {
+            name: 'keywords',
+            content:
+              'laravel data table, laravel table, laravel table component, laravel data table package, laravel table package, inertia table, inertia.js table, laravel inertia table, laravel inertia components, vue data table, vue 3 data table, vue table component, laravel vue data table, server side data table, eloquent data table, inertia vue table, laravel datatables alternative, vue 3 data table component, laravel eloquent datatable, server side pagination laravel, tailwind data table, laravel dynamic table, inertia data grid, vue data grid',
+          },
+        },
+        {
+          tag: 'meta',
+          attrs: {
+            name: 'robots',
+            content: 'index, follow',
+          },
+        },
+        {
+          tag: 'meta',
+          attrs: {
+            name: 'author',
+            content: 'Zonvoir Technologies',
+          },
         },
         {
           tag: 'meta',
