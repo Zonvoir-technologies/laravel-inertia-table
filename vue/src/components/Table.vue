@@ -85,6 +85,12 @@ const stickyOffsets: Ref<Record<string, number>> = ref({});
 const stickySides: Ref<Record<string, 'left' | 'right'>> = ref({});
 const selectedRows: Ref<Set<TableRowKey>> = ref(new Set<TableRowKey>());
 const selectionMode: Ref<SelectionMode> = ref('page');
+
+const clearSelection = (): void => {
+  selectedRows.value = new Set<TableRowKey>();
+  selectionMode.value = 'page';
+};
+
 const localSearch: Ref<string> = ref('');
 let searchTimeout: ReturnType<typeof setTimeout> | undefined;
 let resizeObserver: ResizeObserver | undefined;
@@ -242,12 +248,18 @@ watch(
   { immediate: true }
 );
 
+let lastSearch: string = tableApi.search.value;
+
 watch(
-  (): string => rows.value.map((row: T): TableRowKey | null => rowKey(row)).join('\\u001f'),
+  (): string => rows.value.map((row: T): TableRowKey | null => rowKey(row)).join('\u001f'),
   (): void => {
-    if (!persistRowSelectionAcrossPages.value) {
+    const currentSearch: string = tableApi.search.value;
+
+    if (!persistRowSelectionAcrossPages.value || currentSearch !== lastSearch) {
       clearSelection();
     }
+
+    lastSearch = currentSearch;
   }
 );
 
@@ -398,6 +410,7 @@ const visitWithQuery = (updates: Record<string, QueryValue>): void => {
 };
 
 const updateSearch = (value: string): void => {
+  clearSelection();
   localSearch.value = value;
   tableApi.setSearch(value);
   emit('search-change', value);
@@ -572,10 +585,6 @@ const toggleAllVisibleRows = (): void => {
   selectedRows.value = nextSelectedRows;
 };
 
-const clearSelection = (): void => {
-  selectedRows.value = new Set<TableRowKey>();
-  selectionMode.value = 'page';
-};
 const columnAttribute = (column: TableColumn | string): string => typeof column === 'string' ? column : column.attribute;
 
 const setSearch = (value: string): void => {
