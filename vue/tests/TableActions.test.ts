@@ -1,14 +1,60 @@
 import { DOMWrapper, mount } from '@vue/test-utils';
 import { router } from '@inertiajs/vue3';
-import { nextTick } from 'vue';
+import { h, nextTick } from 'vue';
 import { vi } from 'vitest';
 import { Table } from '../src';
+import TableBulkActions from '../src/components/TableBulkActions.vue';
 import TableActions from '../src/components/TableActions.vue';
 import { installTableTestHooks, makeTableDefinition } from './tableTestUtils';
 
 installTableTestHooks();
 
 describe('Table Actions', () => {
+  it.each([TableActions, TableBulkActions])('lets a nested child listener control completion without a parent listener (%s)', async (component) => {
+    const onCustomAction = vi.fn();
+    const table = makeTableDefinition({ rows: [{ id: 1 }], rowSelectionKey: 'id' });
+    const wrapper = mount(Table, {
+      attachTo: document.body,
+      props: { table },
+      slots: { actions: () => h(component, {
+        table, selectedKeys: [1], onCustomAction,
+        actions: [{ key: 'preview', label: 'Preview', type: 'custom' }]
+      }) }
+    });
+    const child = wrapper.findComponent(component);
+    await child.get('button').trigger('click');
+    if (component === TableBulkActions) {
+      await nextTick();
+      await new DOMWrapper(document.body.querySelector<HTMLElement>('[role="menuitem"]')!).trigger('click');
+    }
+    expect(onCustomAction).toHaveBeenCalledWith(expect.objectContaining({ key: 'preview' }), [1], expect.any(Function));
+    expect(child.emitted('executed')).toBeUndefined();
+    onCustomAction.mock.calls[0][2]();
+    await nextTick();
+    expect(child.emitted('executed')).toHaveLength(1);
+    expect(router.visit).not.toHaveBeenCalled();
+  });
+
+  it('forwards custom row actions with keys and keeps loading until finished', async () => {
+    const onCustomAction = vi.fn();
+    const action = { key: 'preview', label: 'Preview', type: 'custom' as const, meta: { using: 'previewer' } };
+    const wrapper = mount(Table, { props: { onCustomAction, selectable: false, table: {
+      rowSelectionKey: 'uuid', columns: [{ attribute: 'actions', label: 'Actions', type: 'action' }],
+      rows: [{ uuid: 'user-a', _actions: [action] }]
+    } } });
+    const button = wrapper.get('tbody td[data-column="actions"] button');
+    await button.trigger('click');
+    expect(onCustomAction).toHaveBeenCalledWith(expect.objectContaining(action), ['user-a'], expect.any(Function));
+    expect(button.attributes('disabled')).toBeDefined();
+    expect(router.visit).not.toHaveBeenCalled();
+    const finish = onCustomAction.mock.calls[0][2];
+    finish();
+    finish();
+    await nextTick();
+    expect(button.attributes('disabled')).toBeUndefined();
+    expect(wrapper.findComponent(TableActions).emitted('executed')).toHaveLength(1);
+  });
+
   it('renders icon-only row action buttons while preserving action labels for accessibility', () => {
     const wrapper = mount(Table, {
       props: {
