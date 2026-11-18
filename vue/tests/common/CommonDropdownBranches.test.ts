@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { vi } from 'vitest';
 import CommonDropdown from '../../src/components/Common/CommonDropdown.vue';
+import { configureTable, resetTableConfiguration } from '../../src/config/tableConfig';
 import { installTableTestHooks } from '../tableTestUtils';
 
 installTableTestHooks();
@@ -43,5 +44,18 @@ describe('CommonDropdown branch behavior', () => {
 
     await nextTick();
     expect(document.body.querySelector('[role="menu"]')).not.toBeNull();
+  });
+
+  it('applies dark class and attributes to teleported menu when darkMode is enabled', async () => {
+    configureTable({ darkMode: { enabled: true, class: 'custom-dark' } });
+    const wrapper = mount(CommonDropdown, { attachTo: document.body });
+    await wrapper.find('button').trigger('click');
+    await nextTick();
+
+    const menu = document.body.querySelector<HTMLElement>('[role="menu"]')!;
+    expect(menu.classList.contains('dark')).toBe(true);
+    expect(menu.classList.contains('custom-dark')).toBe(true);
+    expect(menu.getAttribute('data-dark-mode')).toBe('enabled');
+    resetTableConfiguration();
   });
 });

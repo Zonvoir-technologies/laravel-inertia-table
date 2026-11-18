@@ -2,22 +2,23 @@
 import { computed, ref, type ComputedRef, type Ref } from 'vue';
 import { router } from '@inertiajs/vue3';
 import type { Page, PageProps } from '@inertiajs/core';
-import type { TableDefinition, TableExport, TableRowKey, TableState } from '../types/table';
+import type { TableDefinition, TableExport, TableMeta, TableMetaValue, TableRowKey, TableState } from '../types/table';
 import { useTableContext } from '../composables/useTableContext';
 import CommonButton from './Common/CommonButton.vue';
 import CommonDropdown from './Common/CommonDropdown.vue';
 import CommonAlert from './Common/CommonAlert.vue';
 import { useTableConfiguration } from '../config/tableConfig';
 
-type ExportExecutionPayload = { export: TableExport; response?: unknown };
+type ExportExecutionPayload = { export: TableExport; response?: Response | Page<ExportPageProps> | null };
 type ExportAlertPayload = { title?: string | null; message?: string | null };
 type ExportRequestPayload = {
-  table: unknown;
+  table: TableMetaValue;
   export: string;
   keys: TableRowKey[];
   state: TableState;
-  data: Record<string, unknown>;
+  data: NonNullable<TableExport['data']>;
 };
+type FormFieldSerializable = TableMetaValue | TableState | TableRowKey[] | TableMeta | NonNullable<TableExport['data']>;
 
 interface ExportPageProps extends PageProps {
   flash?: {
@@ -92,18 +93,18 @@ const xsrfHeaders = (): Record<string, string> => {
   return token ? { 'X-XSRF-TOKEN': token } : {};
 };
 
-const appendFormData = (formData: FormData, name: string, value: unknown): void => {
+const appendFormData = (formData: FormData, name: string, value: FormFieldSerializable): void => {
   if (value === null || typeof value === 'undefined') {
     return;
   }
 
   if (Array.isArray(value)) {
-    value.forEach((item: unknown, index: number): void => appendFormData(formData, `${name}[${index}]`, item));
+    value.forEach((item: FormFieldSerializable, index: number): void => appendFormData(formData, `${name}[${index}]`, item));
     return;
   }
 
   if (typeof value === 'object') {
-    Object.entries(value as Record<string, unknown>).forEach(([key, item]: [string, unknown]): void => appendFormData(formData, `${name}[${key}]`, item));
+    Object.entries(value as Record<string, FormFieldSerializable>).forEach(([key, item]: [string, FormFieldSerializable]): void => appendFormData(formData, `${name}[${key}]`, item));
     return;
   }
 
@@ -121,7 +122,7 @@ const exportPayload = (table: TableDefinition, exportAction: TableExport): Expor
 const exportFormData = (payload: ExportRequestPayload): FormData => {
   const formData: FormData = new FormData();
 
-  Object.entries(payload).forEach(([key, value]: [string, unknown]): void => appendFormData(formData, key, value));
+  Object.entries(payload).forEach(([key, value]: [string, FormFieldSerializable]): void => appendFormData(formData, key, value));
 
   return formData;
 };
@@ -246,7 +247,6 @@ const execute = (exportAction: TableExport): void => {
       <CommonButton
         type="button"
         variant="outline"
-        color="slate"
         :leading-icon="tableConfig.icons.export ? 'export' : undefined"
         @click.stop="toggle"
       >
@@ -261,6 +261,7 @@ const execute = (exportAction: TableExport): void => {
         type="button"
         role="menuitem"
         size="sm"
+        color="slate"
         :disabled="isDisabled(exportAction)"
         :class="tableConfig.classes.exportMenuItem"
         variant="ghost"

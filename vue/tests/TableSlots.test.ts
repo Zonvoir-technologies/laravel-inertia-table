@@ -88,4 +88,43 @@ describe('Table Slots', () => {
 
     expect(wrapper.find('[data-test="default-header"]').text()).toBe('Default name');
   });
+
+  it('renders custom filter-button, filter-header, and filter-panel slots', () => {
+    const wrapper = mount(Table, {
+      props: {
+        table: {
+          name: 'Users',
+          columns: [{ attribute: 'name', label: 'Name' }],
+          rows: [],
+          hasFilters: true,
+          filterLayout: 'panel',
+        },
+      },
+      slots: {
+        'filter-button': '<template #default="{ open }"><button data-test="custom-filter-btn">Custom Filter Button</button></template>',
+        'filter-panel': '<template #default="{ table }"><div data-test="custom-filter-panel">Custom Filter Panel for {{ table.name }}</div></template>',
+      },
+    });
+
+    expect(wrapper.find('[data-test="custom-filter-btn"]').text()).toBe('Custom Filter Button');
+    expect(wrapper.find('[data-test="custom-filter-panel"]').text()).toBe('Custom Filter Panel for Users');
+  });
+
+  it('renders custom filters slot as an alias for the entire filter section', () => {
+    const wrapper = mount(Table, {
+      props: {
+        table: {
+          name: 'Users',
+          columns: [{ attribute: 'name', label: 'Name' }],
+          rows: [],
+          hasFilters: true,
+        },
+      },
+      slots: {
+        filters: '<template #default><div data-test="custom-filters-section">Custom Filters Section</div></template>',
+      },
+    });
+
+    expect(wrapper.find('[data-test="custom-filters-section"]').text()).toBe('Custom Filters Section');
+  });
 });

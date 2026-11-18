@@ -52,6 +52,30 @@ abstract class Table implements Arrayable, JsonSerializable
 
     protected TableEmptyState|array|false|null $emptyState = null;
 
+    /** @var array<string, array<string, callable>> */
+    protected static array $payloadExtensions = [];
+
+    /** @var array<string, array<string, callable>> */
+    protected static array $resultsExtensions = [];
+
+    public static function extendPayload(string $key, callable $callback): void
+    {
+        $scope = static::class === self::class ? 'global' : static::class;
+        static::$payloadExtensions[$scope][$key] = $callback;
+    }
+
+    public static function extendResults(string $key, callable $callback): void
+    {
+        $scope = static::class === self::class ? 'global' : static::class;
+        static::$resultsExtensions[$scope][$key] = $callback;
+    }
+
+    public static function flushExtensions(): void
+    {
+        static::$payloadExtensions = [];
+        static::$resultsExtensions = [];
+    }
+
     public static function make(): static
     {
         return new static();
@@ -236,7 +260,21 @@ abstract class Table implements Arrayable, JsonSerializable
      */
     public function payload(?TableRequest $request = null): array
     {
-        return (new TablePayloadBuilder())->build($this, $this->state($request));
+        $payload = (new TablePayloadBuilder())->build($this, $this->state($request));
+
+        $callbacks = array_merge(
+            static::$payloadExtensions['global'] ?? [],
+            static::$payloadExtensions[static::class] ?? [],
+        );
+
+        foreach ($callbacks as $callback) {
+            $result = $callback($this, $payload, $request);
+            if (is_array($result)) {
+                $payload = $result;
+            }
+        }
+
+        return $payload;
     }
 
     /**
@@ -279,11 +317,25 @@ abstract class Table implements Arrayable, JsonSerializable
 
         $query ??= $this->query();
 
-        return $payloadBuilder->buildResults(
+        $results = $payloadBuilder->buildResults(
             $this,
             $state,
             $paginationBuilder->paginate($query, $this, $state),
         );
+
+        $callbacks = array_merge(
+            static::$resultsExtensions['global'] ?? [],
+            static::$resultsExtensions[static::class] ?? [],
+        );
+
+        foreach ($callbacks as $callback) {
+            $result = $callback($this, $results, $request);
+            if (is_array($result)) {
+                $results = $result;
+            }
+        }
+
+        return $results;
     }
 
     public function query(): Builder

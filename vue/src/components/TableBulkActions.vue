@@ -121,7 +121,6 @@ const execute = (action: TableAction, event: MouseEvent): void => {
       <CommonButton
         type="button"
         variant="outline"
-        color="gray"
         @click.stop="toggle"
         trailing-icon="actions"
       >

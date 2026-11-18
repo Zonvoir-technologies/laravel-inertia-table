@@ -7,6 +7,7 @@ interface SwitchProps {
   checked: boolean;
   disabled?: boolean;
   size?: SwitchSize;
+  color?: string;
 }
 
 interface SwitchClasses {
@@ -21,12 +22,43 @@ const props = withDefaults(
   {
     disabled: false,
     size: 'md',
+    color: 'primary',
   }
 );
 
 const emit = defineEmits<{
   'update:checked': [boolean];
 }>();
+
+const normalizeColor = (color: string = 'primary'): string => {
+  const normalized = color.toLowerCase();
+  const aliases: Record<string, string> = {
+    default: 'primary',
+    destructive: 'red',
+    danger: 'red',
+    success: 'green',
+    warning: 'amber',
+    muted: 'gray',
+  };
+
+  return aliases[normalized] ?? normalized;
+};
+
+const switchTrackClasses: ComputedRef<string> = computed((): string => {
+  const color = normalizeColor(props.color);
+
+  if (color === 'primary') {
+    const light = props.checked ? 'bg-[var(--zt-primary,#0f172a)]' : 'bg-slate-300';
+    const dark = props.checked ? 'dark:bg-[var(--zt-primary,#0f172a)]' : 'dark:bg-slate-700';
+
+    return `${light} ${dark}`;
+  }
+
+  const light = props.checked ? `bg-${color}-500` : 'bg-slate-300';
+  const dark = props.checked ? `dark:bg-${color}-500` : 'dark:bg-slate-700';
+
+  return `${light} ${dark}`;
+});
 
 const sizes: ComputedRef<SwitchClasses> = computed((): SwitchClasses => {
   switch (props.size) {
@@ -67,7 +99,7 @@ const sizes: ComputedRef<SwitchClasses> = computed((): SwitchClasses => {
     class="cursor-pointer inline-flex shrink-0 items-center rounded-full transition-all duration-200 ease-out disabled:cursor-not-allowed disabled:opacity-50"
     :class="[
       sizes.switch,
-      checked ? 'bg-black' : 'bg-slate-300',
+      switchTrackClasses,
     ]"
     @click="emit('update:checked', !checked)"
   >

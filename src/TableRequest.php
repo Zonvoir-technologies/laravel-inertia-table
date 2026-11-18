@@ -49,6 +49,7 @@ final readonly class TableRequest
             'direction',
             'columns',
             'sticky',
+            'filters',
         ]));
 
         if ($state !== []) {

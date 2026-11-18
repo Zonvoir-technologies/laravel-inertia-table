@@ -48,11 +48,13 @@ hero:
 <div class="zv-ledger-row core" role="row"><span>01</span><span>Table Definition</span><span>PHP</span><span><em>Core</em></span></div>
 <div class="zv-ledger-row core" role="row"><span>02</span><span>Typed Columns</span><span>PHP</span><span><em>Core</em></span></div>
 <div class="zv-ledger-row live" role="row"><span>03</span><span>Search &amp; Sort</span><span>Query</span><span><em>Live</em></span></div>
-<div class="zv-ledger-row cursor" role="row"><span>04</span><span>Pagination</span><span>Query</span><span><em>Standard / Cursor</em></span></div>
-<div class="zv-ledger-row interactive" role="row"><span>05</span><span>Row &amp; Bulk Actions</span><span>Vue</span><span><em>Interactive</em></span></div>
-<div class="zv-ledger-row interactive" role="row"><span>06</span><span>Column Visibility &amp; Sticky</span><span>Vue</span><span><em>Interactive</em></span></div>
-<div class="zv-ledger-row filtered" role="row"><span>07</span><span>Excel Exports</span><span>Server</span><span><em>Filtered / Selected</em></span></div>
-<div class="zv-ledger-row generated" role="row"><span>08</span><span>TypeScript Types</span><span>Frontend</span><span><em>Generated</em></span></div>
+<div class="zv-ledger-row filtered" role="row"><span>04</span><span>Table Filters</span><span>Query</span><span><em>Drawer &amp; Header</em></span></div>
+<div class="zv-ledger-row cursor" role="row"><span>05</span><span>Pagination</span><span>Query</span><span><em>Standard / Cursor</em></span></div>
+<div class="zv-ledger-row interactive" role="row"><span>06</span><span>Row &amp; Bulk Actions</span><span>Vue</span><span><em>Interactive</em></span></div>
+<div class="zv-ledger-row interactive" role="row"><span>07</span><span>Column Visibility &amp; Sticky</span><span>Vue</span><span><em>Interactive</em></span></div>
+<div class="zv-ledger-row interactive" role="row"><span>08</span><span>Column Reordering</span><span>Vue</span><span><em>Drag &amp; Drop</em></span></div>
+<div class="zv-ledger-row filtered" role="row"><span>09</span><span>Excel Exports</span><span>Server</span><span><em>Filtered / Selected</em></span></div>
+<div class="zv-ledger-row generated" role="row"><span>10</span><span>TypeScript Types</span><span>Frontend</span><span><em>Generated</em></span></div>
 </div>
 
 </section>
@@ -147,10 +149,12 @@ hero:
 <input class="feature-tab-input" type="radio" name="home-feature" id="feature-table" checked>
 <input class="feature-tab-input" type="radio" name="home-feature" id="feature-search">
 <input class="feature-tab-input" type="radio" name="home-feature" id="feature-sorting">
+<input class="feature-tab-input" type="radio" name="home-feature" id="feature-filters">
 <input class="feature-tab-input" type="radio" name="home-feature" id="feature-pagination">
 <input class="feature-tab-input" type="radio" name="home-feature" id="feature-actions">
 <input class="feature-tab-input" type="radio" name="home-feature" id="feature-bulk">
 <input class="feature-tab-input" type="radio" name="home-feature" id="feature-columns">
+<input class="feature-tab-input" type="radio" name="home-feature" id="feature-reorder">
 <input class="feature-tab-input" type="radio" name="home-feature" id="feature-sticky">
 <input class="feature-tab-input" type="radio" name="home-feature" id="feature-exports">
 <input class="feature-tab-input" type="radio" name="home-feature" id="feature-url">
@@ -161,11 +165,13 @@ hero:
 <label for="feature-table">Table Definition</label>
 <label for="feature-search">Search State</label>
 <label for="feature-sorting">Sorting</label>
+<label for="feature-filters">Filters</label>
 <label for="feature-pagination">Pagination</label>
 <label for="feature-actions">Row Actions & Links</label>
 <label for="feature-bulk">Bulk Actions</label>
 <p>Presentation</p>
 <label for="feature-columns">Columns</label>
+<label for="feature-reorder">Column Reordering</label>
 <label for="feature-sticky">Sticky Columns</label>
 <p>Data</p>
 <label for="feature-exports">Excel Exports</label>
@@ -180,6 +186,16 @@ hero:
 <div class="feature-panel panel-sorting"><p class="feature-breadcrumb">features <span>/</span> sorting.php</p><h2><span>#</span> Sorting</h2><p>Sortable columns expose direction-aware query state while the backend stays in charge of the query.</p><div class="feature-content"><ul><li>Enable sorting per column.</li><li>Use `-column` for descending defaults.</li><li>Override sorting with `sortUsing()` when needed.</li></ul><div class="terminal-window" aria-label="Sorting PHP example"><div class="terminal-bar"><span></span><span></span><span></span><strong>sorting.php</strong></div><pre><code><span class="ln">1</span>  <b>protected</b> ?string $defaultSort = '-created_at';
 <span class="ln">2</span>
 <span class="ln">3</span>  TextColumn::make('name')->sortable();</code></pre></div><p class="read-mr" style="margin-top: 1rem;"><a href="/core-concepts/sorting/">Read the Sorting Guide →</a></p></div></div>
+<div class="feature-panel panel-filters"><p class="feature-breadcrumb">features <span>/</span> filters.php</p><h2><span>#</span> Table Filters</h2><p>Strongly-typed filter builders support text, numeric, set, date, and boolean clauses in drawer or header layouts.</p><div class="feature-content"><ul><li>Add `HasFilters` or `HasProFeatures` to your table class.</li><li>Define `TextFilter`, `SetFilter`, `DateFilter`, or custom clauses in `filters()`.</li><li>Persist active filter clauses seamlessly in URL query state.</li></ul><div class="terminal-window" aria-label="Filters PHP example"><div class="terminal-bar"><span></span><span></span><span></span><strong>filters.php</strong></div><pre><code><span class="ln">1</span>  <b>use</b> Zonvoir\InertiaTable\Filters\TextFilter;
+<span class="ln">2</span>  <b>use</b> Zonvoir\InertiaTable\Filters\SetFilter;
+<span class="ln">3</span>
+<span class="ln">4</span>  <b>public function</b> filters(): array
+<span class="ln">5</span>  {
+<span class="ln">6</span>      <b>return</b> [
+<span class="ln">7</span>          TextFilter::make('name'),
+<span class="ln">8</span>          SetFilter::make('status')->options(['active' =&gt; 'Active', 'archived' =&gt; 'Archived']),
+<span class="ln">9</span>      ];
+<span class="ln">10</span> }</code></pre></div><p class="read-mr" style="margin-top: 1rem;"><a href="/core-concepts/filters/">Read the Filters Guide →</a></p></div></div>
 <div class="feature-panel panel-pagination"><p class="feature-breadcrumb">features <span>/</span> pagination.php</p><h2><span>#</span> Pagination</h2><p>Pagination configuration lives with the table, including allowed page sizes and pagination strategy.</p><div class="feature-content"><ul><li>Standard, simple, and cursor modes.</li><li>Configurable per-page options.</li><li>Normalized page, cursor, and per-page input.</li></ul><div class="terminal-window" aria-label="Pagination PHP example"><div class="terminal-bar"><span></span><span></span><span></span><strong>pagination.php</strong></div><pre><code><span class="ln">1</span>  <b>protected</b> ?int $defaultPerPage = 30;
 <span class="ln">2</span>  <b>protected</b> ?array $perPageOptions = [15, 30, 50];</code></pre></div><p class="read-mr" style="margin-top: 1rem;"><a href="/core-concepts/pagination/">Read the Pagination Guide →</a></p></div></div>
 <div class="feature-panel panel-actions"><p class="feature-breadcrumb">features <span>/</span> row-actions.php</p><h2><span>#</span> Row Actions & Links</h2><p>Actions and row URLs are serialized as metadata so Vue can render the right controls.</p><div class="feature-content"><ul><li>Return actions from `actions()`.</li><li>Use `Url` for route and Inertia metadata.</li><li>Support authorization, disabled, hidden, and confirm states.</li></ul><div class="terminal-window" aria-label="Row actions PHP example"><div class="terminal-bar"><span></span><span></span><span></span><strong>row-actions.php</strong></div><pre><code><span class="ln">1</span>  Action::make('Edit')
@@ -190,6 +206,12 @@ hero:
 <div class="feature-panel panel-columns"><p class="feature-breadcrumb">features <span>/</span> columns.php</p><h2><span>#</span> Columns</h2><p>One Columns guide covers common options plus text, numeric, boolean, badge, image, date, date-time, and action columns.</p><div class="feature-content"><ul><li>Shared visibility, sizing, sticky, search, and sort metadata.</li><li>Column-specific display settings.</li><li>Export labels, values, formats, and styles.</li></ul><div class="terminal-window" aria-label="Columns PHP example"><div class="terminal-bar"><span></span><span></span><span></span><strong>columns.php</strong></div><pre><code><span class="ln">1</span>  BadgeColumn::make('status')
 <span class="ln">2</span>      ->colors(['active' =&gt; 'success'])
 <span class="ln">3</span>      ->solid();</code></pre></div><p class="read-mr" style="margin-top: 1rem;"><a href="/core-concepts/columns/">Read the Typed Columns Guide →</a></p></div></div>
+<div class="feature-panel panel-reorder"><p class="feature-breadcrumb">features <span>/</span> column-reorder.php</p><h2><span>#</span> Column Reordering</h2><p>Interactive drag-and-drop column reordering with per-user database persistence across sessions.</p><div class="feature-content"><ul><li>Rearrange columns via header drag-and-drop or visibility menu handles.</li><li>Automatically persist customized column order per authenticated user.</li><li>Clear the saved order and restore the PHP-defined order on the next table response.</li></ul><div class="terminal-window" aria-label="Column reordering PHP example"><div class="terminal-bar"><span></span><span></span><span></span><strong>column-reorder.php</strong></div><pre><code><span class="ln">1</span>  <b>use</b> Zonvoir\InertiaTablePro\Concerns\HasColumnPersistence;
+<span class="ln">2</span>
+<span class="ln">3</span>  <b>final class</b> UsersTable <b>extends</b> Table
+<span class="ln">4</span>  {
+<span class="ln">5</span>      <b>use</b> HasColumnPersistence;
+<span class="ln">6</span>  }</code></pre></div><p class="read-mr" style="margin-top: 1rem;"><a href="/core-concepts/column-reorder/">Read the Column Reordering Guide →</a></p></div></div>
 <div class="feature-panel panel-sticky"><p class="feature-breadcrumb">features <span>/</span> sticky-columns.php</p><h2><span>#</span> Sticky Columns</h2><p>Sticky columns keep high-value identifiers visible while users scan wide data sets.</p><div class="feature-content"><ul><li>Enable sticky behavior per column.</li><li>Pair with width metadata for predictable layout.</li><li>Allow sticky overrides through table state.</li></ul><div class="terminal-window" aria-label="Sticky columns PHP example"><div class="terminal-bar"><span></span><span></span><span></span><strong>sticky-columns.php</strong></div><pre><code><span class="ln">1</span>  TextColumn::make('name')
 <span class="ln">2</span>      ->sticky()
 <span class="ln">3</span>      ->width('16rem');</code></pre></div><p class="read-mr" style="margin-top: 1rem;"><a href="/core-concepts/sticky-columns/">Read the Sticky Columns Guide →</a></p></div></div>
@@ -200,6 +222,314 @@ hero:
 <div class="feature-panel panel-multiple"><p class="feature-breadcrumb">features <span>/</span> multiple-tables.php</p><h2><span>#</span> Multiple Tables</h2><p>Name each table to avoid query string collisions when a page renders more than one table.</p><div class="feature-content"><ul><li>Use `named()` or `as()`.</li><li>Separate page, search, sort, columns, and sticky state.</li><li>Render multiple independent table payloads.</li></ul><div class="terminal-window" aria-label="Multiple tables PHP example"><div class="terminal-bar"><span></span><span></span><span></span><strong>multiple-tables.php</strong></div><pre><code><span class="ln">1</span>  UsersTable::make()->named('users')->results();
 <span class="ln">2</span>  OrdersTable::make()->named('orders')->results();</code></pre></div><p class="read-mr" style="margin-top: 1rem;"><a href="/core-concepts/multiple-tables/">Read the Multiple Tables Guide →</a></p></div></div>
 </div>
+</section>
+</div>
+
+<div class="shpcl-wr">
+<div class="shape-wrp-cl">
+<div class="shape-ring shape-ring-1"></div>
+<div class="shape-ring shape-ring-2"></div>
+<div class="bg-shape shape-1"></div>
+<div class="bg-shape shape-2"></div>
+<div class="bg-pattern pattern-left"></div>
+<div class="bg-pattern pattern-right"></div>
+</div>
+
+<section id="pricing" class="scroll-mt-20 my-20 relative z-2" aria-label="Pricing and Plans">
+<div class="zv-ledger-head text-center max-w-3xl mx-auto">
+<p class="zv-eyebrow the-capability-ledger">Pricing &amp; Plans</p>
+<h2>Simple, transparent <span>pricing.</span></h2>
+<p class="zn-tb-sb">Start free with our open-source core, or supercharge your tables with Zonvoir Table Pro.</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 items-stretch mt-11 mb-16">
+<!-- Community / Open Source -->
+<div class="flex flex-col rounded-2xl p-7 md:p-8 m-0! mt-0! relative bg-white dark:bg-[#0b1220] border border-[#f05a45]/25 dark:border-slate-800 shadow-[0_10px_30px_rgba(15,23,42,0.06)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)] transition-all duration-200 hover:-translate-y-1 hover:shadow-xl">
+<div class="mb-4">
+<span class="inline-block text-[11px] font-bold tracking-wider uppercase text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 px-2.5 py-1 rounded-full mb-3">Community</span>
+<h3 class="m-0! text-2xl font-extrabold text-slate-900 dark:text-white border-0!">Open Source</h3>
+<p class="m-0! mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed min-h-[2.75rem]">The expressive core library for standard Eloquent tables and Inertia Vue rendering.</p>
+</div>
+<div class="flex items-baseline gap-1 mt-5 mb-1">
+<span class="text-2xl font-bold text-orange-500 dark:text-orange-400 leading-none">$</span>
+<span class="text-5xl font-extrabold text-slate-900 dark:text-white leading-none tracking-tight">0</span>
+<span class="text-sm text-slate-500 dark:text-slate-400 ml-1 font-medium">/ forever</span>
+</div>
+<p class="m-0! mt-1 mb-5! text-xs text-slate-500 dark:text-slate-400 font-medium">Free forever • MIT License</p>
+<div class="h-px bg-slate-200 dark:bg-slate-800 my-4"></div>
+<ul class="list-none! p-0! m-0! mb-4! flex-1">
+<li class="flex items-start gap-2.5 text-[13.5px] text-slate-700 dark:text-slate-300 mb-2.5! leading-snug">
+<svg class="w-4.5 h-4.5 shrink-0 mt-0.5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+<span>Table classes &amp; Eloquent query builder</span>
+</li>
+<li class="flex items-start gap-2.5 text-[13.5px] text-slate-700 dark:text-slate-300 mb-2.5! leading-snug">
+<svg class="w-4.5 h-4.5 shrink-0 mt-0.5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+<span>10+ typed column types (Text, Badge, Date, etc.)</span>
+</li>
+<li class="flex items-start gap-2.5 text-[13.5px] text-slate-700 dark:text-slate-300 mb-2.5! leading-snug">
+<svg class="w-4.5 h-4.5 shrink-0 mt-0.5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+<span>Server-side search, sorting &amp; pagination</span>
+</li>
+<li class="flex items-start gap-2.5 text-[13.5px] text-slate-700 dark:text-slate-300 mb-2.5! leading-snug">
+<svg class="w-4.5 h-4.5 shrink-0 mt-0.5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+<span>Row actions, bulk actions &amp; Excel exports</span>
+</li>
+<li class="flex items-start gap-2.5 text-[13.5px] text-slate-700 dark:text-slate-300 mb-2.5! leading-snug">
+<svg class="w-4.5 h-4.5 shrink-0 mt-0.5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+<span>Full TypeScript types &amp; dark mode</span>
+</li>
+</ul>
+<div class="rounded-xl px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 my-3 text-left">
+  <p class="text-[12px] text-slate-600 dark:text-slate-400 leading-snug m-0!">
+    <strong class="text-slate-900 dark:text-white font-semibold">Open source:</strong> Free forever under the permissive MIT license.
+  </p>
+</div>
+<a href="/getting-started/installation/" class="inline-flex items-center justify-center gap-2 w-full text-center font-bold text-sm md:text-base py-3 px-5 rounded-xl no-underline! text-slate-800! dark:text-white! bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#f05a45] hover:bg-[#f05a45]/10">
+Get Started Free
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+</a>
+<p class="text-xs text-center text-slate-500 dark:text-slate-400 m-0! mt-3! flex items-center justify-center gap-1.5">100% Free &amp; Open Source</p>
+</div>
+
+<!-- Pro Single Project (Featured) -->
+<div class="flex flex-col rounded-2xl p-7 md:p-8 m-0! mt-0! relative bg-gradient-to-b from-[#fffaf8] to-white dark:from-[#131726] dark:to-[#0b1220] border-2 border-[#f05a45]/50 dark:border-[#f05a45]/50 shadow-[0_0_0_1px_rgba(240,90,69,0.2),0_20px_45px_rgba(240,90,69,0.1)] dark:shadow-[0_0_0_1px_rgba(240,90,69,0.25),0_20px_45px_rgba(240,90,69,0.15)] transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl">
+<div class="mb-4">
+<div class="flex items-center justify-between mb-2">
+  <h3 class="m-0! text-2xl font-extrabold text-slate-900 dark:text-white border-0!">Single Project</h3>
+  <span class="inline-flex items-center text-xs font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 rounded-full px-2.5 py-0.5">Lifetime usage</span>
+</div>
+<p class="m-0! mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed min-h-[2.75rem]">For production apps requiring customizable column ordering and multi-clause filtering.</p>
+</div>
+<div class="flex items-baseline gap-1 mt-5 mb-1">
+<span class="text-2xl font-bold text-orange-500 dark:text-orange-400 leading-none">$</span>
+<span class="text-5xl font-extrabold text-slate-900 dark:text-white leading-none tracking-tight">89</span>
+<span class="text-sm text-slate-500 dark:text-slate-400 ml-1 font-medium">/ year</span>
+</div>
+<p class="font-medium text-sm text-slate-800 dark:text-slate-200 m-0! mt-2 mb-4!">Keep using the package, even if you cancel.</p>
+<div class="h-px bg-slate-200 dark:bg-slate-800 my-4"></div>
+<ul class="list-none! p-0! m-0! mb-4! flex-1">
+<li class="flex items-start gap-2.5 text-[13.5px] text-slate-700 dark:text-slate-300 mb-2.5! leading-snug">
+<svg class="w-4.5 h-4.5 shrink-0 mt-0.5 text-[#f05a45]" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+<span><strong class="text-slate-900 dark:text-white font-semibold">Everything in Open Source, plus:</strong></span>
+</li>
+<li class="flex items-start gap-2.5 text-[13.5px] text-slate-700 dark:text-slate-300 mb-2.5! leading-snug">
+<svg class="w-4.5 h-4.5 shrink-0 mt-0.5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+<span><strong class="text-slate-900 dark:text-white font-semibold">Column Reordering &amp; DB Persistence</strong></span>
+</li>
+<li class="flex items-start gap-2.5 text-[13.5px] text-slate-700 dark:text-slate-300 mb-2.5! leading-snug">
+<svg class="w-4.5 h-4.5 shrink-0 mt-0.5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+<span><strong class="text-slate-900 dark:text-white font-semibold">Advanced Filters</strong> (Drawer &amp; header layouts)</span>
+</li>
+<li class="flex items-start gap-2.5 text-[13.5px] text-slate-700 dark:text-slate-300 mb-2.5! leading-snug">
+<svg class="w-4.5 h-4.5 shrink-0 mt-0.5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+<span>1 production app • All 1.x updates included</span>
+</li>
+</ul>
+
+<div class="rounded-xl px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 my-3 text-left">
+  <p class="text-[12px] text-slate-600 dark:text-slate-400 leading-snug m-0!">
+    <strong class="text-slate-900 dark:text-white font-semibold">Cancel anytime:</strong> Keep using forever, even if you cancel.
+  </p>
+</div>
+
+<a href="https://zonvoir-table-pro-management.test/checkout/details?plan=single-project" class="inline-flex items-center justify-center gap-2 w-full text-center font-bold text-sm md:text-base py-3 px-5 rounded-xl no-underline! text-white! bg-[#f05a45] shadow-[0_4px_16px_rgba(240,90,69,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#e04a35] hover:shadow-[0_8px_24px_rgba(240,90,69,0.45)]">
+Get Single Project
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+</a>
+<p class="text-xs text-center text-slate-500 dark:text-slate-400 m-0! mt-3! flex items-center justify-center gap-1.5">Perpetual license • 1 year of updates</p>
+</div>
+
+<!-- Pro Unlimited / Team -->
+<div class="flex flex-col rounded-2xl p-7 md:p-8 m-0! mt-0! relative bg-white dark:bg-[#0b1220] border border-[#f05a45]/25 dark:border-slate-800 shadow-[0_10px_30px_rgba(15,23,42,0.06)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)] transition-all duration-200 hover:-translate-y-1 hover:shadow-xl">
+<div class="mb-4">
+<div class="flex items-center justify-between mb-2">
+  <h3 class="m-0! text-2xl font-extrabold text-slate-900 dark:text-white border-0!">Unlimited Projects</h3>
+  <span class="inline-flex items-center text-xs font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 rounded-full px-2.5 py-0.5">Lifetime usage</span>
+</div>
+<p class="m-0! mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed min-h-[2.75rem]">For agencies, SaaS builders, and engineering teams shipping multiple products.</p>
+</div>
+<div class="flex items-baseline gap-1 mt-5 mb-1">
+<span class="text-2xl font-bold text-orange-500 dark:text-orange-400 leading-none">$</span>
+<span class="text-5xl font-extrabold text-slate-900 dark:text-white leading-none tracking-tight">269</span>
+<span class="text-sm text-slate-500 dark:text-slate-400 ml-1 font-medium">/ year</span>
+</div>
+<p class="font-medium text-sm text-slate-800 dark:text-slate-200 m-0! mt-2 mb-4!">Keep using the package, even if you cancel.</p>
+<div class="h-px bg-slate-200 dark:bg-slate-800 my-4"></div>
+<ul class="list-none! p-0! m-0! mb-4! flex-1">
+<li class="flex items-start gap-2.5 text-[13.5px] text-slate-700 dark:text-slate-300 mb-2.5! leading-snug">
+<svg class="w-4.5 h-4.5 shrink-0 mt-0.5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+<span><strong class="text-slate-900 dark:text-white font-semibold">Everything in Single Project, plus:</strong></span>
+</li>
+<li class="flex items-start gap-2.5 text-[13.5px] text-slate-700 dark:text-slate-300 mb-2.5! leading-snug">
+<svg class="w-4.5 h-4.5 shrink-0 mt-0.5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+<span><strong class="text-slate-900 dark:text-white font-semibold">Unlimited apps, domains &amp; developers</strong></span>
+</li>
+<li class="flex items-start gap-2.5 text-[13.5px] text-slate-700 dark:text-slate-300 mb-2.5! leading-snug">
+<svg class="w-4.5 h-4.5 shrink-0 mt-0.5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+<span><strong class="text-slate-900 dark:text-white font-semibold">Commercial license</strong></span>
+</li>
+<li class="flex items-start gap-2.5 text-[13.5px] text-slate-700 dark:text-slate-300 mb-2.5! leading-snug">
+<svg class="w-4.5 h-4.5 shrink-0 mt-0.5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+<span><strong class="text-slate-900 dark:text-white font-semibold">Priority support</strong></span>
+</li>
+<li class="flex items-start gap-2.5 text-[13.5px] text-slate-700 dark:text-slate-300 mb-2.5! leading-snug">
+<svg class="w-4.5 h-4.5 shrink-0 mt-0.5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+<span>Early beta access • All 1.x updates included</span>
+</li>
+</ul>
+
+<div class="rounded-xl px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 my-3 text-left">
+  <p class="text-[12px] text-slate-600 dark:text-slate-400 leading-snug m-0!">
+    <strong class="text-slate-900 dark:text-white font-semibold">Cancel anytime:</strong> Keep using forever across all your apps.
+  </p>
+</div>
+
+<a href="https://zonvoir-table-pro-management.test/checkout/details?plan=unlimited-projects" class="inline-flex items-center justify-center gap-2 w-full text-center font-bold text-sm md:text-base py-3 px-5 rounded-xl no-underline! text-white! bg-[#f05a45] shadow-[0_4px_16px_rgba(240,90,69,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#e04a35] hover:shadow-[0_8px_24px_rgba(240,90,69,0.45)]">
+Get Unlimited Projects
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+</a>
+<p class="text-xs text-center text-slate-500 dark:text-slate-400 m-0! mt-3! flex items-center justify-center gap-1.5">Perpetual license • 1 year of updates</p>
+</div>
+</div>
+
+<!-- How the subscription works explainer -->
+<div class="bg-white dark:bg-[#0b1220] border border-[#f05a45]/20 dark:border-slate-800 rounded-3xl p-6 sm:p-10 mb-16 shadow-[0_10px_30px_rgba(15,23,42,0.04)] dark:shadow-[0_10px_30px_rgba(0,0,0,0.2)]">
+  <div class="max-w-3xl mx-auto text-center mb-8">
+    <p class="zv-eyebrow the-capability-ledger">Fair Licensing</p>
+    <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white m-0! mt-2! mb-2! border-0!">How the subscription works</h3>
+    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed m-0!">Simple, transparent, developer-first licensing with no kill-switches or vendor lock-in.</p>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+    <div class="p-5 rounded-2xl bg-[#fffaf8] dark:bg-[#111c2f] border border-[#f05a45]/15 dark:border-slate-800">
+      <div class="w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-sm mb-3">1</div>
+      <h4 class="font-bold text-base text-slate-900 dark:text-white m-0! mb-1.5! border-0!">Perpetual Usage</h4>
+      <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed m-0!">Once installed, the package is yours forever. Even if you cancel, your existing tables will never stop functioning.</p>
+    </div>
+    <div class="p-5 rounded-2xl bg-[#fffaf8] dark:bg-[#111c2f] border border-[#f05a45]/15 dark:border-slate-800">
+      <div class="w-9 h-9 rounded-xl bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-sm mb-3">2</div>
+      <h4 class="font-bold text-base text-slate-900 dark:text-white m-0! mb-1.5! border-0!">Continuous Updates</h4>
+      <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed m-0!">Receive all new features, performance enhancements, and security patches released throughout your active subscription period.</p>
+    </div>
+    <div class="p-5 rounded-2xl bg-[#fffaf8] dark:bg-[#111c2f] border border-[#f05a45]/15 dark:border-slate-800">
+      <div class="w-9 h-9 rounded-xl bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold text-sm mb-3">3</div>
+      <h4 class="font-bold text-base text-slate-900 dark:text-white m-0! mb-1.5! border-0!">Cancel Anytime</h4>
+      <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed m-0!">Cancel with a single click at any time. You keep full access until your billing cycle ends, and you retain perpetual access to your installed version.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Upcoming Pro Features Showcase ("Many more to come") -->
+<div class="bg-white dark:bg-[#0b1220] border border-[#f05a45]/25 dark:border-slate-800 rounded-3xl p-6 sm:p-10 md:p-12 mt-14 mb-16 shadow-[0_12px_36px_rgba(15,23,42,0.05)] dark:shadow-[0_10px_35px_rgba(0,0,0,0.2)] relative overflow-hidden">
+<div class="text-center max-w-2xl mx-auto mb-10">
+<p class="zv-eyebrow the-capability-ledger">Pro Roadmap</p>
+<h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white m-0! mt-2! mb-3! border-0!">Continuous evolution. <span class="text-[#f05a45]">Many more to come.</span></h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed m-0!">Zonvoir Table Pro is under active, rapid development. Your Pro license includes all upcoming feature releases in the 1.x pipeline with zero upgrade fees.</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">
+<div class="bg-[#fff8f6] dark:bg-[#111c2f] border border-[#f05a45]/20 dark:border-slate-800 rounded-2xl p-6 m-0! mt-0! flex flex-col h-full transition-all duration-200 hover:-translate-y-1 hover:border-[#f05a45]">
+<div class="flex items-center justify-between mb-4">
+<div class="w-10.5 h-10.5 rounded-xl flex items-center justify-center bg-[#f05a45]/15 text-[#f05a45]">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="10" rx="1.5"/><rect x="17" y="4" width="5" height="13" rx="1.5"/></svg>
+</div>
+<span class="text-[11px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/30">Planned</span>
+</div>
+<h4 class="text-lg font-bold text-slate-900 dark:text-white m-0! mb-2! border-0!">Kanban Board</h4>
+<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed m-0!">Switch seamlessly between table view and drag-and-drop Kanban boards. Group records across status lanes with smooth transitions and instant Eloquent updates.</p>
+</div>
+<div class="bg-[#fff8f6] dark:bg-[#111c2f] border border-[#f05a45]/20 dark:border-slate-800 rounded-2xl p-6 m-0! mt-0! flex flex-col h-full transition-all duration-200 hover:-translate-y-1 hover:border-[#f05a45]">
+<div class="flex items-center justify-between mb-4">
+<div class="w-10.5 h-10.5 rounded-xl flex items-center justify-center bg-[#f05a45]/15 text-[#f05a45]">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+</div>
+<span class="text-[11px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/30">Planned</span>
+</div>
+<h4 class="text-lg font-bold text-slate-900 dark:text-white m-0! mb-2! border-0!">Saved Table Views &amp; Presets</h4>
+<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed m-0!">Allow end-users to save, name, and switch between custom filter, sort, and column visibility combinations (e.g. &ldquo;Pending Invoices&rdquo;).</p>
+</div>
+<div class="bg-[#fff8f6] dark:bg-[#111c2f] border border-[#f05a45]/20 dark:border-slate-800 rounded-2xl p-6 m-0! mt-0! flex flex-col h-full transition-all duration-200 hover:-translate-y-1 hover:border-[#f05a45]">
+<div class="flex items-center justify-between mb-4">
+<div class="w-10.5 h-10.5 rounded-xl flex items-center justify-center bg-[#f05a45]/15 text-[#f05a45]">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+</div>
+<span class="text-[11px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/30">Planned</span>
+</div>
+<h4 class="text-lg font-bold text-slate-900 dark:text-white m-0! mb-2! border-0!">Inline Cell Editing</h4>
+<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed m-0!">Click-to-edit capabilities directly within table cells for strings, numbers, booleans, and dates, with optimistic UI and instant Eloquent updates.</p>
+</div>
+</div>
+</div>
+
+<!-- Comparison Matrix Table -->
+<div class="my-14">
+<div class="zv-ledger-head text-center max-w-3xl mx-auto">
+<p class="zv-eyebrow the-capability-ledger">Feature Matrix</p>
+<h2>Compare <span>Free vs Pro.</span></h2>
+<p class="zn-tb-sb">Everything you need to decide the right fit for your application.</p>
+</div>
+
+<div class="max-w-4xl mx-auto overflow-x-auto rounded-2xl bg-white dark:bg-[#0b1220] shadow-[0_24px_50px_rgba(230,180,180,0.15),inset_0_0_0_1px_#ffdcdc99] dark:shadow-[0_24px_50px_rgb(230_180_180/13%),inset_0_0_0_1px_#8f8a8a99]">
+<table class="w-full border-collapse text-left text-sm">
+<thead>
+<tr>
+<th class="px-6 py-3.5 font-mono text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 bg-[#fff5f2] dark:bg-[#111c2f] border-b border-[#ffe6e6]/60 dark:border-slate-800 w-[42%]">Capability</th>
+<th class="px-6 py-3.5 font-mono text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 bg-[#fff5f2] dark:bg-[#111c2f] border-b border-[#ffe6e6]/60 dark:border-slate-800 w-[26%]">Open Source</th>
+<th class="px-6 py-3.5 font-mono text-xs font-semibold uppercase tracking-wider text-[#f05a45] bg-[#ffefe9] dark:bg-[#19243a] border-b border-[#ffe6e6]/60 dark:border-slate-800 w-[32%]">
+<span class="inline-flex items-center gap-1.5">Pro Package <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-[#f05a45]/15 text-[#f05a45] border border-[#f05a45]/30">Pro</span></span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-t border-[#f3f4f6cc] dark:border-slate-800/80 hover:bg-[#f05a45]/[0.02] dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-3.5 text-sm font-medium text-slate-800 dark:text-slate-200"><span class="text-xs font-mono text-slate-400 dark:text-slate-500 mr-2.5">01</span>Table Classes &amp; Eloquent Queries</td>
+<td class="px-6 py-3.5"><span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-300"><svg class="w-4 h-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Included</span></td>
+<td class="px-6 py-3.5 bg-[#f05a45]/[0.02] dark:bg-[#f05a45]/[0.04]"><span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-300"><svg class="w-4 h-4 text-[#f05a45] shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Included</span></td>
+</tr>
+<tr class="border-t border-[#f3f4f6cc] dark:border-slate-800/80 hover:bg-[#f05a45]/[0.02] dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-3.5 text-sm font-medium text-slate-800 dark:text-slate-200"><span class="text-xs font-mono text-slate-400 dark:text-slate-500 mr-2.5">02</span>10+ Typed Column Types</td>
+<td class="px-6 py-3.5"><span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-300"><svg class="w-4 h-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Included</span></td>
+<td class="px-6 py-3.5 bg-[#f05a45]/[0.02] dark:bg-[#f05a45]/[0.04]"><span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-300"><svg class="w-4 h-4 text-[#f05a45] shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Included</span></td>
+</tr>
+<tr class="border-t border-[#f3f4f6cc] dark:border-slate-800/80 hover:bg-[#f05a45]/[0.02] dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-3.5 text-sm font-medium text-slate-800 dark:text-slate-200"><span class="text-xs font-mono text-slate-400 dark:text-slate-500 mr-2.5">03</span>Server-Side Search &amp; Column Search</td>
+<td class="px-6 py-3.5"><span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-300"><svg class="w-4 h-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Included</span></td>
+<td class="px-6 py-3.5 bg-[#f05a45]/[0.02] dark:bg-[#f05a45]/[0.04]"><span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-300"><svg class="w-4 h-4 text-[#f05a45] shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Included</span></td>
+</tr>
+<tr class="border-t border-[#f3f4f6cc] dark:border-slate-800/80 hover:bg-[#f05a45]/[0.02] dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-3.5 text-sm font-medium text-slate-800 dark:text-slate-200"><span class="text-xs font-mono text-slate-400 dark:text-slate-500 mr-2.5">04</span>Direction-Aware Sorting &amp; Pagination</td>
+<td class="px-6 py-3.5"><span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-300"><svg class="w-4 h-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Included</span></td>
+<td class="px-6 py-3.5 bg-[#f05a45]/[0.02] dark:bg-[#f05a45]/[0.04]"><span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-300"><svg class="w-4 h-4 text-[#f05a45] shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Included</span></td>
+</tr>
+<tr class="border-t border-[#f3f4f6cc] dark:border-slate-800/80 hover:bg-[#f05a45]/[0.02] dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-3.5 text-sm font-medium text-slate-800 dark:text-slate-200"><span class="text-xs font-mono text-slate-400 dark:text-slate-500 mr-2.5">05</span>Row Actions, Bulk Actions &amp; Exports</td>
+<td class="px-6 py-3.5"><span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-300"><svg class="w-4 h-4 text-emerald-500 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Included</span></td>
+<td class="px-6 py-3.5 bg-[#f05a45]/[0.02] dark:bg-[#f05a45]/[0.04]"><span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-300"><svg class="w-4 h-4 text-[#f05a45] shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Included</span></td>
+</tr>
+<tr class="border-t border-[#f3f4f6cc] dark:border-slate-800/80 hover:bg-[#f05a45]/[0.02] dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-3.5 text-sm font-medium text-slate-800 dark:text-slate-200"><span class="text-xs font-mono text-slate-400 dark:text-slate-500 mr-2.5">06</span>Column Reordering (Drag &amp; Drop)</td>
+<td class="px-6 py-3.5"><span class="text-slate-300 dark:text-slate-700 font-light text-base select-none">—</span></td>
+<td class="px-6 py-3.5 bg-[#f05a45]/[0.02] dark:bg-[#f05a45]/[0.04]"><span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-800 dark:text-slate-200"><svg class="w-4 h-4 text-[#f05a45] shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Included</span></td>
+</tr>
+<tr class="border-t border-[#f3f4f6cc] dark:border-slate-800/80 hover:bg-[#f05a45]/[0.02] dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-3.5 text-sm font-medium text-slate-800 dark:text-slate-200"><span class="text-xs font-mono text-slate-400 dark:text-slate-500 mr-2.5">07</span>Per-User Database Column Persistence</td>
+<td class="px-6 py-3.5"><span class="text-slate-300 dark:text-slate-700 font-light text-base select-none">—</span></td>
+<td class="px-6 py-3.5 bg-[#f05a45]/[0.02] dark:bg-[#f05a45]/[0.04]"><span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-800 dark:text-slate-200"><svg class="w-4 h-4 text-[#f05a45] shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Included</span></td>
+</tr>
+<tr class="border-t border-[#f3f4f6cc] dark:border-slate-800/80 hover:bg-[#f05a45]/[0.02] dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-3.5 text-sm font-medium text-slate-800 dark:text-slate-200"><span class="text-xs font-mono text-slate-400 dark:text-slate-500 mr-2.5">08</span>Advanced Table Filters (5 Typed Builders)</td>
+<td class="px-6 py-3.5"><span class="text-slate-300 dark:text-slate-700 font-light text-base select-none">—</span></td>
+<td class="px-6 py-3.5 bg-[#f05a45]/[0.02] dark:bg-[#f05a45]/[0.04]"><span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-800 dark:text-slate-200"><svg class="w-4 h-4 text-[#f05a45] shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Included</span></td>
+</tr>
+<tr class="border-t border-[#f3f4f6cc] dark:border-slate-800/80 hover:bg-[#f05a45]/[0.02] dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-3.5 text-sm font-medium text-slate-800 dark:text-slate-200"><span class="text-xs font-mono text-slate-400 dark:text-slate-500 mr-2.5">09</span>Slide-Out Filter Drawer &amp; Header Filter Bars</td>
+<td class="px-6 py-3.5"><span class="text-slate-300 dark:text-slate-700 font-light text-base select-none">—</span></td>
+<td class="px-6 py-3.5 bg-[#f05a45]/[0.02] dark:bg-[#f05a45]/[0.04]"><span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-800 dark:text-slate-200"><svg class="w-4 h-4 text-[#f05a45] shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Included</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
 </section>
 </div>
 

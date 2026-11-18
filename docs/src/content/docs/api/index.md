@@ -42,10 +42,32 @@ Use this index to jump from namespaces to focused reference pages. The layout is
   <li><a href="/api/frontend-api/"><code>ZonvoirTable</code><span>Vue adapter export.</span></a></li>
 </ul>
 
+## Zonvoir\InertiaTablePro\Concerns
+
+<ul class="api-list">
+  <li><a href="/api/column-reordering/"><code>HasColumnPersistence</code><span>User preference column ordering and persistence trait.</span></a></li>
+  <li><a href="/api/column-reordering/#php-service-tablepreferenceservice"><code>TablePreferenceService</code><span>Backend preference persistence service.</span></a></li>
+  <li><a href="/api/column-reordering/#vue-composable-usecolumnpersistence"><code>useColumnPersistence</code><span>Vue persistence composable.</span></a></li>
+</ul>
+
+## Zonvoir\InertiaTablePro\Filters
+
+<ul class="api-list">
+  <li><a href="/api/filters/"><code>Filter</code><span>Base filter definition API.</span></a></li>
+  <li><a href="/api/filters/#textfilter"><code>TextFilter</code><span>Text column filtering.</span></a></li>
+  <li><a href="/api/filters/#numericfilter"><code>NumericFilter</code><span>Numeric column filtering.</span></a></li>
+  <li><a href="/api/filters/#setfilter-methods"><code>SetFilter</code><span>Set and dropdown column filtering.</span></a></li>
+  <li><a href="/api/filters/#datefilter-methods"><code>DateFilter</code><span>Date column filtering.</span></a></li>
+  <li><a href="/api/filters/#datetimefilter"><code>DateTimeFilter</code><span>Date-time column filtering.</span></a></li>
+  <li><a href="/api/filters/#booleanfilter"><code>BooleanFilter</code><span>Boolean column filtering.</span></a></li>
+</ul>
+
 ## Enums
 
 <ul class="api-list">
   <li><a href="/api/enums/#buttonvariant"><code>ButtonVariant</code></a></li>
+  <li><a href="/api/filters/#clause--comparator-enum"><code>Clause</code></a></li>
+  <li><a href="/api/filters/#clause--comparator-enum"><code>Comparator</code></a></li>
   <li><a href="/api/enums/#direction"><code>Direction</code></a></li>
   <li><a href="/api/enums/#httpmethod"><code>HttpMethod</code></a></li>
   <li><a href="/api/enums/#imageposition"><code>ImagePosition</code></a></li>

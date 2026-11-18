@@ -19,8 +19,8 @@ const emitChecked = (event: Event): void => {
 };
 
 const checkboxClasses: ComputedRef<string> = computed((): string => {
-  const light = props.modelValue ? 'border-slate-950 bg-slate-950' : 'border-slate-300 bg-white';
-  const dark = props.modelValue ? 'dark:border-slate-100 dark:bg-slate-100' : 'dark:border-slate-600 dark:bg-slate-950';
+  const light = props.modelValue ? 'border-[var(--zt-primary,#0f172a)] bg-[var(--zt-primary,#0f172a)]' : 'border-slate-300 bg-white';
+  const dark = props.modelValue ? 'dark:border-[var(--zt-primary,#f8fafc)] dark:bg-[var(--zt-primary,#f8fafc)]' : 'dark:border-slate-600 dark:bg-slate-950';
   return tableConfig.value.darkMode.enabled ? `${light} ${dark}` : light;
 });
 </script>
@@ -45,7 +45,7 @@ const checkboxClasses: ComputedRef<string> = computed((): string => {
     >
       <svg
         v-if="props.modelValue"
-        :class="['absolute h-3 w-3 text-white', tableConfig.darkMode.enabled ? 'dark:text-slate-950' : '']"
+        :class="['absolute h-3 w-3 text-[var(--zt-primary-foreground,#ffffff)]', tableConfig.darkMode.enabled ? 'dark:text-[var(--zt-primary-foreground,#020617)]' : '']"
         viewBox="0 0 12 12"
         fill="none"
         aria-hidden="true"

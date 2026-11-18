@@ -18,6 +18,7 @@ Zonvoir Table provides a suite of strongly-typed PHP 8.1+ backed enums in the `Z
 | [`HttpMethod`](#httpmethod) | `string` | 5 | HTTP request methods for action navigation and handlers |
 | [`ImageSize`](#imagesize) | `string` | 4 | Preset image dimensions with Tailwind class mapping |
 | [`ImagePosition`](#imageposition) | `string` | 2 | Image placement relative to text (start, end) |
+| [`Clause`](#clause) | `string` | 16 | Filter operators for scalar, range, set, and null comparisons |
 
 ---
 
@@ -317,3 +318,45 @@ TextColumn::make('author')
         ->position(ImagePosition::End)
     );
 ```
+
+---
+
+## Clause
+
+`Zonvoir\InertiaTablePro\Enums\Clause` (aliased to `Comparator`) defines the query operators for table filters.
+
+### Cases
+
+| Case | Value | Min Values | Max Values | Description |
+| --- | --- | --- | --- | --- |
+| `Clause::Equals` | `'equals'` | 1 | 1 | Exact equality (`=`) |
+| `Clause::NotEquals` | `'not_equals'` | 1 | 1 | Not equal (`!=`) |
+| `Clause::Contains` | `'contains'` | 1 | 1 | Substring match (`LIKE %val%`) |
+| `Clause::DoesNotContain` | `'does_not_contain'` | 1 | 1 | Substring exclusion |
+| `Clause::StartsWith` | `'starts_with'` | 1 | 1 | Prefix match (`LIKE val%`) |
+| `Clause::EndsWith` | `'ends_with'` | 1 | 1 | Suffix match (`LIKE %val`) |
+| `Clause::GreaterThan` | `'greater_than'` | 1 | 1 | Greater than (`>`) |
+| `Clause::GreaterThanOrEqual` | `'greater_than_or_equal'` | 1 | 1 | Greater than or equal (`>=`) |
+| `Clause::LessThan` | `'less_than'` | 1 | 1 | Less than (`<`) |
+| `Clause::LessThanOrEqual` | `'less_than_or_equal'` | 1 | 1 | Less than or equal (`<=`) |
+| `Clause::Between` | `'between'` | 2 | 2 | Value within inclusive range |
+| `Clause::NotBetween` | `'not_between'` | 2 | 2 | Value outside range |
+| `Clause::In` | `'in'` | 1 | `null` | Value in array |
+| `Clause::NotIn` | `'not_in'` | 1 | `null` | Value not in array |
+| `Clause::IsSet` | `'is_set'` | 0 | 0 | Column has non-null value |
+| `Clause::IsNotSet` | `'is_not_set'` | 0 | 0 | Column is null or blank |
+
+### Usage Example
+
+```php
+use Zonvoir\InertiaTablePro\Enums\Clause;
+use Zonvoir\InertiaTablePro\Filters\TextFilter;
+
+TextFilter::make('name')
+    ->clauses([
+        Clause::Contains,
+        Clause::StartsWith,
+        Clause::Equals,
+    ]);
+```
+

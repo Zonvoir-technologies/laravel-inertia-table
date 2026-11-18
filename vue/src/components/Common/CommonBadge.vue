@@ -1,22 +1,32 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, normalizeClass, useAttrs } from 'vue';
+import { twMerge } from 'tailwind-merge';
 import CommonIcon from "./CommonIcon.vue";
 import { useTableConfiguration } from '../../config/tableConfig';
 
+defineOptions({ inheritAttrs: false });
+
 type BadgeVariant = 'solid' | 'outline' | 'ghost';
+type BadgeSize = 'default' | 'sm' | 'xs';
 
 interface BadgeProps {
   variant?: string;
   color?: string;
   icon?: string;
+  size?: BadgeSize;
+  round?: boolean;
 }
+
+const attrs = useAttrs();
 
 const props = withDefaults(
   defineProps<BadgeProps>(),
   {
     variant: 'outline',
-    color: 'neutral',
+    color: 'primary',
     icon: '',
+    size: 'default',
+    round: false,
   }
 );
 
@@ -137,6 +147,11 @@ const badgeVariantClasses = {
     outline: 'bg-rose-50 text-rose-700 border border-rose-300',
     ghost: 'bg-transparent text-rose-700 border border-transparent',
   },
+  primary: {
+    solid: 'bg-[var(--zt-primary,#0f172a)] text-[var(--zt-primary-foreground,#ffffff)] border border-[var(--zt-primary,#0f172a)]',
+    outline: 'bg-[var(--zt-primary-50,#ffffff)] text-[var(--zt-primary,#0f172a)] border border-[var(--zt-primary,#0f172a)] dark:bg-slate-900',
+    ghost: 'bg-transparent text-[var(--zt-primary,#0f172a)] border border-transparent',
+  },
 };
 type BadgeColor = keyof typeof badgeVariantClasses;
 
@@ -189,6 +204,13 @@ const darkVariantClasses = computed((): string => {
     return 'dark:border-slate-700 dark:bg-transparent dark:text-slate-100';
   }
 
+  if (color === 'primary') {
+    if (variant === 'solid') {
+      return 'dark:bg-[var(--zt-primary,#f8fafc)] dark:text-[var(--zt-primary-foreground,#020617)] dark:border-[var(--zt-primary,#f8fafc)]';
+    }
+    return 'dark:border-[var(--zt-primary,#f8fafc)] dark:bg-[var(--zt-primary-50,#000000)] dark:text-[var(--zt-primary,#f8fafc)]';
+  }
+
   if (variant !== 'outline') {
     return '';
   }
@@ -219,17 +241,36 @@ const badgeClasses = computed((): string => {
   return dynamicClasses[variant];
 });
 
+const sizeClasses: Record<BadgeSize, string> = {
+  default: 'min-w-16 px-3 py-1 text-xs leading-4 rounded-md',
+  sm: 'min-w-10 px-2 py-0.5 text-xs leading-4 rounded-md',
+  xs: 'min-w-4 px-1.5 py-0.5 text-[10px] leading-3 rounded-full',
+};
+
+const rootClasses = computed((): string =>
+  twMerge([
+    'zt-badge inline-flex items-center justify-center gap-1 font-medium',
+    sizeClasses[props.size] ?? sizeClasses.default,
+    props.round ? 'rounded-full' : '',
+    badgeClasses.value,
+    tableConfig.value.darkMode.enabled ? darkVariantClasses.value : '',
+    normalizeClass(attrs.class)
+  ].join(' '))
+);
+
+const spanAttrs = computed(() => {
+  const rest = { ...attrs };
+  delete rest.class;
+  return rest;
+});
 </script>
 
 <template>
   <span
     :data-variant="normalizeVariant(props.variant)"
     :data-color="normalizeColor(props.color)"
-    :class="[
-      'zt-badge inline-flex min-w-16 items-center justify-center gap-1 rounded-md px-3 py-1 text-xs font-medium leading-4',
-      badgeClasses,
-      tableConfig.darkMode.enabled ? darkVariantClasses : '',
-    ]"
+    :class="rootClasses"
+    v-bind="spanAttrs"
   >
     <CommonIcon v-if="icon" :icon="icon" :data-icon="icon" aria-hidden="true" class="size-4 shrink-0" />
     <slot />

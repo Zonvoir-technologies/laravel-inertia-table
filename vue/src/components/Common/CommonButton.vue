@@ -30,7 +30,7 @@ const props = withDefaults(
   {
     variant: 'solid',
     size: 'default',
-    color: 'neutral',
+    color: 'primary',
     disabled: false,
     as: 'button',
     loading: false
@@ -178,13 +178,19 @@ const buttonVariantClasses = {
     ghost: 'bg-transparent border-transparent text-rose-700 hover:bg-rose-50 disabled:opacity-50',
     link: 'bg-transparent border-transparent text-rose-700 hover:text-rose-800 underline underline-offset-4 shadow-none disabled:opacity-50',
   },
+  primary: {
+    solid: 'bg-[var(--zt-primary,#475569)] hover:opacity-90 text-[var(--zt-primary-foreground,#ffffff)] border-transparent shadow-sm disabled:opacity-50',
+    outline: 'bg-white text-[var(--zt-primary,#475569)] border-[var(--zt-primary,#cbd5e1)] border font-medium hover:bg-slate-50 disabled:opacity-50',
+    ghost: 'bg-transparent border-transparent text-[var(--zt-primary,#475569)] hover:bg-slate-50 disabled:opacity-50',
+    link: 'bg-transparent border-transparent text-[var(--zt-primary,#475569)] hover:opacity-80 underline underline-offset-4 shadow-none disabled:opacity-50',
+  },
 };
 type ButtonColor = keyof typeof buttonVariantClasses;
 
 const normalizeColor = (color: string): string => {
   const normalizedColor = color.toLowerCase();
   const aliases: Record<string, string> = {
-    default: 'neutral',
+    default: 'primary',
     destructive: 'red',
     danger: 'red',
     success: 'green',
@@ -228,6 +234,16 @@ const darkVariantClasses: ComputedRef<string> = computed((): string => {
       return 'dark:bg-slate-950 dark:border-slate-700 dark:text-white dark:hover:bg-slate-900';
     }
     return 'dark:text-slate-100 dark:hover:bg-slate-900';
+  }
+
+  if (color === 'primary') {
+    if (variant === 'solid') {
+      return 'dark:bg-[var(--zt-primary,#334155)] dark:text-[var(--zt-primary-foreground,#ffffff)] dark:border-transparent dark:hover:opacity-90';
+    }
+    if (variant === 'outline') {
+      return 'dark:bg-slate-950 dark:border-[var(--zt-primary,#475569)] dark:text-[var(--zt-primary,#94a3b8)] dark:hover:bg-slate-900';
+    }
+    return 'dark:text-[var(--zt-primary,#94a3b8)] dark:hover:bg-slate-900';
   }
 
   if (variant !== 'outline') {

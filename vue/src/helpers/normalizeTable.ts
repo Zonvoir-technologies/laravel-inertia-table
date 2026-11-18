@@ -1,8 +1,12 @@
 import type {
   PaginatedResults,
+  TableAction,
   TableDefinition,
   TableColumn,
   TableEmptyState,
+  TableFilter,
+  TableFilterLayout,
+  TableMetaValue,
   TablePagination,
   TableResource,
   TableRow,
@@ -11,25 +15,27 @@ import type {
 
 const DEFAULT_PER_PAGE: number = 15;
 
-function isPlainRecord(value: unknown): value is Record<string, unknown> {
+function isPlainRecord(
+  value: TableMetaValue | TableEmptyState | TableAction | string | boolean | null | undefined
+): value is Record<string, TableMetaValue> {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value) && Object.getPrototypeOf(value) === Object.prototype;
 }
 
 function normalizeEmptyState<T extends TableRow>(resource: TableResource<T>): false | TableEmptyState {
-  const emptyState: unknown = resource.emptyState;
+  const emptyState: TableEmptyState | string | boolean | null | undefined = resource.emptyState;
 
   if (typeof emptyState === 'string') {
     return { message: emptyState };
   }
 
   if (isPlainRecord(emptyState)) {
-    const action = isPlainRecord(emptyState.action) ? emptyState.action : null;
+    const action = isPlainRecord(emptyState.action) ? (emptyState.action as TableAction) : null;
 
     return {
       title: typeof emptyState.title === 'string' ? emptyState.title : null,
       message: typeof emptyState.message === 'string' ? emptyState.message : null,
       icon: typeof emptyState.icon === 'string' ? emptyState.icon : null,
-      action: action as TableEmptyState['action']
+      action
     };
   }
 
@@ -133,7 +139,19 @@ export function normalizeTable<T extends TableRow = TableRow>(
     resource.hasExportsThatLimitsToSelectedRows ?? resource.exports?.some((exportAction): boolean => Boolean(exportAction.limitToSelectedRows))
   );
 
+  const hasFilters: boolean = Boolean(
+    resource.hasFilters ??
+    resource.filters?.length
+  );
+  const filters: TableFilter[] = resource.filters ?? [];
+  const filterLayout: TableFilterLayout = resource.filterLayout ?? 'drawer';
+  const reorderable: boolean = Boolean(
+    resource.reorderable ??
+    resource.meta?.reorderable
+  );
+
   return {
+    ...resource,
     name: resource.name ?? '',
     columns,
     rows: normalizeRows(resource),
@@ -154,6 +172,10 @@ export function normalizeTable<T extends TableRow = TableRow>(
     hasBulkActions,
     hasExports: Boolean(resource.hasExports ?? resource.exports?.length),
     hasExportsThatLimitsToSelectedRows: hasSelectedRowExports,
-    emptyState: normalizeEmptyState(resource)
+    emptyState: normalizeEmptyState(resource),
+    hasFilters,
+    filterLayout,
+    filters,
+    reorderable
   };
 }

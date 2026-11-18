@@ -43,6 +43,15 @@ These are every built-in icon key and its current default from tableConfig.ts.
 | sortDescending | heroicons:arrow-down | Descending column header |
 | stick | heroicons:lock-closed | Make-column-sticky action |
 | unstick | heroicons:lock-open | Unstick-column action |
+| dragHandle | akar-icons:drag-vertical | Column reordering grip handle in toggle columns menu |
+| filter | heroicons:funnel | Filter toggle button |
+| filterChevron | heroicons:chevron-down | Filter dropdown chevron |
+| filterClose | heroicons:x-mark | Close filter drawer or panel |
+| filterRemove | heroicons:x-mark | Remove active filter tag |
+| filterAdd | heroicons:plus | Add condition button |
+| calendar | heroicons:calendar | Datepicker input |
+| clock | heroicons:clock | Time selection in datepicker |
+| check | heroicons:check | Active selection checkmark |
 
 Set loading to null when you only want the built-in spinner. The other keys accept an Iconify collection:name string or a Vue component.
 

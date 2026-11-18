@@ -29,9 +29,11 @@ const navigationColumns: FooterColumn[] = [
   {
     title: 'Features & Usage',
     links: [
+      { label: 'Column Reordering (Pro)', href: '/core-concepts/column-reorder/' },
+      { label: 'Filters (Pro)', href: '/core-concepts/filters/' },
       { label: 'Columns & Formatting', href: '/core-concepts/columns/' },
       { label: 'Sorting & Pagination', href: '/core-concepts/pagination/' },
-      { label: 'Searching & Filters', href: '/core-concepts/searching/' },
+      { label: 'Searching', href: '/core-concepts/searching/' },
       { label: 'Bulk & Row Actions', href: '/core-concepts/bulk-actions/' },
       { label: 'Data Exports', href: '/core-concepts/exports/' },
       { label: 'Sticky Columns', href: '/core-concepts/sticky-columns/' },
@@ -186,7 +188,9 @@ const year = new Date().getFullYear();
       </p>
 
       <div class="zv-bottom-links">
-        <a href="/sitemap-index.xml" class="zv-sitemap-link">Sitemap</a>
+        <a href="/privacy-policy/" class="zv-bottom-link">Privacy Policy</a>
+        <a href="/terms-and-conditions/" class="zv-bottom-link">Terms and Conditions</a>
+        <a href="/sitemap-index.xml" class="zv-bottom-link zv-sitemap-link">Sitemap</a>
       </div>
     </div>
   </div>
@@ -528,9 +532,11 @@ const year = new Date().getFullYear();
   .zv-bottom-links {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
   }
 
+  .zv-bottom-link,
   .zv-sitemap-link {
     color: var(--sl-color-gray-3);
     font-size: var(--sl-text-xs);
@@ -538,6 +544,7 @@ const year = new Date().getFullYear();
     transition: color 0.15s ease;
   }
 
+  .zv-bottom-link:hover,
   .zv-sitemap-link:hover {
     color: var(--sl-color-accent);
   }
