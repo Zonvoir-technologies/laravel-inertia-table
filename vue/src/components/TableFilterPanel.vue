@@ -242,6 +242,11 @@ const updateFilterValue = (
   resolvedModelValue.value = updated;
 };
 
+const createFilterUpdater = (key: string) =>
+  (val: { comparator: string; value: FilterValue } | null) => {
+    updateFilterValue(key, val);
+  };
+
 const handleEditFilter = (index: number) => {
   const activeItem = activeFilters.value[index];
   editFilter(index);
@@ -331,7 +336,7 @@ const handleReset = () => {
               v-if="getFilterSlot(filter.key)"
               :filter="filter"
               :value="resolvedModelValue[filter.key]?.value"
-              :update="(val: { comparator: string; value: FilterValue } | null) => updateFilterValue(filter.key, val)"
+              :update="createFilterUpdater(filter.key)"
               :table="props.table"
               :close="close"
             />
@@ -368,14 +373,3 @@ const handleReset = () => {
     </div>
   </aside>
 </template>
-
-<!--<style>-->
-<!--.zonvoir-table-wrapper {-->
-<!--  overflow: visible !important;-->
-<!--}-->
-
-<!--.zonvoir-table-filter-panel-sticky {-->
-<!--  height: 100dvh;-->
-<!--  max-height: 100dvh;-->
-<!--}-->
-<!--</style>-->
