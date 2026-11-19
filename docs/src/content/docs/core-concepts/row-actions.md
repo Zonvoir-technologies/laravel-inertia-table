@@ -166,7 +166,7 @@ async function handleCustomAction(action, keys, onFinish, context) {
 </template>
 ```
 
-This event works for row and bulk actions. Row actions receive an array containing the single row key (for example, `['user-1']`); bulk actions receive the selected keys. The context's `selectionMode` indicates whether the current page or all matching records were selected. Selecting all matching records does not fetch off-page keys for a custom action. Actions with confirmation dialogs dispatch only after confirmation. With no listener, the action finishes immediately.
+This event works for row and bulk actions. When `rowSelectionKey` is configured and resolves to a string or number, row actions receive an array containing that single key (for example, `['user-1']`); otherwise, they receive an empty array. Bulk actions receive the selected keys. The context's `selectionMode` indicates whether the current page or all matching records were selected. Selecting all matching records does not fetch off-page keys for a custom action. Actions with confirmation dialogs dispatch only after confirmation. With no listener, the action finishes immediately.
 
 For a custom table built with `useActions`, pass the same handler as `useActions(table, { onCustomAction: handleCustomAction })`. A rejected Promise returned by this handler automatically clears the loading state. Identifiers use `key` / `action.key`, rather than `id`.
 
