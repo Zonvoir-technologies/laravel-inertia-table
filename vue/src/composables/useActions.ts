@@ -5,7 +5,14 @@ import { visitUrl } from '../helpers/visitUrl';
 import type { TableAction, TableDefinition, TableMetaValue, TableResource, TableRow, TableRowKey } from '../types/table';
 
 export type ActionExecutionPayload = { action: TableAction; response?: TableMetaValue };
-export type CustomActionHandler = (action: TableAction, keys: TableRowKey[], onFinish: () => void) => void;
+export type ActionSelectionMode = 'page' | 'all';
+export type CustomActionContext = { selectionMode?: ActionSelectionMode };
+export type CustomActionHandler = (
+  action: TableAction,
+  keys: TableRowKey[],
+  onFinish: () => void,
+  context?: CustomActionContext,
+) => void | PromiseLike<void>;
 
 export const performCustomAction = (
   action: TableAction,
@@ -13,6 +20,7 @@ export const performCustomAction = (
   loadingAction: Ref<string | null>,
   handler?: CustomActionHandler,
   onExecuted?: (payload: ActionExecutionPayload) => void,
+  context?: CustomActionContext,
 ): void => {
   loadingAction.value = action.key;
 
@@ -34,7 +42,11 @@ export const performCustomAction = (
 
   try {
     if (handler) {
-      handler(action, [...keys], onFinish);
+      const result = handler(action, [...keys], onFinish, context);
+
+      if (result && typeof result.then === 'function') {
+        Promise.resolve(result).catch(onFinish);
+      }
     } else {
       onFinish();
     }
@@ -43,7 +55,6 @@ export const performCustomAction = (
     throw error;
   }
 };
-export type ActionSelectionMode = 'page' | 'all';
 
 export type UseActionsOptions = {
   selectedKeys?: MaybeRef<TableRowKey[]>;
@@ -165,7 +176,7 @@ export function useActions<T extends TableRow = TableRow>(
     }
 
     if (!action.endpoint || action.type === 'custom') {
-      performCustomAction(action, keys, loadingAction, options.onCustomAction, options.onExecuted);
+      performCustomAction(action, keys, loadingAction, options.onCustomAction, options.onExecuted, { selectionMode });
       return;
     }
 

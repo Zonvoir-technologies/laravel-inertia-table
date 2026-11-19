@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, getCurrentInstance, ref, type ComputedRef, type Ref } from 'vue';
-import { performCustomAction } from '../composables/useActions';
-import { useCustomActionHandler } from '../composables/useTableContext';
+import type { CustomActionContext } from '../composables/useActions';
+import { dispatchCustomAction, useCustomActionHandler } from '../composables/useTableContext';
 import { router } from '@inertiajs/vue3';
 import type { ButtonVariants, TableAction, TableMetaValue, TableDefinition, TableRow, TableRowKey } from '../types/table';
 import { visitUrl } from '../helpers/visitUrl';
@@ -36,7 +36,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  'custom-action': [action: TableAction, keys: TableRowKey[], onFinish: () => void];
+  'custom-action': [action: TableAction, keys: TableRowKey[], onFinish: () => void, context?: CustomActionContext];
   executed: [payload: ActionExecutionPayload];
 }>();
 
@@ -59,11 +59,11 @@ const isDisabled = (action: TableAction): boolean =>
   Boolean(action.endpoint && action.type !== 'custom' && !currentTable.value);
 
 const buttonVariant = (action: TableAction): ButtonVariants => {
-  if (action.url?.url) {
-    return 'link';
+  if (action.variant) {
+    return action.variant as ButtonVariants;
   }
 
-  return (action.variant ?? 'solid') as ButtonVariants;
+  return action.url?.url ? 'link' : 'solid';
 };
 
 const keyForRow = (): TableRowKey | null => {
@@ -99,24 +99,16 @@ const performAction = (action: TableAction): void => {
       ? [keyForRow()].filter((key): key is TableRowKey => key !== null)
       : props.selectedKeys;
 
-    performCustomAction(
+    dispatchCustomAction({
       action,
       keys,
       loadingAction,
-      (action, keys, onFinish) => {
-        const hasChildListener = Boolean(instance?.vnode.props?.onCustomAction || instance?.vnode.props?.onCustomActionOnce);
-        emit('custom-action', action, keys, onFinish);
-
-        if (customActionHandler) {
-          customActionHandler(action, keys, onFinish, hasChildListener);
-        } else if (!hasChildListener) {
-          onFinish();
-        }
-      },
-      (payload) => {
-        emit('executed', payload);
-      },
-    );
+      instance,
+      emit: (action, keys, onFinish, context) => emit('custom-action', action, keys, onFinish, context),
+      parentHandler: customActionHandler,
+      context: { selectionMode: props.selectionMode },
+      onExecuted: (payload) => emit('executed', payload),
+    });
 
     return;
   }

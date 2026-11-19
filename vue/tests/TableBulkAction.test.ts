@@ -20,7 +20,7 @@ describe('TableBulkActions', () => {
     await wrapper.get('.zt-table-bulk-actions button').trigger('click');
     await nextTick();
     await menuItem(0).trigger('click');
-    expect(onCustomAction).toHaveBeenCalledWith(expect.objectContaining({ key: 'preview' }), [1], expect.any(Function));
+    expect(onCustomAction).toHaveBeenCalledWith(expect.objectContaining({ key: 'preview' }), [1], expect.any(Function), { selectionMode: 'page' });
     onCustomAction.mock.calls[0][2]();
     expect(router.visit).not.toHaveBeenCalled();
   });
@@ -28,12 +28,12 @@ describe('TableBulkActions', () => {
   it('passes selected keys to custom handlers and finishes only on callback', async () => {
     const onCustomAction = vi.fn();
     const wrapper = mount(TableBulkActions, { attachTo: document.body, props: {
-      table, selectedKeys: [1, 2], onCustomAction,
+      table, selectedKeys: [1, 2], selectionMode: 'all', onCustomAction,
       actions: [{ key: 'preview', label: 'Preview', type: 'custom' }]
     } });
     await open(wrapper);
     await menuItem(0).trigger('click');
-    expect(onCustomAction).toHaveBeenCalledWith(expect.objectContaining({ key: 'preview' }), [1, 2], expect.any(Function));
+    expect(onCustomAction).toHaveBeenCalledWith(expect.objectContaining({ key: 'preview' }), [1, 2], expect.any(Function), { selectionMode: 'all' });
     expect(wrapper.emitted('executed')).toBeUndefined();
     expect(router.visit).not.toHaveBeenCalled();
     onCustomAction.mock.calls[0][2]();

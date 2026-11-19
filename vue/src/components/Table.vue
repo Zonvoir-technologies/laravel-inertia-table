@@ -1,8 +1,8 @@
 <script setup lang="ts" generic="T extends TableRow">
 import { computed, getCurrentInstance, nextTick, onBeforeUnmount, onMounted, ref, useSlots, watch, type ComponentInternalInstance, type ComputedRef, type Ref, type Slots } from 'vue';
 import { useTable, type TableApi } from '../composables/useTable';
-import { useActions, type UseActionsApi } from '../composables/useActions';
-import { provideTableContext, provideCustomActionHandler } from '../composables/useTableContext';
+import { useActions, type CustomActionContext, type UseActionsApi } from '../composables/useActions';
+import { hasCustomActionListener, provideTableContext, provideCustomActionHandler } from '../composables/useTableContext';
 import { normalizeTable } from '../helpers/normalizeTable';
 import { visitUrl } from '../helpers/visitUrl';
 import type { TableAction, TableCellValue, TableColumn, TableDefinition, TableExport, TableEmptyState, TableErrorState as TableErrorStateConfig, TableMetaValue, TablePagination, TableResource, TableRow, TableRowKey, TableSorting, TableUrl, TableUrlValue } from '../types/table';
@@ -50,7 +50,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  'custom-action': [action: TableAction, keys: TableRowKey[], onFinish: () => void];
+  'custom-action': [action: TableAction, keys: TableRowKey[], onFinish: () => void, context?: CustomActionContext];
   'row-click': [row: T, column: TableColumn | null, event: MouseEvent];
   'cell-click': [payload: CellClickPayload<T>];
   'search-change': [value: string];
@@ -79,9 +79,9 @@ const tableDefinition: ComputedRef<TableDefinition<T>> = computed((): TableDefin
   isTableDefinition(props.table) ? props.table : normalizeTable<T>(props.table ?? {})
 );
 provideTableContext(tableDefinition);
-const handleCustomAction = (action: TableAction, keys: TableRowKey[], onFinish: () => void, hasChildListener = false): void => {
-  emit('custom-action', action, keys, onFinish);
-  if (!hasChildListener && !(instance?.vnode.props?.onCustomAction || instance?.vnode.props?.onCustomActionOnce)) onFinish();
+const handleCustomAction = (action: TableAction, keys: TableRowKey[], onFinish: () => void, context?: CustomActionContext, hasChildListener = false): void => {
+  emit('custom-action', action, keys, onFinish, context);
+  if (!hasChildListener && !hasCustomActionListener(instance)) onFinish();
 };
 provideCustomActionHandler(handleCustomAction);
 

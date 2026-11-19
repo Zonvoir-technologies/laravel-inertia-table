@@ -1,4 +1,5 @@
 import { ref } from 'vue';
+import { flushPromises } from '@vue/test-utils';
 import { router } from '@inertiajs/vue3';
 import { vi } from 'vitest';
 import { useActions } from '../../src/composables/useActions';
@@ -23,7 +24,7 @@ describe('useActions', () => {
     const actions = useActions(table, { onCustomAction, onExecuted });
     const action: TableAction = { key: 'preview', type: 'custom', label: 'Preview' };
     actions.performAction(action, ['a']);
-    expect(onCustomAction).toHaveBeenCalledWith(action, ['a'], expect.any(Function));
+    expect(onCustomAction).toHaveBeenCalledWith(action, ['a'], expect.any(Function), { selectionMode: 'page' });
     expect(actions.isPerformingAction.value).toBe(true);
     expect(onExecuted).not.toHaveBeenCalled();
     expect(router.visit).not.toHaveBeenCalled();
@@ -31,6 +32,23 @@ describe('useActions', () => {
     onCustomAction.mock.calls[0][2]();
     expect(actions.isPerformingAction.value).toBe(false);
     expect(onExecuted).toHaveBeenCalledTimes(1);
+  });
+
+  it('finishes custom actions when an async handler rejects', async () => {
+    const onExecuted = vi.fn();
+    const actions = useActions(table, {
+      onCustomAction: async () => Promise.reject(new Error('Request failed')),
+      onExecuted,
+    });
+    const action: TableAction = { key: 'preview', type: 'custom', label: 'Preview' };
+
+    actions.performAction(action, ['a'], 'all');
+    expect(actions.isPerformingAction.value).toBe(true);
+
+    await flushPromises();
+
+    expect(actions.isPerformingAction.value).toBe(false);
+    expect(onExecuted).toHaveBeenCalledOnce();
   });
 
   it('selects selectable rows and clears internal selection', () => {

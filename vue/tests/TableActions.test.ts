@@ -27,7 +27,7 @@ describe('Table Actions', () => {
       await nextTick();
       await new DOMWrapper(document.body.querySelector<HTMLElement>('[role="menuitem"]')!).trigger('click');
     }
-    expect(onCustomAction).toHaveBeenCalledWith(expect.objectContaining({ key: 'preview' }), [1], expect.any(Function));
+    expect(onCustomAction).toHaveBeenCalledWith(expect.objectContaining({ key: 'preview' }), [1], expect.any(Function), { selectionMode: 'page' });
     expect(child.emitted('executed')).toBeUndefined();
     onCustomAction.mock.calls[0][2]();
     await nextTick();
@@ -44,7 +44,7 @@ describe('Table Actions', () => {
     } } });
     const button = wrapper.get('tbody td[data-column="actions"] button');
     await button.trigger('click');
-    expect(onCustomAction).toHaveBeenCalledWith(expect.objectContaining(action), ['user-a'], expect.any(Function));
+    expect(onCustomAction).toHaveBeenCalledWith(expect.objectContaining(action), ['user-a'], expect.any(Function), { selectionMode: 'page' });
     expect(button.attributes('disabled')).toBeDefined();
     expect(router.visit).not.toHaveBeenCalled();
     const finish = onCustomAction.mock.calls[0][2];

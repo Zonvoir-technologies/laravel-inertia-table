@@ -134,7 +134,7 @@ Action::make('Preview')
     ->icon('heroicons:eye');
 ```
 
-Listen for `custom-action` on the table. The handler receives the action, an array of row keys, and an `onFinish` callback. Call `onFinish()` to clear the loading state, including when your operation fails.
+Listen for `custom-action` on the table. The handler receives the action, an array of row keys, an `onFinish` callback, and execution context. Call `onFinish()` to clear the loading state, including when your operation fails.
 
 ```php
 Action::make('Activate', key: 'activate_user')
@@ -148,11 +148,12 @@ Action::make('Delete')->key('delete_user');
 <script setup>
 import { Table } from '@zonvoir/inertia-table-vue';
 
-async function handleCustomAction(action, keys, onFinish) {
+async function handleCustomAction(action, keys, onFinish, context) {
     try {
         if (action.key === 'activate_user') {
             // Perform your frontend operation using keys.
             // Additional metadata is available as action.meta.using.
+            // For bulk actions, context.selectionMode is "page" or "all".
         }
     } finally {
         onFinish();
@@ -165,9 +166,9 @@ async function handleCustomAction(action, keys, onFinish) {
 </template>
 ```
 
-This event works for row and bulk actions. Row actions receive the row key; bulk actions receive the selected keys. Selecting all matching records does not fetch off-page keys for a custom action. Actions with confirmation dialogs dispatch only after confirmation. With no listener, the action finishes immediately.
+This event works for row and bulk actions. Row actions receive an array containing the single row key (for example, `['user-1']`); bulk actions receive the selected keys. The context's `selectionMode` indicates whether the current page or all matching records were selected. Selecting all matching records does not fetch off-page keys for a custom action. Actions with confirmation dialogs dispatch only after confirmation. With no listener, the action finishes immediately.
 
-For a custom table built with `useActions`, pass the same handler as `useActions(table, { onCustomAction: handleCustomAction })`. Identifiers use `key` / `action.key`, rather than `id`.
+For a custom table built with `useActions`, pass the same handler as `useActions(table, { onCustomAction: handleCustomAction })`. A rejected Promise returned by this handler automatically clears the loading state. Identifiers use `key` / `action.key`, rather than `id`.
 
 ## Action types
 
