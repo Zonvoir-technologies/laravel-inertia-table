@@ -91,7 +91,65 @@ describe('Table Selection', () => {
     expect(wrapper.find('[data-test="selected-row-count"]').text()).toBe('2 rows selected');
   });
 
-  it('persists selected keys across page changes, sorting, searching, and clear when enabled', async () => {
+  it('persists selected keys across page changes and sorting when enabled', async () => {
+    const wrapper = mount(Table, {
+      props: {
+        autoVisit: false,
+        table: {
+          name: 'Users',
+          rowSelectionKey: 'uuid',
+          persistRowSelectionAcrossPages: true,
+          columns: [{ attribute: 'name', label: 'Name', sortable: true }],
+          rows: [{ uuid: 'uuid-a', name: 'Ada' }],
+          meta: { table: 'UsersTable' },
+          actions: [{ key: 'archive', label: 'Archive', type: 'action', endpoint: '/actions', bulk: true }],
+          hasBulkActions: true,
+          pagination: true,
+          state: { perPage: 15, page: 1 }
+        }
+      }
+    });
+
+    await wrapper.find('tbody input[aria-label="Select row"]').setValue(true);
+    expect(wrapper.find('[data-test="selected-row-count"]').text()).toBe('1 row selected');
+
+    await wrapper.setProps({
+      table: {
+        name: 'Users',
+        rowSelectionKey: 'uuid',
+        persistRowSelectionAcrossPages: true,
+        columns: [{ attribute: 'name', label: 'Name', sortable: true }],
+        rows: [{ uuid: 'uuid-b', name: 'Grace' }],
+        meta: { table: 'UsersTable' },
+        actions: [{ key: 'archive', label: 'Archive', type: 'action', endpoint: '/actions', bulk: true }],
+        hasBulkActions: true,
+        pagination: true,
+        state: { perPage: 15, page: 2, sort: 'name' }
+      }
+    });
+
+    await wrapper.find('tbody input[aria-label="Select row"]').setValue(true);
+    expect(wrapper.find('[data-test="selected-row-count"]').text()).toBe('2 rows selected');
+
+    await wrapper.setProps({
+      table: {
+        name: 'Users',
+        rowSelectionKey: 'uuid',
+        persistRowSelectionAcrossPages: true,
+        columns: [{ attribute: 'name', label: 'Name', sortable: true }],
+        rows: [{ uuid: 'uuid-a', name: 'Ada' }],
+        meta: { table: 'UsersTable' },
+        actions: [{ key: 'archive', label: 'Archive', type: 'action', endpoint: '/actions', bulk: true }],
+        hasBulkActions: true,
+        pagination: true,
+        state: { perPage: 15, page: 1 }
+      }
+    });
+
+    expect((wrapper.find('tbody input[aria-label="Select row"]').element as HTMLInputElement).checked).toBe(true);
+  });
+
+  it('clears selected keys when search changes even when persistence across pages is enabled', async () => {
     const wrapper = mount(Table, {
       props: {
         autoVisit: false,
@@ -128,9 +186,13 @@ describe('Table Selection', () => {
       }
     });
 
-    await wrapper.find('tbody input[aria-label="Select row"]').setValue(true);
-    expect(wrapper.find('[data-test="selected-row-count"]').text()).toBe('2 rows selected');
+    // Previous selection was cleared because search changed
+    expect(wrapper.find('[data-test="selected-row-count"]').exists()).toBe(false);
 
+    await wrapper.find('tbody input[aria-label="Select row"]').setValue(true);
+    expect(wrapper.find('[data-test="selected-row-count"]').text()).toBe('1 row selected');
+
+    // Clearing search also resets the selection
     await wrapper.setProps({
       table: {
         name: 'Users',
@@ -142,11 +204,11 @@ describe('Table Selection', () => {
         actions: [{ key: 'archive', label: 'Archive', type: 'action', endpoint: '/actions', bulk: true }],
         hasBulkActions: true,
         pagination: true,
-        state: { perPage: 15 }
+        state: { perPage: 15, search: '' }
       }
     });
 
-    expect((wrapper.find('tbody input[aria-label="Select row"]').element as HTMLInputElement).checked).toBe(true);
+    expect(wrapper.find('[data-test="selected-row-count"]').exists()).toBe(false);
   });
 
   it('selects and unselects only current page keys when persistence is enabled', async () => {
