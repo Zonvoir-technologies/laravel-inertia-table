@@ -332,7 +332,7 @@ Get Started Free
   </p>
 </div>
 
-<a href="https://zonvoir-table-pro-management.test/checkout/details?plan=single-project" class="inline-flex items-center justify-center gap-2 w-full text-center font-bold text-sm md:text-base py-3 px-5 rounded-xl no-underline! text-white! bg-[#f05a45] shadow-[0_4px_16px_rgba(240,90,69,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#e04a35] hover:shadow-[0_8px_24px_rgba(240,90,69,0.45)]">
+<a href="https://app.zonvoir-table.com/checkout/details?plan=single-project" class="inline-flex items-center justify-center gap-2 w-full text-center font-bold text-sm md:text-base py-3 px-5 rounded-xl no-underline! text-white! bg-[#f05a45] shadow-[0_4px_16px_rgba(240,90,69,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#e04a35] hover:shadow-[0_8px_24px_rgba(240,90,69,0.45)]">
 Get Single Project
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
 </a>
@@ -384,7 +384,7 @@ Get Single Project
   </p>
 </div>
 
-<a href="https://zonvoir-table-pro-management.test/checkout/details?plan=unlimited-projects" class="inline-flex items-center justify-center gap-2 w-full text-center font-bold text-sm md:text-base py-3 px-5 rounded-xl no-underline! text-white! bg-[#f05a45] shadow-[0_4px_16px_rgba(240,90,69,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#e04a35] hover:shadow-[0_8px_24px_rgba(240,90,69,0.45)]">
+<a href="https://app.zonvoir-table.com/checkout/details?plan=unlimited-projects" class="inline-flex items-center justify-center gap-2 w-full text-center font-bold text-sm md:text-base py-3 px-5 rounded-xl no-underline! text-white! bg-[#f05a45] shadow-[0_4px_16px_rgba(240,90,69,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#e04a35] hover:shadow-[0_8px_24px_rgba(240,90,69,0.45)]">
 Get Unlimited Projects
 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
 </a>
