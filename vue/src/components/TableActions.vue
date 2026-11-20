@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, type ComputedRef, type Ref } from 'vue';
+import { computed, getCurrentInstance, ref, type ComputedRef, type Ref } from 'vue';
+import type { CustomActionContext } from '../composables/useActions';
+import { dispatchCustomAction, useCustomActionHandler } from '../composables/useTableContext';
 import { router } from '@inertiajs/vue3';
 import type { ButtonVariants, TableAction, TableMetaValue, TableDefinition, TableRow, TableRowKey } from '../types/table';
 import { visitUrl } from '../helpers/visitUrl';
@@ -34,8 +36,12 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
+  'custom-action': [action: TableAction, keys: TableRowKey[], onFinish: () => void, context?: CustomActionContext];
   executed: [payload: ActionExecutionPayload];
 }>();
+
+const instance = getCurrentInstance();
+const customActionHandler = useCustomActionHandler();
 
 const loadingAction: Ref<string | null> = ref(null);
 const actionConfirmDialog: Ref<InstanceType<typeof TableActionConfirmDialog> | null> = ref(null);
@@ -53,11 +59,11 @@ const isDisabled = (action: TableAction): boolean =>
   Boolean(action.endpoint && action.type !== 'custom' && !currentTable.value);
 
 const buttonVariant = (action: TableAction): ButtonVariants => {
-  if (action.url?.url) {
-    return 'link';
+  if (action.variant) {
+    return action.variant as ButtonVariants;
   }
 
-  return (action.variant ?? 'solid') as ButtonVariants;
+  return action.url?.url ? 'link' : 'solid';
 };
 
 const keyForRow = (): TableRowKey | null => {
@@ -89,7 +95,21 @@ const performAction = (action: TableAction): void => {
   }
 
   if (!action.endpoint || action.type === 'custom') {
-    emit('executed', { action });
+    const keys = props.row
+      ? [keyForRow()].filter((key): key is TableRowKey => key !== null)
+      : props.selectedKeys;
+
+    dispatchCustomAction({
+      action,
+      keys,
+      loadingAction,
+      instance,
+      emit: (action, keys, onFinish, context) => emit('custom-action', action, keys, onFinish, context),
+      parentHandler: customActionHandler,
+      context: { selectionMode: props.selectionMode },
+      onExecuted: (payload) => emit('executed', payload),
+    });
+
     return;
   }
 

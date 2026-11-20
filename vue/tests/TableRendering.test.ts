@@ -217,4 +217,26 @@ describe('Table Rendering', () => {
     expect(badge.attributes('data-color')).toBe('neutral');
     expect(badge.classes()).toContain('bg-neutral-500');
   });
+
+  it('preserves header cell vertical padding when selectable is disabled', () => {
+    const wrapper = mount(Table, {
+      props: {
+        table: {
+          name: 'Users',
+          selectable: false,
+          columns: [
+            { attribute: 'name', label: 'Name' },
+            { attribute: 'email', label: 'Email' }
+          ],
+          rows: [{ id: 1, name: 'Ada', email: 'ada@example.com' }]
+        }
+      }
+    });
+
+    const headerCells = wrapper.findAll('thead th');
+    expect(headerCells).toHaveLength(2);
+    expect(headerCells[0].classes()).toContain('py-3');
+    expect(headerCells[0].classes()).toContain('px-4');
+    expect(headerCells[1].classes()).toContain('py-3');
+  });
 });

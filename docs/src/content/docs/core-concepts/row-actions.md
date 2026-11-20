@@ -134,7 +134,41 @@ Action::make('Preview')
     ->icon('heroicons:eye');
 ```
 
-Custom actions can be handled by the frontend when you need application-specific behavior that does not map directly to navigation or a backend operation.
+Listen for `custom-action` on the table. The handler receives the action, an array of row keys, an `onFinish` callback, and execution context. Call `onFinish()` to clear the loading state, including when your operation fails.
+
+```php
+Action::make('Activate', key: 'activate_user')
+    ->meta(['using' => 'customActivator']);
+
+// The fluent identifier method is also supported:
+Action::make('Delete')->key('delete_user');
+```
+
+```vue
+<script setup>
+import { Table } from '@zonvoir/inertia-table-vue';
+
+async function handleCustomAction(action, keys, onFinish, context) {
+    try {
+        if (action.key === 'activate_user') {
+            // Perform your frontend operation using keys.
+            // Additional metadata is available as action.meta.using.
+            // For bulk actions, context.selectionMode is "page" or "all".
+        }
+    } finally {
+        onFinish();
+    }
+}
+</script>
+
+<template>
+    <Table :table="users" @custom-action="handleCustomAction" />
+</template>
+```
+
+This event works for row and bulk actions. When `rowSelectionKey` is configured and resolves to a string or number, row actions receive an array containing that single key (for example, `['user-1']`); otherwise, they receive an empty array. Bulk actions receive the selected keys. The context's `selectionMode` indicates whether the current page or all matching records were selected. Selecting all matching records does not fetch off-page keys for a custom action. Actions with confirmation dialogs dispatch only after confirmation. With no listener, the action finishes immediately.
+
+For a custom table built with `useActions`, pass the same handler as `useActions(table, { onCustomAction: handleCustomAction })`. A rejected Promise returned by this handler automatically clears the loading state. Identifiers use `key` / `action.key`, rather than `id`.
 
 ## Action types
 

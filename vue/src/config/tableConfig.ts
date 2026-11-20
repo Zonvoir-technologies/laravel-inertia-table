@@ -159,7 +159,7 @@ export const defaultTableConfiguration: ResolvedTableConfiguration = {
     table: 'zt-table-element w-full min-w-full table-auto border-separate border-spacing-0',
     thead: 'zt-table-head',
     headerRow: 'zt-table-header-row',
-    headerCell: 'zt-table-header-cell text-sm px-4 relative z-30 bg-slate-100 font-semibold',
+    headerCell: 'zt-table-header-cell text-sm px-4 py-3 relative z-30 bg-slate-100 font-semibold',
     headerButton: 'zt-table-header-button flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent p-0 font-semibold text-inherit',
     headerMenu: 'absolute left-0 top-8 z-[100] w-40 overflow-hidden rounded-md border border-slate-200 bg-white py-1 text-sm font-normal text-slate-700 shadow-lg',
     headerMenuItem: 'w-full flex items-center justify-start gap-2 px-2 text-left',
