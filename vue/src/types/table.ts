@@ -191,6 +191,59 @@ export type TableSorting = {
   direction: 'asc' | 'desc' | null;
 }
 
+export type TableFilterLayout = 'drawer' | 'header' | string;
+
+export type TableFilterValue = TableMetaValue;
+
+export type TableFiltersState = Record<string, TableFilterValue>;
+
+export type TableFilterOption = {
+  label: string;
+  value: TableMetaPrimitive;
+  [key: string]: TableMetaValue;
+};
+
+export type TableFilterType =
+  | 'select'
+  | 'multiselect'
+  | 'text'
+  | 'boolean'
+  | 'date'
+  | 'daterange'
+  | 'number'
+  | string;
+
+export type TableFilterComparator = {
+  key: string;
+  label: string;
+  minValues?: number;
+  maxValues?: number | null;
+  symbol?: string;
+  value?: TableFilterValue;
+  [key: string]: TableMetaValue;
+};
+
+export type TableFilter = {
+  key?: string;
+  name?: string;
+  attribute?: string;
+  label?: string;
+  type?: TableFilterType;
+  value?: TableFilterValue;
+  defaultValue?: TableFilterValue;
+  options?: TableFilterOption[] | Record<string, TableMetaPrimitive> | Array<string | number>;
+  comparators?: TableFilterComparator[];
+  placeholder?: string | null;
+  searchable?: boolean;
+  authorized?: boolean;
+  disabled?: boolean;
+  hidden?: boolean;
+  meta?: TableMeta;
+  data?: TableMeta;
+};
+
+export type TableFiltersPayload = TableFiltersState | TableFilter[];
+
 export type TableState = {
   page?: number;
   perPage?: number;
@@ -200,7 +253,8 @@ export type TableState = {
   direction?: 'asc' | 'desc' | string | null;
   columns?: Record<string, boolean> | string[];
   sticky?: string[];
-  [key: string]: TableMetaValue | Record<string, boolean> | string[];
+  filters?: TableFiltersState;
+  [key: string]: TableMetaValue | Record<string, boolean> | string[] | TableFiltersState | undefined;
 }
 
 export type TableResource<T extends TableRow = TableRow> = {
@@ -225,7 +279,11 @@ export type TableResource<T extends TableRow = TableRow> = {
   hasExports?: boolean;
   hasExportsThatLimitsToSelectedRows?: boolean;
   emptyState?: string | false | null | TableEmptyState;
-  [key: string]: TableMetaValue | Array<Partial<TableColumn>> | TableRow[] | PaginatedResults<T> | T[] | TableState | boolean | Partial<TablePagination> | PaginationType | TableAction[] | TableExport[] | TableEmptyState;
+  hasFilters?: boolean;
+  filterLayout?: TableFilterLayout;
+  filters?: TableFilter[];
+  reorderable?: boolean;
+  [key: string]: TableMetaValue | Array<Partial<TableColumn>> | TableRow[] | PaginatedResults<T> | T[] | TableState | boolean | Partial<TablePagination> | PaginationType | TableAction[] | TableExport[] | TableEmptyState | TableFilterLayout | TableFilter[] | undefined;
 }
 
 export type TableDefinition<T extends TableRow = TableRow> = {
@@ -248,6 +306,11 @@ export type TableDefinition<T extends TableRow = TableRow> = {
   hasExports: boolean;
   hasExportsThatLimitsToSelectedRows: boolean;
   emptyState: false | TableEmptyState;
+  hasFilters?: boolean;
+  filterLayout?: TableFilterLayout;
+  filters?: TableFilter[];
+  reorderable?: boolean;
+  [key: string]: unknown;
 }
 
 export type ButtonVariants = 'solid' | 'outline' | 'ghost' | 'link';

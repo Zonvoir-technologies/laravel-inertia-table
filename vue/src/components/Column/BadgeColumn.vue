@@ -15,7 +15,7 @@ const displayValue: ComputedRef<string> = useDisplayValue(props.column, props.ro
 const badgeColor: ComputedRef<string> = computed((): string => {
   const value: string = displayValue.value;
 
-  return resolveMeta(props.column.meta.colors, value) ?? 'neutral';
+  return resolveMeta(props.column.meta.colors, value) ?? 'primary';
 });
 
 const badgeVariant: ComputedRef<string> = computed((): string => {

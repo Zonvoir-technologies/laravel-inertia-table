@@ -1,4 +1,4 @@
-import { computed, inject, markRaw, provide, type Component, type ComputedRef, type InjectionKey } from 'vue';
+import { computed, getCurrentInstance, inject, markRaw, provide, type Component, type ComputedRef, type InjectionKey } from 'vue';
 import { twMerge } from 'tailwind-merge';
 
 export type TableIcon = string | Component;
@@ -36,14 +36,66 @@ export type TableLabels = {
   exports: string;
   exportStarted: string;
   exportProcessing: string;
+  filter: string;
+  filters: string;
+  hideFilters: string;
   ok: string;
-}
+
+  // Filter & comparator labels
+  applyFilters: string;
+  resetAll: string;
+  noFiltersAvailable: string;
+  clearFilter: string;
+  clearAllFilters: string;
+  addCondition: string;
+  removeFilter: string;
+  activeFiltersLabel: string;
+  closeFiltersDrawer: string;
+  closeFiltersPanel: string;
+  filterBy: (label: string) => string;
+
+  // Comparators
+  equals: string;
+  notEquals: string;
+  contains: string;
+  notContains: string;
+  startsWith: string;
+  endsWith: string;
+  greaterThan: string;
+  greaterThanOrEqual: string;
+  lessThan: string;
+  lessThanOrEqual: string;
+  between: string;
+  notBetween: string;
+  isNull: string;
+  isNotNull: string;
+  isTrue: string;
+  isFalse: string;
+  in: string;
+  notIn: string;
+
+  // Date presets
+  today: string;
+  yesterday: string;
+  thisWeek: string;
+  lastWeek: string;
+  thisMonth: string;
+  lastMonth: string;
+  thisYear: string;
+  custom: string;
+
+  // Reordering labels
+  dragToReorder: string;
+  resetOrder: string;
+  [key: string]: string | ((...args: never[]) => string);
+};
 
 export type TableIcons = {
   actions: TableIcon;
   columns: TableIcon;
   error: TableIcon;
   export: TableIcon;
+  filter: TableIcon;
   firstPage: TableIcon;
   hide: TableIcon;
   lastPage: TableIcon;
@@ -57,8 +109,20 @@ export type TableIcons = {
   sortDescending: TableIcon;
   stick: TableIcon;
   unstick: TableIcon;
+
+  // Filter icons
+  filterChevron: TableIcon | null;
+  filterClose: TableIcon | null;
+  filterRemove: TableIcon | null;
+  filterAdd: TableIcon | null;
+  calendar: TableIcon | null;
+  clock: TableIcon | null;
+  check: TableIcon | null;
+
+  // Reordering icons
+  dragHandle: TableIcon | null;
   [key: string]: TableIcon | null;
-}
+};
 
 export type TableClasses = {
   root: string;
@@ -103,28 +167,55 @@ export type TableClasses = {
   dropdownSearchInput: string;
   dropdownItem: string;
   dropdownEmpty: string;
+
+  // Filter classes
+  filterButton: string;
+  filterDrawer: string;
+  filterDrawerHeader: string;
+  filterDrawerBody: string;
+  filterDrawerFooter: string;
+  filterPanel: string;
+  filterPanelHeader: string;
+  filterPanelBody: string;
+  filterPanelFooter: string;
+  filterHeader: string;
+  filterHeaderPill: string;
+  filterPopover: string;
+  activeFilters: string;
+  activeFilterTag: string;
+
+  // Reordering classes
+  dragHandle: string;
+  reorderResetButton: string;
+  reorderableHeaderCell: string;
+  reorderDraggingHeaderCell: string;
+  reorderDropTargetLeft: string;
+  reorderDropTargetRight: string;
+  reorderDropdownItem: string;
+  reorderDropTargetTop: string;
+  reorderDropTargetBottom: string;
   [key: string]: string;
-}
+};
 
 export type TableDarkMode = {
   enabled: boolean;
   class?: string;
   attribute?: string;
-}
+};
 
 export type TableConfiguration = {
   icons?: Partial<TableIcons>;
   classes?: Partial<TableClasses>;
   labels?: Partial<TableLabels>;
   darkMode?: Partial<TableDarkMode> | boolean;
-}
+};
 
 export type ResolvedTableConfiguration = {
   icons: TableIcons;
   classes: TableClasses;
   labels: TableLabels;
   darkMode: TableDarkMode;
-}
+};
 
 export const defaultTableConfiguration: ResolvedTableConfiguration = {
   icons: {
@@ -132,6 +223,7 @@ export const defaultTableConfiguration: ResolvedTableConfiguration = {
     columns: 'heroicons:eye',
     error: 'heroicons:exclamation-triangle',
     export: 'heroicons:arrow-down-tray',
+    filter: 'heroicons:funnel',
     firstPage: 'fontisto:angle-dobule-left',
     hide: 'heroicons:eye-slash',
     lastPage: 'fontisto:angle-dobule-right',
@@ -145,6 +237,18 @@ export const defaultTableConfiguration: ResolvedTableConfiguration = {
     sortDescending: 'heroicons:arrow-down',
     stick: 'heroicons:lock-closed',
     unstick: 'heroicons:lock-open',
+
+    // Filter icons
+    filterChevron: 'heroicons:chevron-down',
+    filterClose: 'heroicons:x-mark',
+    filterRemove: 'heroicons:x-mark',
+    filterAdd: 'heroicons:plus',
+    calendar: 'heroicons:calendar',
+    clock: 'heroicons:clock',
+    check: 'heroicons:check',
+
+    // Reordering icons
+    dragHandle: 'akar-icons:drag-vertical',
   },
   classes: {
     root: 'zt-table flex max-w-full items-stretch border border-slate-200 bg-white shadow-sm rounder-md',
@@ -154,7 +258,7 @@ export const defaultTableConfiguration: ResolvedTableConfiguration = {
     toolbarSearch: 'flex min-w-0 flex-1 flex-wrap items-center gap-3',
     toolbarActions: 'flex flex-wrap items-center gap-2 sm:w-auto',
     search: 'zt-table-search relative block w-full sm:max-w-sm',
-    searchInput: 'zt-table-search-input h-9 w-full rounded-md border border-slate-200 bg-white pl-10 pr-3 text-sm text-slate-950 outline-none placeholder:text-slate-500 focus:border-slate-400',
+    searchInput: 'zt-table-search-input h-9 w-full rounded-md border border-slate-200 bg-white pl-10 pr-3 text-sm text-slate-950 placeholder:text-slate-500 focus:outline-none focus:border-[var(--zt-primary,#64748b)] focus:ring-2 focus:ring-[var(--zt-primary,#64748b)]/20 transition-colors',
     scroll: 'zt-table-scroll w-full overflow-x-auto overscroll-x-contain',
     table: 'zt-table-element w-full min-w-full table-auto border-separate border-spacing-0',
     thead: 'zt-table-head',
@@ -186,9 +290,36 @@ export const defaultTableConfiguration: ResolvedTableConfiguration = {
     errorContent: 'mx-auto flex max-w-md flex-col items-center gap-3',
     dropdownHeader: 'border-b border-slate-100 px-3 py-2 text-sm font-semibold text-slate-950',
     dropdownSearchWrapper: 'border-b border-slate-100 p-2',
-    dropdownSearchInput: 'h-8 w-full rounded border border-slate-100 px-2 text-sm text-slate-950 outline-none placeholder:text-slate-500 focus:border-slate-400',
+    dropdownSearchInput: 'h-8 w-full rounded border border-slate-100 px-2 text-sm text-slate-950 placeholder:text-slate-500 focus:outline-none focus:border-[var(--zt-primary,#64748b)] focus:ring-2 focus:ring-[var(--zt-primary,#64748b)]/20 transition-colors',
     dropdownItem: 'flex w-full cursor-pointer items-center gap-3 px-3 py-2 text-left text-sm text-slate-950 hover:bg-slate-50 focus:bg-slate-50 focus:outline-none',
     dropdownEmpty: 'px-3 py-4 text-sm text-slate-500',
+
+    // Filter classes
+    filterButton: 'zonvoir-table-filter-btn',
+    filterDrawer: '',
+    filterDrawerHeader: '',
+    filterDrawerBody: '',
+    filterDrawerFooter: '',
+    filterPanel: '',
+    filterPanelHeader: '',
+    filterPanelBody: '',
+    filterPanelFooter: '',
+    filterHeader: '',
+    filterHeaderPill: '',
+    filterPopover: '',
+    activeFilters: '',
+    activeFilterTag: '',
+
+    // Reordering classes
+    dragHandle: 'mr-1.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 pointer-events-none',
+    reorderResetButton: 'w-full rounded px-2 py-1 text-center text-xs font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors',
+    reorderableHeaderCell: 'relative transition-all duration-150 cursor-grab active:cursor-grabbing select-none',
+    reorderDraggingHeaderCell: 'opacity-40 bg-slate-100 dark:bg-slate-800',
+    reorderDropTargetLeft: 'border-l-4 border-slate-500',
+    reorderDropTargetRight: 'border-r-4 border-slate-500',
+    reorderDropdownItem: 'relative cursor-grab active:cursor-grabbing select-none transition-colors duration-150',
+    reorderDropTargetTop: 'border-t-2 border-slate-500',
+    reorderDropTargetBottom: 'border-b-2 border-slate-500',
   },
   labels: {
     actions: 'Actions',
@@ -206,6 +337,9 @@ export const defaultTableConfiguration: ResolvedTableConfiguration = {
     exports: 'Exports',
     exportStarted: 'Export started',
     exportProcessing: 'Your export is being processed.',
+    filter: 'Filter',
+    filters: 'Filters',
+    hideFilters: 'Hide filters',
     hide: 'Hide',
     ok: 'OK',
     loading: 'Loading rows...',
@@ -225,6 +359,53 @@ export const defaultTableConfiguration: ResolvedTableConfiguration = {
     tryAgain: 'Try again',
     unstick: 'Unstick',
     working: 'Working...',
+
+    // Filter & comparator labels
+    applyFilters: 'Apply Filters',
+    resetAll: 'Reset All',
+    noFiltersAvailable: 'No filters available for this table.',
+    clearFilter: 'Clear filter',
+    clearAllFilters: 'Clear all filters',
+    addCondition: 'Add condition',
+    removeFilter: 'Remove filter',
+    activeFiltersLabel: 'Active filters:',
+    closeFiltersDrawer: 'Close filters drawer',
+    closeFiltersPanel: 'Close filters panel',
+    filterBy: (label: string): string => `Filter by ${label}`,
+
+    // Comparators
+    equals: 'Equals',
+    notEquals: 'Does not equal',
+    contains: 'Contains',
+    notContains: 'Does not contain',
+    startsWith: 'Starts with',
+    endsWith: 'Ends with',
+    greaterThan: 'Greater than',
+    greaterThanOrEqual: 'Greater than or equal to',
+    lessThan: 'Less than',
+    lessThanOrEqual: 'Less than or equal to',
+    between: 'Between',
+    notBetween: 'Not between',
+    isNull: 'Is empty',
+    isNotNull: 'Is not empty',
+    isTrue: 'Yes',
+    isFalse: 'No',
+    in: 'In',
+    notIn: 'Not in',
+
+    // Date presets
+    today: 'Today',
+    yesterday: 'Yesterday',
+    thisWeek: 'This week',
+    lastWeek: 'Last week',
+    thisMonth: 'This month',
+    lastMonth: 'Last month',
+    thisYear: 'This year',
+    custom: 'Custom',
+
+    // Reordering labels
+    dragToReorder: 'Drag to reorder',
+    resetOrder: 'Reset to default order',
   },
   darkMode: {
     enabled: false,
@@ -236,7 +417,7 @@ export const defaultTableConfiguration: ResolvedTableConfiguration = {
 const defaultDarkTableClasses: Partial<TableClasses> = {
   rootDark: 'dark border-slate-800 bg-slate-950 text-slate-100 shadow-none',
   toolbar: 'dark:border-slate-800 dark:bg-slate-900',
-  searchInput: 'dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-slate-500',
+  searchInput: 'dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-400 dark:focus:border-[var(--zt-primary,#94a3b8)] dark:focus:ring-2 dark:focus:ring-[var(--zt-primary,#94a3b8)]/20',
   headerCell: 'dark:bg-slate-900 dark:text-slate-100',
   headerMenu: 'dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100',
   headerMenuItem: 'text-slate-100 hover:bg-slate-800',
@@ -254,9 +435,27 @@ const defaultDarkTableClasses: Partial<TableClasses> = {
   errorCell: 'dark:border-slate-800 dark:text-slate-400',
   dropdownHeader: 'border-slate-800 text-slate-100',
   dropdownSearchWrapper: 'border-slate-800',
-  dropdownSearchInput: 'border-slate-700 bg-slate-950 text-slate-100 placeholder:text-slate-400 focus:border-slate-500',
+  dropdownSearchInput: 'border-slate-700 bg-slate-950 text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-[var(--zt-primary,#94a3b8)] focus:ring-2 focus:ring-[var(--zt-primary,#94a3b8)]/20',
   dropdownItem: 'text-slate-100 hover:bg-slate-800 focus:bg-slate-800',
   dropdownEmpty: 'text-slate-400',
+
+  // Filter dark mode classes
+  filterDrawer: 'dark:bg-slate-900 dark:border-slate-800 text-slate-100',
+  filterDrawerHeader: 'dark:border-slate-800 text-slate-100',
+  filterDrawerBody: 'dark:divide-slate-800',
+  filterDrawerFooter: 'dark:border-slate-800 dark:bg-slate-950/40 text-slate-400',
+  filterPanel: 'dark:bg-slate-900 dark:border-slate-800 text-slate-100',
+  filterPanelHeader: 'dark:border-slate-800 text-slate-100',
+  filterPanelBody: 'dark:divide-slate-800',
+  filterPanelFooter: 'dark:border-slate-800 text-slate-400',
+  filterHeader: 'dark:border-slate-800 dark:bg-slate-900',
+  filterPopover: 'dark:bg-slate-900 dark:border-slate-800 dark:text-slate-100',
+  activeFilterTag: 'dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200',
+
+  // Reordering dark mode classes
+  reorderResetButton: 'dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200',
+  dragHandle: 'dark:hover:text-slate-300',
+  reorderDraggingHeaderCell: 'dark:bg-slate-800',
 };
 
 const uniqueClassTokens = (className: string): string => [...new Set(className.trim().split(/\s+/).filter(Boolean))].join(' ');
@@ -359,4 +558,63 @@ export const iconFor = (key: string): TableIcon | null => {
   const config = useTableConfiguration();
 
   return config.value.icons[key] ?? key;
+};
+
+export const tableLabel = (key: keyof TableLabels | string, ...args: Array<string | number | boolean>): string => {
+  let labels: TableLabels | Record<string, string | ((...a: Array<string | number | boolean>) => string)> | undefined;
+  if (getCurrentInstance()) {
+    try {
+      const config = useTableConfiguration();
+      labels = config.value?.labels;
+    } catch {
+      // outside component tree
+    }
+  }
+
+  if (!labels) {
+    labels = resolveTableConfiguration()?.labels ?? defaultTableConfiguration.labels;
+  }
+
+  const label = labels?.[key] ?? (defaultTableConfiguration.labels as Record<string, string | ((...a: Array<string | number | boolean>) => string)>)[key];
+  if (typeof label === 'function') {
+    return (label as (...a: Array<string | number | boolean>) => string)(...args);
+  }
+  return typeof label === 'string' ? label : String(key);
+};
+
+export const useTableDarkMode = (configRef?: ComputedRef<{ darkMode?: TableDarkMode | boolean }>) => {
+  let tableConfig = configRef;
+  if (!tableConfig) {
+    if (getCurrentInstance()) {
+      try {
+        tableConfig = useTableConfiguration();
+      } catch {
+        // outside component tree
+      }
+    }
+  }
+  if (!tableConfig) {
+    tableConfig = computed(() => resolveTableConfiguration());
+  }
+
+  const isDark = computed(() => {
+    const raw = tableConfig?.value ?? resolveTableConfiguration();
+    const dm = raw?.darkMode;
+    if (typeof dm === 'boolean') return dm;
+    if (dm && typeof dm === 'object') {
+      if ('enabled' in dm && typeof dm.enabled === 'boolean') return dm.enabled;
+    }
+    return false;
+  });
+
+  const darkClass = computed(() => {
+    const raw = tableConfig?.value ?? resolveTableConfiguration();
+    const dm = raw?.darkMode;
+    if (typeof dm === 'object' && dm !== null && 'class' in dm && typeof dm.class === 'string') {
+      return dm.class;
+    }
+    return 'dark';
+  });
+
+  return { isDark, darkClass };
 };

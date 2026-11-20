@@ -138,8 +138,26 @@ export default defineConfig({
             { label: 'Multiple Tables', slug: 'core-concepts/multiple-tables' },
             { label: 'Columns', slug: 'core-concepts/columns' },
             { label: 'Toggle Columns', slug: 'core-concepts/toggle-columns' },
+            {
+              label: 'Column Reordering',
+              slug: 'core-concepts/column-reorder',
+              badge: {
+                text: '★ Pro',
+                variant: 'tip',
+                class: 'zv-pro-badge',
+              },
+            },
             { label: 'Sorting', slug: 'core-concepts/sorting' },
             { label: 'Searching', slug: 'core-concepts/searching' },
+            {
+              label: 'Filters',
+              slug: 'core-concepts/filters',
+              badge: {
+                text: '★ Pro',
+                variant: 'tip',
+                class: 'zv-pro-badge',
+              },
+            },
             { label: 'Pagination', slug: 'core-concepts/pagination' },
             { label: 'Sticky Columns and Header', slug: 'core-concepts/sticky-columns' },
             { label: 'Empty State', slug: 'core-concepts/empty-state' },
@@ -156,6 +174,7 @@ export default defineConfig({
           items: [
             { label: 'Slots', slug: 'advanced/slots' },
             { label: 'Styling', slug: 'advanced/styling' },
+            { label: 'Theme', slug: 'advanced/theme' },
             { label: 'Variants', slug: 'advanced/variants' },
             { label: 'Colors', slug: 'advanced/colors' },
             { label: 'Dark Mode', slug: 'advanced/dark-mode' },
@@ -173,6 +192,24 @@ export default defineConfig({
             { label: 'Namespaces', slug: 'api' },
             { label: 'Table', slug: 'api/table' },
             { label: 'Column', slug: 'api/column' },
+            {
+              label: 'Column Reordering',
+              slug: 'api/column-reordering',
+              badge: {
+                text: '★ Pro',
+                variant: 'tip',
+                class: 'zv-pro-badge',
+              },
+            },
+            {
+              label: 'Filters',
+              slug: 'api/filters',
+              badge: {
+                text: '★ Pro',
+                variant: 'tip',
+                class: 'zv-pro-badge',
+              },
+            },
             { label: 'Actions', slug: 'api/actions-reference' },
             { label: 'Exports', slug: 'api/exports' },
             { label: 'Builders', slug: 'api/builders' },

@@ -55,6 +55,16 @@ TextColumn::make('internal_reference')
 
 This can be useful when a column is part of the table definition but should not currently be displayed to users.
 
+## Column Reordering in the Visibility Menu
+
+When **Zonvoir Table Pro** is enabled on your table (using `HasColumnPersistence` or `HasProFeatures`), the column toggle menu also provides interactive reordering:
+
+- **Drag Handles**: Drag columns up and down in the visibility dropdown to rearrange their display order.
+- **Reset Saved Order**: A "Reset to default order" action deletes the authenticated user's preference. The PHP-defined order is restored on the next server response.
+- **Automatic Persistence**: When user preference persistence is enabled, the new column order is saved after a 300ms debounce.
+
+---
+
 ## Example
 
 A typical table might keep the primary information visible while making secondary information optional.
@@ -103,3 +113,10 @@ When multiple tables are rendered on the same page, the column state is scoped t
 ```
 
 This keeps column visibility independent between tables.
+
+---
+
+:::tip[Column Reordering & Database Persistence]
+Looking to allow users to drag-and-drop rearrange column orders and persist their customized layout to the database per user? Check out the **[Column Reordering & Persistence](/core-concepts/column-reorder/)** Pro feature.
+:::
+

@@ -104,6 +104,7 @@ onBeforeUnmount((): void => {
             <div class="mt-6 flex justify-end gap-2">
               <CommonButton
                 variant="outline"
+                color="slate"
                 @click="close('cancel')"
               >
                 {{cancelLabel}}

@@ -7,6 +7,11 @@ import {
 import { useFloatingPosition, type FloatingPositionContext } from '../../composables/useFloatingPosition'
 import { useTableConfiguration } from '../../config/tableConfig'
 
+interface PopoverElement extends HTMLElement {
+  __parentMenu?: HTMLElement;
+  __triggerEl?: HTMLElement;
+}
+
 interface DropdownProps {
   align?: 'start' | 'end'
   width?: number
@@ -128,6 +133,26 @@ function handlePointerDown(event: PointerEvent): void {
     return
   }
 
+  const element: Element | null = target instanceof Element ? target : target.parentElement
+  if (element) {
+    const popover = element.closest<PopoverElement>(
+      '.zonvoir-datepicker-popover, .zonvoir-daterangepicker-popover, [data-floating-popover], [data-zonvoir-popover]'
+    )
+    if (popover) {
+      const parentMenu = popover.__parentMenu
+      if (parentMenu && (parentMenu === menuRef.value || menuRef.value?.contains(parentMenu))) {
+        return
+      }
+      const triggerEl = popover.__triggerEl
+      if (triggerEl && menuRef.value?.contains(triggerEl)) {
+        return
+      }
+      if (menuRef.value?.querySelector('.zonvoir-filter-popover, .zonvoir-datepicker, .zonvoir-daterangepicker, [data-filter-key]')) {
+        return
+      }
+    }
+  }
+
   close()
 }
 
@@ -194,9 +219,14 @@ onBeforeUnmount((): void => {
         ref="menuRef"
         role="menu"
         class="zt-dropdown z-[9999] overflow-hidden rounded-lg border py-1 text-left shadow-lg"
-        :class="tableConfig.darkMode.enabled
-          ? 'border-slate-700 bg-slate-900 text-slate-100'
-          : 'border-slate-200 bg-white text-slate-700'"
+        :class="[
+          tableConfig.darkMode.enabled
+            ? ['dark border-slate-700 bg-slate-900 text-slate-100', tableConfig.darkMode.class]
+            : 'border-slate-200 bg-white text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100',
+        ]"
+        :data-dark-mode="tableConfig.darkMode.enabled ? 'enabled' : undefined"
+        :data-dark-class="tableConfig.darkMode.class"
+        :data-dark-attribute="tableConfig.darkMode.attribute"
         :style="menuStyle"
         @click.stop
       >

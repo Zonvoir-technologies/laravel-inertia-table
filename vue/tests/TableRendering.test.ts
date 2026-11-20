@@ -214,8 +214,136 @@ describe('Table Rendering', () => {
     const badge = wrapper.find('tbody td[data-column="status"] .zt-badge');
 
     expect(badge.attributes('data-variant')).toBe('solid');
-    expect(badge.attributes('data-color')).toBe('neutral');
-    expect(badge.classes()).toContain('bg-neutral-500');
+    expect(badge.attributes('data-color')).toBe('primary');
+    expect(badge.classes()).toContain('bg-[var(--zt-primary,#0f172a)]');
+  });
+
+  it('renders TableFilterHeader when filterLayout is header and TableFilterPanel when panel', async () => {
+    const { TableFilterHeader, TableFilterPanel } = await import('../src/index');
+
+    const wrapperHeader = mount(Table, {
+      props: {
+        table: {
+          name: 'Users',
+          columns: [{ attribute: 'name', label: 'Name' }],
+          rows: [],
+          hasFilters: true,
+          filterLayout: 'header',
+          filters: [{ key: 'name', label: 'Name', type: 'text', comparators: [{ key: 'equals', label: 'Equals' }] }],
+        }
+      }
+    });
+
+    const exposedHeader = wrapperHeader.vm as unknown as { toggleFilters: () => void };
+    exposedHeader.toggleFilters();
+    await wrapperHeader.vm.$nextTick();
+
+    expect(wrapperHeader.findComponent(TableFilterHeader).exists()).toBe(true);
+    expect(wrapperHeader.findComponent(TableFilterPanel).exists()).toBe(false);
+
+    const wrapperPanel = mount(Table, {
+      props: {
+        table: {
+          name: 'Users',
+          columns: [{ attribute: 'name', label: 'Name' }],
+          rows: [],
+          hasFilters: true,
+          filterLayout: 'panel',
+          filters: [{ key: 'name', label: 'Name', type: 'text', comparators: [{ key: 'equals', label: 'Equals' }] }],
+        }
+      }
+    });
+
+    const exposedPanel = wrapperPanel.vm as unknown as { toggleFilters: () => void };
+    exposedPanel.toggleFilters();
+    await wrapperPanel.vm.$nextTick();
+
+    expect(wrapperPanel.findComponent(TableFilterPanel).exists()).toBe(true);
+    expect(wrapperPanel.findComponent(TableFilterHeader).exists()).toBe(false);
+  });
+
+  it('emits filter-change when filter emits filter-change', async () => {
+    const { TableFilterHeader } = await import('../src/index');
+
+    const wrapper = mount(Table, {
+      props: {
+        table: {
+          name: 'Users',
+          columns: [{ attribute: 'name', label: 'Name' }],
+          rows: [],
+          hasFilters: true,
+          filterLayout: 'header',
+          filters: [{ key: 'name', label: 'Name', type: 'text', comparators: [{ key: 'equals', label: 'Equals' }] }],
+        }
+      }
+    });
+
+    const exposed = wrapper.vm as unknown as { toggleFilters: () => void };
+    exposed.toggleFilters();
+    await wrapper.vm.$nextTick();
+
+    const header = wrapper.findComponent(TableFilterHeader);
+    expect(header.exists()).toBe(true);
+    header.vm.$emit('filter-change', [{ key: 'name', comparator: 'equals', value: 'Alice' }]);
+    expect(wrapper.emitted('filter-change')).toBeTruthy();
+    expect(wrapper.emitted('filter-change')?.[0]).toEqual([[{ key: 'name', comparator: 'equals', value: 'Alice' }]]);
+  });
+
+  it('automatically enables filter button when hasFilters is true', async () => {
+    const { TableFilterButton } = await import('../src/index');
+
+    const wrapper = mount(Table, {
+      props: {
+        table: {
+          name: 'Users',
+          columns: [{ attribute: 'name', label: 'Name' }],
+          rows: [],
+          hasFilters: true,
+          filters: [
+            { key: 'name', label: 'Name', type: 'text', comparators: [{ key: 'equals', label: 'Equals' }] }
+          ],
+        },
+      },
+    });
+
+    expect(wrapper.findComponent(TableFilterButton).exists()).toBe(true);
+  });
+
+  it('does not render filter button when hasFilters is false and no filters exist', async () => {
+    const { TableFilterButton } = await import('../src/index');
+
+    const wrapper = mount(Table, {
+      props: {
+        table: {
+          name: 'Users',
+          columns: [{ attribute: 'name', label: 'Name' }],
+          rows: [],
+          hasFilters: false,
+        },
+      },
+    });
+
+    expect(wrapper.findComponent(TableFilterButton).exists()).toBe(false);
+  });
+
+  it('allows replacing the entire filter panel section via #filter-panel or #filters slot', () => {
+    const wrapper = mount(Table, {
+      props: {
+        table: {
+          name: 'Users',
+          columns: [{ attribute: 'name', label: 'Name' }],
+          rows: [],
+          hasFilters: true,
+          filterLayout: 'panel',
+        },
+      },
+      slots: {
+        'filter-panel': '<template #default="{ table }"><div data-test="custom-sidebar">Custom Filter Sidebar for {{ table.name }}</div></template>',
+      },
+    });
+
+    expect(wrapper.find('[data-test="custom-sidebar"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="custom-sidebar"]').text()).toBe('Custom Filter Sidebar for Users');
   });
 
   it('preserves header cell vertical padding when selectable is disabled', () => {
@@ -240,3 +368,4 @@ describe('Table Rendering', () => {
     expect(headerCells[1].classes()).toContain('py-3');
   });
 });
+

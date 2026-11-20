@@ -39,6 +39,7 @@ export type TableApi<T extends TableRow = TableRow> = {
   isColumnSticky: (attribute: string) => boolean;
   setColumnSticky: (attribute: string, sticky: boolean) => void;
   toggleColumnSticky: (attribute: string) => void;
+  reorderColumns: (order: string[]) => void;
 }
 
 function isTableDefinition<T extends TableRow>(
@@ -85,7 +86,7 @@ export function useTable<T extends TableRow = TableRow>(
       ...column,
       meta: { ...column.meta }
     }));
-    const stateColumns: unknown = tableDefinition.state.columns;
+    const stateColumns = tableDefinition.state.columns;
     const tableVisibility: Record<string, boolean> = stateColumns && typeof stateColumns === 'object' && !Array.isArray(stateColumns)
       ? stateColumns as Record<string, boolean>
       : {};
@@ -220,6 +221,25 @@ export function useTable<T extends TableRow = TableRow>(
     setColumnSticky(attribute, !Boolean(column.sticky ?? column.meta.defaultToSticky));
   };
 
+  const reorderColumns = (order: string[]): void => {
+    const columnMap = new Map(state.columns.map((c: TableColumn): [string, TableColumn] => [c.attribute, c]));
+    const reordered: TableColumn[] = [];
+
+    for (const attr of order) {
+      const col = columnMap.get(attr);
+      if (col) {
+        reordered.push(col);
+        columnMap.delete(attr);
+      }
+    }
+
+    for (const col of columnMap.values()) {
+      reordered.push(col);
+    }
+
+    state.columns = reordered;
+  };
+
   return {
     state: readonly(state) as unknown as Readonly<TableState<T>>,
     rows: computed((): T[] => state.rows),
@@ -241,7 +261,8 @@ export function useTable<T extends TableRow = TableRow>(
     toggleColumnVisibility,
     isColumnSticky,
     setColumnSticky,
-    toggleColumnSticky
+    toggleColumnSticky,
+    reorderColumns
   };
 }
 

@@ -86,3 +86,8 @@ Action::make('Publish')
 BadgeColumn::make('status')
     ->colors(['scheduled' => 'olive']);
 ```
+
+## Primary brand theme
+
+To configure your application's primary brand color across all Zonvoir Table components using CSS variables (`--zt-primary` and `--zt-primary-foreground`), see the [Theme](/advanced/theme/) guide.
+

@@ -5,7 +5,9 @@ import { useActions, type CustomActionContext, type UseActionsApi } from '../com
 import { hasCustomActionListener, provideTableContext, provideCustomActionHandler } from '../composables/useTableContext';
 import { normalizeTable } from '../helpers/normalizeTable';
 import { visitUrl } from '../helpers/visitUrl';
-import type { TableAction, TableCellValue, TableColumn, TableDefinition, TableExport, TableEmptyState, TableErrorState as TableErrorStateConfig, TableMetaValue, TablePagination, TableResource, TableRow, TableRowKey, TableSorting, TableUrl, TableUrlValue } from '../types/table';
+import { useScreenSize, type ScreenBreakpoint } from '../composables/useScreenSize';
+import type { ActiveFilterState } from '../composables/useTableFilters';
+import type { TableAction, TableCellValue, TableColumn, TableDefinition, TableExport, TableEmptyState, TableErrorState as TableErrorStateConfig, TableFilterLayout, TableMetaValue, TablePagination, TableResource, TableRow, TableRowKey, TableSorting, TableState, TableUrl, TableUrlValue } from '../types/table';
 import { provideTableConfiguration, type TableConfiguration } from '../config/tableConfig';
 import EmptyState from './EmptyState.vue';
 import LoadingState from './LoadingState.vue';
@@ -20,6 +22,10 @@ import CommonCheckbox from "./Common/CommonCheckbox.vue";
 import TableBulkActions from "./TableBulkActions.vue";
 import TableExports from "./TableExports.vue";
 import CommonIcon from "./Common/CommonIcon.vue";
+import TableFilterButton from "./TableFilterButton.vue";
+import TableFilterHeader from "./TableFilterHeader.vue";
+import TableFilterPanel from "./TableFilterPanel.vue";
+import TableFilterDrawer from "./TableFilterDrawer.vue";
 
 export type TableProps<T extends TableRow> = {
   table?: TableResource<T> | TableDefinition<T>;
@@ -29,6 +35,8 @@ export type TableProps<T extends TableRow> = {
   autoVisit?: boolean;
   searchDebounce?: number;
   config?: TableConfiguration;
+  reorderable?: boolean;
+  filterBreakpoint?: ScreenBreakpoint | number;
 }
 
 export type CellClickPayload<T extends TableRow> = { row: T; column: TableColumn; value: TableCellValue; event: MouseEvent };
@@ -45,7 +53,8 @@ const props = withDefaults(
     selectable: true,
     autoVisit: true,
     searchDebounce: 300,
-    config: undefined
+    config: undefined,
+    reorderable: undefined
   }
 );
 
@@ -56,6 +65,8 @@ const emit = defineEmits<{
   'search-change': [value: string];
   'per-page-change': [value: number];
   'page-click': [url: string | null];
+  'filter-change': [filters: ActiveFilterState[]];
+  'reorder': [columns: string[]];
   retry: [];
 }>();
 
@@ -101,6 +112,42 @@ const localSearch: Ref<string> = ref('');
 let searchTimeout: ReturnType<typeof setTimeout> | undefined;
 let resizeObserver: ResizeObserver | undefined;
 
+const { isLargeScreen } = useScreenSize({
+  largeScreenBreakpoint: () => props.filterBreakpoint ?? 'lg',
+});
+
+const tableFilterLayout = computed((): TableFilterLayout => {
+  return tableDefinition.value.filterLayout || 'drawer';
+});
+
+const isFiltersOpen: Ref<boolean> = ref(false);
+const toggleFilters = (): void => {
+  isFiltersOpen.value = !isFiltersOpen.value;
+};
+const closeFilters = (): void => {
+  isFiltersOpen.value = false;
+};
+const tableHasFilters: ComputedRef<boolean> = computed((): boolean => {
+  const def = tableDefinition.value || props.table;
+  if (def?.hasFilters === false) {
+    return false;
+  }
+  return Boolean(
+    def?.hasFilters ||
+    (Array.isArray(def?.filters) && def.filters.length > 0)
+  );
+});
+const canReorderColumns: ComputedRef<boolean> = computed((): boolean => {
+  if (typeof props.reorderable === 'boolean') {
+    return props.reorderable;
+  }
+  const def = tableDefinition.value || props.table;
+  return Boolean(def?.reorderable ?? def?.meta?.reorderable);
+});
+const handleReorder = (order: string[]): void => {
+  tableApi.reorderColumns(order);
+  emit('reorder', order);
+};
 const stickyHeader: ComputedRef<boolean> = computed((): boolean => Boolean(tableDefinition.value.stickyHeader));
 const rows: ComputedRef<T[]> = computed((): T[] => tableApi.rows.value ?? []);
 const visibleColumns: ComputedRef<TableColumn[]> = computed((): TableColumn[] => tableApi.visibleColumns.value ?? []);
@@ -494,16 +541,25 @@ const visitPage = (url: string | null): void => {
   }
 };
 
-const currentExportState = (): Record<string, QueryValue | string[]> => ({
-  page: pagination.value.currentPage,
-  perPage: pagination.value.perPage,
-  cursor: null,
-  search: localSearch.value,
-  sort: sorting.value.column,
-  direction: currentDirection(),
-  columns: hiddenColumnAttributes(),
-  sticky: stickyColumnAttributes()
-});
+const currentExportState = (): TableState => {
+  const exportState: TableState = {
+    page: pagination.value.currentPage,
+    perPage: pagination.value.perPage,
+    cursor: null,
+    search: localSearch.value,
+    sort: sorting.value.column,
+    direction: currentDirection(),
+    columns: hiddenColumnAttributes(),
+    sticky: stickyColumnAttributes()
+  };
+
+  const stateFilters = tableDefinition.value.state?.filters;
+  if (stateFilters !== undefined && stateFilters !== null) {
+    exportState.filters = stateFilters;
+  }
+
+  return exportState;
+};
 
 const hiddenColumnAttributes = (): string[] =>
   tableDefinition.value.columns
@@ -705,7 +761,11 @@ defineExpose({
   sorting,
   search: tableApi.search,
   hasBulkActions: computed((): boolean => bulkActions.value.length > 0),
-  hasFilters: false,
+  hasFilters: computed((): boolean => Boolean(tableDefinition.value.hasFilters)),
+  isFiltersOpen,
+  isLargeScreen,
+  toggleFilters,
+  closeFilters,
   hasSelectableRows,
   selectedItems: selectedRowKeys,
   selectedRows: selectedRowKeys,
@@ -720,6 +780,7 @@ defineExpose({
   setColumnSticky,
   makeSticky,
   removeSticky,
+  reorderColumns: tableApi.reorderColumns,
   putState,
   toggleItem,
   clearSelection,
@@ -728,291 +789,387 @@ defineExpose({
 </script>
 
 <template>
-    <section
-    :class="[tableConfig.classes.root, tableConfig.darkMode.enabled ? tableConfig.classes.rootDark : '']"
-    :data-dark-mode="tableConfig.darkMode.enabled ? 'enabled' : undefined"
-    :data-dark-class="tableConfig.darkMode.class"
-    :data-dark-attribute="tableConfig.darkMode.attribute"
-    data-test="zonvoir-table"
-  >
-    <div class="flex min-w-0 flex-1 flex-col">
-      <header :class="tableConfig.classes.toolbar">
-        <h2 class="sr-only">{{ tableDefinition.name }}</h2>
+  <div class="flex w-full min-w-0 gap-4">
+    <div class="min-w-0 flex-1 overflow-x-auto">
+      <section
+      :class="[tableConfig.classes.root, tableConfig.darkMode.enabled ? tableConfig.classes.rootDark : '']"
+      :data-dark-mode="tableConfig.darkMode.enabled ? 'enabled' : undefined"
+      :data-dark-class="tableConfig.darkMode.class"
+      :data-dark-attribute="tableConfig.darkMode.attribute"
+      data-test="zonvoir-table"
+      >
+        <div class="zonvoir-table-wrapper flex w-full items-start overflow-hidden">
+          <div class="flex min-w-0 flex-1 flex-col transition-all duration-300">
+          <header :class="tableConfig.classes.toolbar">
+            <h2 class="sr-only">{{ tableDefinition.name }}</h2>
 
-        <slot name="toolbar" :table="tableDefinition" :table-api="tableApi">
-          <div :class="tableConfig.classes.toolbarContent">
-            <div :class="tableConfig.classes.toolbarSearch">
-              <slot name="beforeSearch"></slot>
-              <label :class="tableConfig.classes.search">
-                <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-500">
-                  <CommonIcon icon="search" class="h-4 w-4" />
-                </span>
-                <input
-                  name="search"
-                  :value="localSearch"
-                  type="search"
-                  autocomplete="off"
-                  :class="tableConfig.classes.searchInput"
-                  :placeholder="tableConfig.labels.search"
-                  @input="updateSearch(($event.target as HTMLInputElement).value)"
-                >
-              </label>
-              <slot name="afterSearch"></slot>
-            </div>
-
-            <div :class="tableConfig.classes.toolbarActions">
-              <slot name="beforeActions"></slot>
-
-              <slot name="column-toggle" :table-api="tableApi">
-                <ToggleColumnsDropdown
-                  v-if="showColumnToggle && hideableColumns.length > 0"
-                  :columns="hideableColumns"
-                  :is-column-visible="tableApi.isColumnVisible"
-                  @toggle="toggleColumnVisibility"
-                />
-              </slot>
-
-              <slot name="exports" :table="tableDefinition" :selected-keys="selectedRowKeys" :state="currentExportState()">
-                <TableExports
-                  :exports="exportActions"
-                  :selected-keys="selectedRowKeys"
-                  :state="currentExportState()"
-                />
-              </slot>
-
-              <slot name="actions" :table="tableDefinition" :table-api="tableApi">
-                <div :class="tableConfig.classes.bulkActions" data-test="bulk-actions">
-                  <TableBulkActions
-                    :actions="bulkActions"
-                    :table="tableDefinition"
-                    :selected-keys="selectedRowKeys"
-                    :selection-mode="selectionMode"
-                  />
+            <slot name="toolbar" :table="tableDefinition" :table-api="tableApi">
+              <div :class="tableConfig.classes.toolbarContent">
+                <div :class="tableConfig.classes.toolbarSearch">
+                  <slot name="beforeSearch"></slot>
+                  <label :class="[tableConfig.classes.search, 'group']">
+                    <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400 transition-colors group-focus-within:text-[var(--zt-primary,#64748b)]">
+                      <CommonIcon icon="search" class="h-4 w-4" />
+                    </span>
+                    <input
+                      name="search"
+                      :value="localSearch"
+                      type="search"
+                      autocomplete="off"
+                      :class="tableConfig.classes.searchInput"
+                      :placeholder="tableConfig.labels.search"
+                      @input="updateSearch(($event.target as HTMLInputElement).value)"
+                    >
+                  </label>
+                  <slot name="afterSearch"></slot>
                 </div>
-              </slot>
-              <slot name="afterActions"></slot>
-            </div>
-          </div>
-        </slot>
 
-      </header>
+                <div :class="tableConfig.classes.toolbarActions">
+                  <slot name="beforeActions"></slot>
 
-      <div :class="tableConfig.classes.scroll" data-test="table-scroll-container">
-        <slot
-          name="table"
-          :columns="visibleColumns"
-          :rows="rows"
-          :table="tableDefinition"
-          :table-api="tableApi"
-        >
-          <table ref="tableElement" :class="tableConfig.classes.table">
-            <slot
-              name="thead"
-              :columns="visibleColumns"
-              :sorting="sorting"
-              :sticky="stickyHeader"
-              :sticky-offsets="stickyOffsets"
-              :sticky-sides="stickySides"
-              :is-column-sticky="isColumnSticky"
-              :sort-column="sortColumn"
-              :toggle-column-sticky="toggleColumnSticky"
-              :hide-column="hideColumn"
-              :selectable="selectable"
-              :all-visible-rows-selected="allVisibleRowsSelected"
-              :has-selectable-rows="hasSelectableRows"
-              :toggle-all-visible-rows="toggleAllVisibleRows"
-            >
-              <TableHeader
-                :columns="visibleColumns"
-                :sorting="sorting"
-                :sticky="stickyHeader"
-                :sticky-offsets="stickyOffsets"
-                :sticky-sides="stickySides"
-                :is-column-sticky="isColumnSticky"
-                @sort="sortColumn"
-                @stick="toggleColumnSticky"
-                @hide="hideColumn"
-              >
-                <template #prefix>
-                  <th
-                    v-if="selectable"
-                    :class="tableConfig.classes.selectionHeader"
-                  >
-                    <CommonCheckbox
-                      :model-value="allVisibleRowsSelected"
-                      :disabled="!hasSelectableRows"
-                      :ariaLabel="tableConfig.labels.selectAllRows"
-                      @update:model-value="toggleAllVisibleRows"
+                  <slot name="column-toggle" :table-api="tableApi">
+                    <ToggleColumnsDropdown
+                      v-if="showColumnToggle && hideableColumns.length > 0"
+                      :columns="hideableColumns"
+                      :all-columns="tableApi.columns?.value ?? tableDefinition.columns"
+                      :is-column-visible="tableApi.isColumnVisible"
+                      :reorderable="canReorderColumns"
+                      :table="tableDefinition"
+                      :table-api="tableApi"
+                      @toggle="toggleColumnVisibility"
+                      @reorder="handleReorder"
                     />
-                  </th>
-                </template>
-                <template
-                  v-for="column in columnsWithForwardedHeaderSlots"
-                  #[`header(${column.attribute})`]="slotProps"
-                >
-                  <slot :name="`header(${column.attribute})`" :column="slotProps.column">
-                    <slot name="header" :column="slotProps.column" />
                   </slot>
-                </template>
-              </TableHeader>
+
+                  <slot name="exports" :table="tableDefinition" :selected-keys="selectedRowKeys" :state="currentExportState()">
+                    <TableExports
+                      :exports="exportActions"
+                      :selected-keys="selectedRowKeys"
+                      :state="currentExportState()"
+                    />
+                  </slot>
+
+                  <slot name="actions" :table="tableDefinition" :table-api="tableApi">
+                    <div v-if="bulkActions.length > 0" :class="tableConfig.classes.bulkActions" data-test="bulk-actions">
+                      <TableBulkActions
+                        :actions="bulkActions"
+                        :table="tableDefinition"
+                        :selected-keys="selectedRowKeys"
+                        :selection-mode="selectionMode"
+                      />
+                    </div>
+                  </slot>
+                  <slot name="afterActions"></slot>
+
+                  <!-- Filter Button -->
+                  <slot
+                    name="filter-button"
+                    :table="tableDefinition"
+                    :open="isFiltersOpen"
+                    :toggle="toggleFilters"
+                    :table-api="tableApi"
+                  >
+                    <TableFilterButton
+                      v-if="tableHasFilters"
+                      :open="isFiltersOpen"
+                      :table="tableDefinition"
+                      @toggle="toggleFilters"
+                    />
+                  </slot>
+                </div>
+              </div>
             </slot>
 
-            <template v-if="isLoading && $slots.loadingState">
-              <slot
-                name="loadingState"
-                :table="tableDefinition"
-                :table-api="tableApi"
-                :columns="visibleColumns"
-                :colspan="visibleColumnCount"
-              />
-            </template>
+          </header>
 
-            <LoadingState
-              v-else-if="isLoading"
-              :colspan="visibleColumnCount"
-              :message="tableConfig.labels.loading"
+          <!-- Header Filters -->
+          <slot
+            v-if="(isFiltersOpen && tableFilterLayout === 'header') || $slots['filter-header']"
+            name="filter-header"
+            :table="tableDefinition"
+            :open="isFiltersOpen"
+            :close="closeFilters"
+            :table-api="tableApi"
+          >
+            <TableFilterHeader
+              v-if="tableHasFilters && isFiltersOpen && tableFilterLayout === 'header'"
+              :open="isFiltersOpen"
+              :table="tableDefinition"
+              :auto-visit="props.autoVisit"
+              @close="closeFilters"
+              @filter-change="(filters: ActiveFilterState[]) => emit('filter-change', filters)"
             />
+          </slot>
 
-            <TableErrorState
-              v-else-if="tableError"
-              :title="tableError.title"
-              :message="tableError.message"
-              :icon="tableError.icon"
-              :retry="tableError.retry"
-              :action="tableError.action ?? null"
-              :colspan="visibleColumnCount"
-              @retry="retryTable"
-            />
-
+          <div :class="tableConfig.classes.scroll" data-test="table-scroll-container">
             <slot
-              v-else-if="hasRows"
-              name="tbody"
+              name="table"
               :columns="visibleColumns"
               :rows="rows"
               :table="tableDefinition"
               :table-api="tableApi"
-              :sticky-offsets="stickyOffsets"
-              :sticky-sides="stickySides"
-              :row-number-start="rowNumberStart"
-              :auto-visit="autoVisit"
-              :has-cell-click-listener="hasCellClickListener"
-              :handle-row-click="handleRowClick"
-              :handle-cell-click="handleCellClick"
-              :selectable="selectable"
-              :row-key="rowKey"
-              :selected-rows="selectedRows"
-              :toggle-row-selection="toggleRowSelection"
             >
-              <TableBody
-                :columns="visibleColumns"
-                :rows="rows"
-                :table="tableDefinition"
-                :sticky-offsets="stickyOffsets"
-                :sticky-sides="stickySides"
-                :row-number-start="rowNumberStart"
-                :auto-visit="autoVisit"
-                :has-cell-click-listener="hasCellClickListener"
-                @row-click="handleRowClick"
-                @cell-click="handleCellClick"
-              >
-                <template #row="slotProps">
-                  <slot
-                    name="row"
-                    :row="slotProps.row"
-                    :row-index="slotProps.rowIndex"
-                    :columns="slotProps.columns"
+              <table ref="tableElement" :class="tableConfig.classes.table">
+                <slot
+                  name="thead"
+                  :columns="visibleColumns"
+                  :sorting="sorting"
+                  :sticky="stickyHeader"
+                  :sticky-offsets="stickyOffsets"
+                  :sticky-sides="stickySides"
+                  :is-column-sticky="isColumnSticky"
+                  :sort-column="sortColumn"
+                  :toggle-column-sticky="toggleColumnSticky"
+                  :hide-column="hideColumn"
+                  :selectable="selectable"
+                  :all-visible-rows-selected="allVisibleRowsSelected"
+                  :has-selectable-rows="hasSelectableRows"
+                  :toggle-all-visible-rows="toggleAllVisibleRows"
+                >
+                  <TableHeader
+                    :columns="visibleColumns"
+                    :all-columns="tableApi.columns?.value ?? tableDefinition.columns"
+                    :sorting="sorting"
+                    :sticky="stickyHeader"
+                    :sticky-offsets="stickyOffsets"
+                    :sticky-sides="stickySides"
+                    :is-column-sticky="isColumnSticky"
+                    :reorderable="canReorderColumns"
                     :table="tableDefinition"
                     :table-api="tableApi"
+                    @sort="sortColumn"
+                    @stick="toggleColumnSticky"
+                    @hide="hideColumn"
+                    @reorder="handleReorder"
                   >
-                    <td
-                      v-if="selectable"
-                      :class="[
-                        tableConfig.classes.selectionCell,
-                        rowKey(slotProps.row) !== null && selectedRows.has(rowKey(slotProps.row)!)
-                          ? 'shadow-[inset_4px_0_0_0_rgb(209_213_219)]'
-                          : ''
-                      ]"
+                    <template #prefix>
+                      <th
+                        v-if="selectable"
+                        :class="tableConfig.classes.selectionHeader"
+                      >
+                        <CommonCheckbox
+                          :model-value="allVisibleRowsSelected"
+                          :disabled="!hasSelectableRows"
+                          :ariaLabel="tableConfig.labels.selectAllRows"
+                          @update:model-value="toggleAllVisibleRows"
+                        />
+                      </th>
+                    </template>
+                    <template
+                      v-for="column in columnsWithForwardedHeaderSlots"
+                      #[`header(${column.attribute})`]="slotProps"
                     >
-                      <CommonCheckbox
-                        :model-value="rowKey(slotProps.row) !== null && selectedRows.has(rowKey(slotProps.row)!)"
-                        :disabled="slotProps.row._selectable === false || rowKey(slotProps.row) === null"
-                        :ariaLabel="tableConfig.labels.selectRow"
-                        @click.stop
-                        @update:model-value="toggleRowSelection(slotProps.row)"
-                      />
-                    </td>
-                    <TableCell
-                      v-for="column in visibleColumns"
-                      :key="column.attribute"
-                      :column="column"
-                      :row="slotProps.row"
-                      :value="cellValueFor(slotProps.row as T, column, slotProps.rowIndex)"
-                      clickable
-                      :auto-visit="autoVisit"
-                      :has-click-listener="hasCellClickListener"
-                      :sticky-offset="stickyOffsets[column.attribute]"
-                      :sticky-side="stickySides[column.attribute]"
-                      @click="handleForwardedCellClick"
-                    >
+                      <slot :name="`header(${column.attribute})`" :column="slotProps.column">
+                        <slot name="header" :column="slotProps.column" />
+                      </slot>
+                    </template>
+                  </TableHeader>
+                </slot>
+
+                <template v-if="isLoading && $slots.loadingState">
+                  <slot
+                    name="loadingState"
+                    :table="tableDefinition"
+                    :table-api="tableApi"
+                    :columns="visibleColumns"
+                    :colspan="visibleColumnCount"
+                  />
+                </template>
+
+                <LoadingState
+                  v-else-if="isLoading"
+                  :colspan="visibleColumnCount"
+                  :message="tableConfig.labels.loading"
+                />
+
+                <TableErrorState
+                  v-else-if="tableError"
+                  :title="tableError.title"
+                  :message="tableError.message"
+                  :icon="tableError.icon"
+                  :retry="tableError.retry"
+                  :action="tableError.action ?? null"
+                  :colspan="visibleColumnCount"
+                  @retry="retryTable"
+                />
+
+                <slot
+                  v-else-if="hasRows"
+                  name="tbody"
+                  :columns="visibleColumns"
+                  :rows="rows"
+                  :table="tableDefinition"
+                  :table-api="tableApi"
+                  :sticky-offsets="stickyOffsets"
+                  :sticky-sides="stickySides"
+                  :row-number-start="rowNumberStart"
+                  :auto-visit="autoVisit"
+                  :has-cell-click-listener="hasCellClickListener"
+                  :handle-row-click="handleRowClick"
+                  :handle-cell-click="handleCellClick"
+                  :selectable="selectable"
+                  :row-key="rowKey"
+                  :selected-rows="selectedRows"
+                  :toggle-row-selection="toggleRowSelection"
+                >
+                  <TableBody
+                    :columns="visibleColumns"
+                    :rows="rows"
+                    :table="tableDefinition"
+                    :sticky-offsets="stickyOffsets"
+                    :sticky-sides="stickySides"
+                    :row-number-start="rowNumberStart"
+                    :auto-visit="autoVisit"
+                    :has-cell-click-listener="hasCellClickListener"
+                    @row-click="handleRowClick"
+                    @cell-click="handleCellClick"
+                  >
+                    <template #row="slotProps">
                       <slot
-                        :name="`cell(${column.attribute})`"
-                        :column="column"
+                        name="row"
                         :row="slotProps.row"
                         :row-index="slotProps.rowIndex"
-                        :value="cellValueFor(slotProps.row as T, column, slotProps.rowIndex)"
+                        :columns="slotProps.columns"
+                        :table="tableDefinition"
+                        :table-api="tableApi"
                       >
-                        <CellValue
+                        <td
+                          v-if="selectable"
+                          :class="[
+                            tableConfig.classes.selectionCell,
+                            rowKey(slotProps.row) !== null && selectedRows.has(rowKey(slotProps.row)!)
+                              ? 'shadow-[inset_4px_0_0_0_rgb(209_213_219)]'
+                              : ''
+                          ]"
+                        >
+                          <CommonCheckbox
+                            :model-value="rowKey(slotProps.row) !== null && selectedRows.has(rowKey(slotProps.row)!)"
+                            :disabled="slotProps.row._selectable === false || rowKey(slotProps.row) === null"
+                            :ariaLabel="tableConfig.labels.selectRow"
+                            @click.stop
+                            @update:model-value="toggleRowSelection(slotProps.row)"
+                          />
+                        </td>
+                        <TableCell
+                          v-for="column in visibleColumns"
+                          :key="column.attribute"
                           :column="column"
                           :row="slotProps.row"
-                          :row-index="slotProps.rowIndex"
-                          :row-number-start="rowNumberStart"
-                        />
+                          :value="cellValueFor(slotProps.row as T, column, slotProps.rowIndex)"
+                          clickable
+                          :auto-visit="autoVisit"
+                          :has-click-listener="hasCellClickListener"
+                          :sticky-offset="stickyOffsets[column.attribute]"
+                          :sticky-side="stickySides[column.attribute]"
+                          @click="handleForwardedCellClick"
+                        >
+                          <slot
+                            :name="`cell(${column.attribute})`"
+                            :column="column"
+                            :row="slotProps.row"
+                            :row-index="slotProps.rowIndex"
+                            :value="cellValueFor(slotProps.row as T, column, slotProps.rowIndex)"
+                          >
+                            <CellValue
+                              :column="column"
+                              :row="slotProps.row"
+                              :row-index="slotProps.rowIndex"
+                              :row-number-start="rowNumberStart"
+                            />
+                          </slot>
+                        </TableCell>
                       </slot>
-                    </TableCell>
-                  </slot>
-                </template>
-              </TableBody>
+                    </template>
+                  </TableBody>
+                </slot>
+
+                <EmptyState
+                  v-else-if="$slots.emptyState"
+                  :colspan="visibleColumnCount"
+                >
+                  <slot
+                    name="emptyState"
+                    :table="tableDefinition"
+                    :table-api="tableApi"
+                    :empty-state="emptyState"
+                    :action="emptyState.action ?? null"
+                    :columns="visibleColumns"
+                    :rows="rows"
+                    :colspan="visibleColumnCount"
+                  />
+                </EmptyState>
+
+                <EmptyState
+                  v-else
+                  :title="emptyState.title"
+                  :message="emptyState.message"
+                  :icon="emptyState.icon"
+                  :action="emptyState.action ?? null"
+                  :colspan="visibleColumnCount"
+                />
+              </table>
             </slot>
+          </div>
 
-            <EmptyState
-              v-else-if="$slots.emptyState"
-              :colspan="visibleColumnCount"
-            >
-              <slot
-                name="emptyState"
-                :table="tableDefinition"
-                :table-api="tableApi"
-                :empty-state="emptyState"
-                :action="emptyState.action ?? null"
-                :columns="visibleColumns"
-                :rows="rows"
-                :colspan="visibleColumnCount"
+          <footer :class="tableConfig.classes.paginationContainer" v-if="pagination.enabled">
+            <slot name="pagination" :pagination="pagination" :table="tableDefinition" :table-api="tableApi">
+              <TablePaginationComponent
+                :selectable="selectable"
+                :selected-rows="selectedRows"
+                :pagination="pagination"
+                @per-page-change="updatePerPage"
+                @page-click="visitPage"
               />
-            </EmptyState>
+            </slot>
+          </footer>
+          </div>
 
-            <EmptyState
-              v-else
-              :title="emptyState.title"
-              :message="emptyState.message"
-              :icon="emptyState.icon"
-              :action="emptyState.action ?? null"
-              :colspan="visibleColumnCount"
-            />
-          </table>
-        </slot>
-      </div>
 
-      <footer :class="tableConfig.classes.paginationContainer" v-if="pagination.enabled">
-        <slot name="pagination" :pagination="pagination" :table="tableDefinition" :table-api="tableApi">
-          <TablePaginationComponent
-            :selectable="selectable"
-            :selected-rows="selectedRows"
-            :pagination="pagination"
-            @per-page-change="updatePerPage"
-            @page-click="visitPage"
-          />
-        </slot>
-      </footer>
+        </div>
+      </section>
     </div>
-  </section>
+    <!-- Dynamic Pro Slide-out Filter Panel Hook -->
+    <slot
+      v-if="(isFiltersOpen && tableFilterLayout !== 'header') || $slots.filters || $slots['filter-panel']"
+      name="filters"
+      :table="tableDefinition"
+      :open="isFiltersOpen"
+      :close="closeFilters"
+      :layout="tableFilterLayout"
+      :is-large-screen="isLargeScreen"
+      :table-api="tableApi"
+    >
+      <slot
+        name="filter-panel"
+        :table="tableDefinition"
+        :open="isFiltersOpen"
+        :close="closeFilters"
+        :is-large-screen="isLargeScreen"
+        :table-api="tableApi"
+      >
+        <template v-if="isFiltersOpen && tableHasFilters && tableFilterLayout !== 'header'">
+          <div
+            v-if="(tableFilterLayout === 'drawer' || tableFilterLayout === 'panel') && isLargeScreen"
+            class="w-[320px] rounded-lg shrink-0 ml-2"
+          >
+            <TableFilterPanel
+              :open="isFiltersOpen"
+              :table="tableDefinition"
+              :auto-visit="props.autoVisit"
+              @close="closeFilters"
+              @filter-change="(filters: ActiveFilterState[]) => emit('filter-change', filters)"
+            />
+          </div>
+          <TableFilterDrawer
+            v-else-if="tableFilterLayout === 'drawer' || tableFilterLayout === 'panel'"
+            :open="isFiltersOpen"
+            :table="tableDefinition"
+            :auto-visit="props.autoVisit"
+            @close="closeFilters"
+            @filter-change="(filters: ActiveFilterState[]) => emit('filter-change', filters)"
+          />
+        </template>
+      </slot>
+    </slot>
+  </div>
 </template>

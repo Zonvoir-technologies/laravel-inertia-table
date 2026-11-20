@@ -8,6 +8,8 @@
 @import "tailwindcss/theme.css";
 @import "tailwindcss/utilities.css";
 
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
 :root {
   --sl-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --sl-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -935,10 +937,12 @@ body {
 #feature-table:checked~.feature-rail label[for='feature-table'],
 #feature-search:checked~.feature-rail label[for='feature-search'],
 #feature-sorting:checked~.feature-rail label[for='feature-sorting'],
+#feature-filters:checked~.feature-rail label[for='feature-filters'],
 #feature-pagination:checked~.feature-rail label[for='feature-pagination'],
 #feature-actions:checked~.feature-rail label[for='feature-actions'],
 #feature-bulk:checked~.feature-rail label[for='feature-bulk'],
 #feature-columns:checked~.feature-rail label[for='feature-columns'],
+#feature-reorder:checked~.feature-rail label[for='feature-reorder'],
 #feature-sticky:checked~.feature-rail label[for='feature-sticky'],
 #feature-exports:checked~.feature-rail label[for='feature-exports'],
 #feature-url:checked~.feature-rail label[for='feature-url'],
@@ -951,10 +955,12 @@ body {
 #feature-table:checked~.feature-main .panel-table,
 #feature-search:checked~.feature-main .panel-search,
 #feature-sorting:checked~.feature-main .panel-sorting,
+#feature-filters:checked~.feature-main .panel-filters,
 #feature-pagination:checked~.feature-main .panel-pagination,
 #feature-actions:checked~.feature-main .panel-actions,
 #feature-bulk:checked~.feature-main .panel-bulk,
 #feature-columns:checked~.feature-main .panel-columns,
+#feature-reorder:checked~.feature-main .panel-reorder,
 #feature-sticky:checked~.feature-main .panel-sticky,
 #feature-exports:checked~.feature-main .panel-exports,
 #feature-url:checked~.feature-main .panel-url,
@@ -1732,10 +1738,12 @@ html {
 #feature-table:checked~.feature-main .panel-table,
 #feature-search:checked~.feature-main .panel-search,
 #feature-sorting:checked~.feature-main .panel-sorting,
+#feature-filters:checked~.feature-main .panel-filters,
 #feature-pagination:checked~.feature-main .panel-pagination,
 #feature-actions:checked~.feature-main .panel-actions,
 #feature-bulk:checked~.feature-main .panel-bulk,
 #feature-columns:checked~.feature-main .panel-columns,
+#feature-reorder:checked~.feature-main .panel-reorder,
 #feature-sticky:checked~.feature-main .panel-sticky,
 #feature-exports:checked~.feature-main .panel-exports,
 #feature-url:checked~.feature-main .panel-url,
@@ -1877,10 +1885,12 @@ html {
   #feature-table:checked~.feature-rail label[for='feature-table'],
   #feature-search:checked~.feature-rail label[for='feature-search'],
   #feature-sorting:checked~.feature-rail label[for='feature-sorting'],
+  #feature-filters:checked~.feature-rail label[for='feature-filters'],
   #feature-pagination:checked~.feature-rail label[for='feature-pagination'],
   #feature-actions:checked~.feature-rail label[for='feature-actions'],
   #feature-bulk:checked~.feature-rail label[for='feature-bulk'],
   #feature-columns:checked~.feature-rail label[for='feature-columns'],
+  #feature-reorder:checked~.feature-rail label[for='feature-reorder'],
   #feature-sticky:checked~.feature-rail label[for='feature-sticky'],
   #feature-exports:checked~.feature-rail label[for='feature-exports'],
   #feature-url:checked~.feature-rail label[for='feature-url'],
@@ -2959,10 +2969,12 @@ section.zv-code.zv-code-wrapper {
 #feature-table:checked~.feature-rail label[for='feature-table'],
 #feature-search:checked~.feature-rail label[for='feature-search'],
 #feature-sorting:checked~.feature-rail label[for='feature-sorting'],
+#feature-filters:checked~.feature-rail label[for='feature-filters'],
 #feature-pagination:checked~.feature-rail label[for='feature-pagination'],
 #feature-actions:checked~.feature-rail label[for='feature-actions'],
 #feature-bulk:checked~.feature-rail label[for='feature-bulk'],
 #feature-columns:checked~.feature-rail label[for='feature-columns'],
+#feature-reorder:checked~.feature-rail label[for='feature-reorder'],
 #feature-sticky:checked~.feature-rail label[for='feature-sticky'],
 #feature-exports:checked~.feature-rail label[for='feature-exports'],
 #feature-url:checked~.feature-rail label[for='feature-url'],
@@ -2982,7 +2994,6 @@ section.zv-code.zv-code-wrapper {
 
 .shpcl-wr {
   position: relative;
-  padding: 90px 0;
 }
 
 p.read-mr {
@@ -3078,6 +3089,194 @@ ul.top-level li {
   .zv-home-hero {
     padding-top: 40px;
   }
+}
+
+/* ==========================================================================
+   Pro Feature Badges
+   ========================================================================== */
+.sl-badge.zv-pro-badge,
+.zv-pro-badge {
+  background: #f05a45 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(240, 90, 69, 0.45) !important;
+  font-weight: 700 !important;
+  font-size: 0.65rem !important;
+  letter-spacing: 0.05em !important;
+  padding: 0.12rem 0.5rem !important;
+  border-radius: 9999px !important;
+  text-transform: uppercase !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.2rem !important;
+  box-shadow: 0 1px 3px rgba(240, 90, 69, 0.3) !important;
+  line-height: 1.2 !important;
+}
+
+:root[data-theme='light'] .sl-badge.zv-pro-badge,
+:root[data-theme='light'] .zv-pro-badge {
+  background: #f05a45 !important;
+  color: #ffffff !important;
+  border-color: rgba(240, 90, 69, 0.5) !important;
+  box-shadow: 0 1px 3px rgba(240, 90, 69, 0.25) !important;
+}
+
+/* Inline badge tag for tables and content */
+.zv-pro-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.1rem 0.45rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+  color: #ffffff !important;
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  box-shadow: 0 1px 3px rgba(234, 88, 12, 0.25);
+  vertical-align: middle;
+  margin-left: 0.35rem;
+  line-height: 1.3;
+}
+
+/* Sidebar badge positioning: align badges to the right edge */
+.sidebar-content a {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 0.5rem !important;
+}
+
+.sidebar-content a > span:first-child {
+  flex: 1 1 auto;
+}
+
+.sidebar-content a .sl-badge,
+.sidebar-content a .zv-pro-badge {
+  margin-left: auto !important;
+  margin-inline-start: auto !important;
+  flex-shrink: 0 !important;
+}
+
+.sidebar-content .group-label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  flex: 1 1 auto;
+}
+
+.sidebar-content .group-label .sl-badge,
+.sidebar-content .group-label .zv-pro-badge {
+  margin-left: auto !important;
+  margin-inline-start: auto !important;
+  flex-shrink: 0 !important;
+}
+
+/* Active page badge contrast */
+.sidebar-content a[aria-current='page'] .zv-pro-badge {
+  background: #ffffff !important;
+  color: var(--sl-color-accent) !important;
+  border-color: rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15) !important;
+}
 
 
+
+
+
+
+/* ==========================================================================
+   Standalone Legal Pages (Privacy Policy & Terms)
+   ========================================================================== */
+main:has(.zv-legal-page) > .content-panel > .sl-container {
+  max-width: 58rem !important;
+  margin: 0 auto !important;
+  padding-inline: 1.5rem !important;
+}
+
+main:has(.zv-legal-page) > .content-panel:first-child {
+  padding-block-start: 3rem !important;
+  padding-block-end: 1rem !important;
+  border-bottom: 1px solid var(--sl-color-gray-5);
+}
+
+main:has(.zv-legal-page) > .content-panel:first-child h1 {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin-bottom: 0.5rem;
+}
+
+.zv-legal-page {
+  padding-top: 1.5rem;
+  padding-bottom: 4rem;
+  line-height: 1.75;
+}
+
+.zv-legal-page .zv-legal-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  margin-bottom: 2rem;
+  font-size: 0.875rem;
+  color: var(--sl-color-gray-3);
+}
+
+.zv-legal-page .zv-legal-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--sl-color-accent);
+  background: color-mix(in srgb, var(--sl-color-accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--sl-color-accent) 30%, transparent);
+}
+
+.zv-legal-page .zv-legal-summary {
+  margin: 1.5rem 0 2.5rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--sl-color-gray-6) 70%, transparent);
+  border: 1px solid var(--sl-color-gray-5);
+  border-left: 4px solid var(--sl-color-accent);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--sl-color-gray-2);
+}
+
+.zv-legal-page h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--sl-color-gray-5);
+}
+
+.zv-legal-page h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.zv-legal-page ul {
+  padding-left: 1.5rem;
+  margin: 0.75rem 0 1.25rem;
+}
+
+.zv-legal-page li {
+  margin-bottom: 0.5rem;
+}
+
+.zv-legal-page .zv-contact-box {
+  margin-top: 2.5rem;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--sl-color-gray-6) 50%, transparent);
+  border: 1px solid var(--sl-color-gray-5);
 }

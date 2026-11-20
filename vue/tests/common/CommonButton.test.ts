@@ -26,7 +26,7 @@ describe('CommonButton', () => {
 
   it('renders loading and disabled buttons and normalizes invalid variants', () => {
     const loading = mount(CommonButton, { props: { loading: true, disabled: true }, global: { stubs: componentStubs } });
-    const invalid = mount(CommonButton, { props: { variant: 'invalid' as never } });
+    const invalid = mount(CommonButton, { props: { variant: 'invalid' as never, color: 'neutral' } });
     expect(loading.attributes('disabled')).toBeDefined();
     expect(loading.find('[data-spinner]').exists()).toBe(true);
     expect(invalid.classes()).toContain('bg-neutral-500');
@@ -39,5 +39,22 @@ describe('CommonButton', () => {
       ['danger', 'outline', 'dark:bg-red-950/40'], ['brand', 'outline', 'dark:bg-brand-950/40'],
       ['brand', 'solid', 'bg-brand-500'],
     ]) expect(mount(CommonButton, { props: { color, variant: variant as never } }).classes()).toContain(expected);
+  });
+
+  it('supports primary color with --zt-primary CSS variable in light and dark mode', () => {
+    const light = mount(CommonButton, { props: { color: 'primary', variant: 'solid' } });
+    expect(light.classes()).toContain('bg-[var(--zt-primary,#475569)]');
+    expect(light.classes()).toContain('text-[var(--zt-primary-foreground,#ffffff)]');
+
+    configureTable({ darkMode: true });
+    const dark = mount(CommonButton, { props: { color: 'primary', variant: 'solid' } });
+    expect(dark.classes()).toContain('dark:bg-[var(--zt-primary,#334155)]');
+    expect(dark.classes()).toContain('dark:text-[var(--zt-primary-foreground,#ffffff)]');
+  });
+
+  it('defaults to primary color with --zt-primary CSS variable', () => {
+    const wrapper = mount(CommonButton);
+    expect(wrapper.classes()).toContain('bg-[var(--zt-primary,#475569)]');
+    expect(wrapper.classes()).toContain('text-[var(--zt-primary-foreground,#ffffff)]');
   });
 });

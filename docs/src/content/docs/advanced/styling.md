@@ -127,6 +127,26 @@ Use config.classes to add or override utility classes without writing a CSS sele
 | dropdownItem | Column-toggle item. |
 | dropdownEmpty | Empty message in the column-toggle dropdown. |
 
+### Filters and column reordering
+
+| Key | Applies to |
+| --- | --- |
+| filterButton | Main filter toggle button. |
+| filterDrawer | Slide-out filter drawer container. |
+| filterPanel | Side filter panel container. |
+| filterHeader | In-header filter bar container. |
+| activeFilters | Active filter summary container. |
+| activeFilterTag | Individual active filter badge or tag. |
+| dragHandle | Column reorder grip handle in toggle dropdown. |
+| reorderResetButton | Reset to default order button in toggle dropdown. |
+| reorderableHeaderCell | Draggable header cell styling. |
+| reorderDraggingHeaderCell | Header cell while actively being dragged. |
+| reorderDropTargetLeft | Header insertion indicator on the left. |
+| reorderDropTargetRight | Header insertion indicator on the right. |
+| reorderDropdownItem | Draggable item inside column toggle dropdown. |
+| reorderDropTargetTop | Dropdown insertion indicator on top. |
+| reorderDropTargetBottom | Dropdown insertion indicator on bottom. |
+
 ## Column and action classes
 
 Add classes to individual columns and actions from the PHP definition. labelClass() applies to the header cell, and cellClass() applies to body cells for that column.
@@ -156,4 +176,4 @@ Action::make('Edit')
 }
 ~~~
 
-For the built-in boolean theme switch, see [Dark Mode](/advanced/dark-mode/). For changing markup or behavior, see [Slots](/advanced/slots/).
+For primary brand color customization using CSS variables, see [Theme](/advanced/theme/). For the built-in dark mode switch, see [Dark Mode](/advanced/dark-mode/). For changing markup or behavior, see [Slots](/advanced/slots/).

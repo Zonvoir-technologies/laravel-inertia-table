@@ -325,3 +325,72 @@ it('uses array default state and blank default sort values', function (): void {
     expect($arrayState->state()->sort())->toBe('title')
         ->and($blankSort->state()->sort())->toBeNull();
 });
+
+it('supports payload and results extensions with scoping, defensive returns, and flush', function (): void {
+    Table::flushExtensions();
+
+    $tableA = new class () extends Table {
+        protected ?string $resource = TestPost::class;
+
+        public function columns(): array
+        {
+            return [];
+        }
+    };
+
+    $tableB = new class () extends Table {
+        protected ?string $resource = TestPost::class;
+
+        public function columns(): array
+        {
+            return [];
+        }
+    };
+
+    // Global extension applies to all tables
+    Table::extendPayload('global_meta', function ($table, array $payload) {
+        $payload['global_meta'] = 'active';
+
+        return $payload;
+    });
+
+    // Class-specific extension
+    $tableA::extendPayload('table_a_meta', function ($table, array $payload) {
+        $payload['table_a_meta'] = true;
+
+        return $payload;
+    });
+
+    // Extension with invalid (void/non-array) return is ignored defensively
+    $tableA::extendPayload('faulty_extension', function ($table, array $payload): void {
+        // returning void
+    });
+
+    $payloadA = $tableA->payload();
+    $payloadB = $tableB->payload();
+
+    expect($payloadA)->toHaveKey('global_meta', 'active')
+        ->and($payloadA)->toHaveKey('table_a_meta', true)
+        ->and($payloadA)->toBeArray()
+        ->and($payloadB)->toHaveKey('global_meta', 'active')
+        ->and($payloadB)->not->toHaveKey('table_a_meta');
+
+    // Test results extension
+    Table::extendResults('custom_result', function ($table, array $results) {
+        $results['custom_result'] = 123;
+
+        return $results;
+    });
+
+    $resultsB = $tableB->results();
+    expect($resultsB)->toHaveKey('custom_result', 123);
+
+    // Test flush
+    Table::flushExtensions();
+    $freshPayloadA = $tableA->payload();
+    $freshResultsB = $tableB->results();
+
+    expect($freshPayloadA)->not->toHaveKey('global_meta')
+        ->and($freshPayloadA)->not->toHaveKey('table_a_meta')
+        ->and($freshResultsB)->not->toHaveKey('custom_result');
+});

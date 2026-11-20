@@ -164,7 +164,6 @@ const execute = (action: TableAction, event: MouseEvent): void => {
       <CommonButton
         type="button"
         variant="ghost"
-        color="neutral"
         size="icon-sm"
         aria-haspopup="menu"
         :aria-expanded="open"

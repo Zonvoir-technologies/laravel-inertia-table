@@ -46,6 +46,8 @@ The following are all labels currently exposed by tableConfig.ts.
 | toggleColumns | Toggle Columns |
 | toggleColumnSearch | Search... |
 | unstick | Unstick |
+| dragToReorder | Drag to reorder |
+| resetOrder | Reset to default order |
 
 ### States and pagination
 

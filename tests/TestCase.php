@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace Zonvoir\InertiaTable\Tests;
 
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Zonvoir\InertiaTable\InertiaTableServiceProvider;
 
 abstract class TestCase extends OrchestraTestCase
 {
+    use DatabaseTransactions;
+
     protected function getPackageProviders($app): array
     {
         return [
@@ -24,26 +27,27 @@ abstract class TestCase extends OrchestraTestCase
 
         config(['app.key' => 'base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=']);
 
-        $this->resetDatabase();
+        $this->setUpDatabase();
     }
 
-    private function resetDatabase(): void
+    private function setUpDatabase(): void
     {
-        Schema::dropIfExists('zonvoir_test_posts');
-        Schema::dropIfExists('zonvoir_test_authors');
+        if (! Schema::hasTable('zonvoir_test_authors')) {
+            Schema::create('zonvoir_test_authors', static function (Blueprint $table): void {
+                $table->increments('id');
+                $table->string('name');
+            });
+        }
 
-        Schema::create('zonvoir_test_authors', static function (Blueprint $table): void {
-            $table->increments('id');
-            $table->string('name');
-        });
-
-        Schema::create('zonvoir_test_posts', static function (Blueprint $table): void {
-            $table->increments('id');
-            $table->string('title')->nullable();
-            $table->string('status')->nullable();
-            $table->unsignedInteger('votes')->default(0);
-            $table->unsignedInteger('author_id')->nullable();
-            $table->timestamp('published_at')->nullable();
-        });
+        if (! Schema::hasTable('zonvoir_test_posts')) {
+            Schema::create('zonvoir_test_posts', static function (Blueprint $table): void {
+                $table->increments('id');
+                $table->string('title')->nullable();
+                $table->string('status')->nullable();
+                $table->unsignedInteger('votes')->default(0);
+                $table->unsignedInteger('author_id')->nullable();
+                $table->timestamp('published_at')->nullable();
+            });
+        }
     }
 }

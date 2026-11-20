@@ -1,16 +1,27 @@
 ---
 import config from 'virtual:starlight/user-config';
 import ThemeSelect from '@astrojs/starlight/components/ThemeSelect.astro';
-import { Icon } from '@astrojs/starlight/components';
+import { Icon, Badge } from '@astrojs/starlight/components';
 import logo from '../assets/logo.svg';
 
 const { hasSidebar, siteTitle, siteTitleHref } = Astro.locals.starlightRoute;
 const socialLinks = config.social || [];
-type DrawerLink = { label: string; slug?: string; link?: string };
-type DrawerGroup = { label: string; items: DrawerLink[] };
+type DrawerBadge =
+  | string
+  | {
+      text: string;
+      variant?: 'note' | 'danger' | 'success' | 'caution' | 'tip' | 'default';
+      class?: string;
+    };
+type DrawerLink = { label: string; slug?: string; link?: string; badge?: DrawerBadge };
+type DrawerGroup = { label: string; badge?: DrawerBadge; items: DrawerLink[] };
 const drawerGroups = config.sidebar as unknown as DrawerGroup[];
 const currentPath = Astro.url.pathname;
 const itemHref = (item: DrawerLink) => item.link || '/' + item.slug + '/';
+const normalizeBadge = (badge?: DrawerBadge) => {
+  if (!badge) return undefined;
+  return typeof badge === 'string' ? { text: badge } : badge;
+};
 ---
 
 <a href={siteTitleHref} class="site-title sl-flex">
@@ -44,30 +55,49 @@ const itemHref = (item: DrawerLink) => item.link || '/' + item.slug + '/';
 <nav class:list={['zv-drawer-nav', { 'zv-docs-nav': hasSidebar }]} aria-label="Mobile">
           {hasSidebar ? (
             <>
-              {drawerGroups.map((group) => (
-                <details class="zv-docs-group" open={group.items.some((item) => currentPath === itemHref(item))}>
-                  <summary>
-                    <span>{group.label}</span>
-                    <Icon name="right-arrow" />
-                  </summary>
-                  <div class="zv-docs-group-links">
-                    {group.items.map((item) => {
-                      const href = itemHref(item);
-                      const isCurrent = currentPath === href;
-                      return (
-                        <a href={href} aria-current={isCurrent ? 'page' : undefined}>
-                          <span>{item.label}</span>
-                        </a>
-                      );
-                    })}
-                  </div>
-                </details>
-              ))}
+              {drawerGroups.map((group) => {
+                const groupBadge = normalizeBadge(group.badge);
+                return (
+                  <details class="zv-docs-group" open={group.items.some((item) => currentPath === itemHref(item))}>
+                    <summary>
+                      <span>{group.label}</span>
+                      {groupBadge && (
+                        <Badge
+                          variant={groupBadge.variant}
+                          class={groupBadge.class}
+                          text={groupBadge.text}
+                        />
+                      )}
+                      <Icon name="right-arrow" />
+                    </summary>
+                    <div class="zv-docs-group-links">
+                      {group.items.map((item) => {
+                        const href = itemHref(item);
+                        const isCurrent = currentPath === href;
+                        const badge = normalizeBadge(item.badge);
+                        return (
+                          <a href={href} aria-current={isCurrent ? 'page' : undefined}>
+                            <span>{item.label}</span>
+                            {badge && (
+                              <Badge
+                                variant={badge.variant}
+                                class={badge.class}
+                                text={badge.text}
+                              />
+                            )}
+                          </a>
+                        );
+                      })}
+                    </div>
+                  </details>
+                );
+              })}
             </>
           ) : (
             <>
               <a href="/"><Icon name="star" /><span>Home</span></a>
               <a href="/getting-started/introduction/"><Icon name="document" /><span>Documentation</span></a>
+              <a href="/#pricing"><Icon name="rocket" /><span>Pricing</span></a>
               <a href="https://demo.zonvoir-table.com" target="_blank" rel="noopener noreferrer">
                 <Icon name="rocket" /><span>Demo</span>
               </a>
@@ -351,6 +381,19 @@ const itemHref = (item: DrawerLink) => item.link || '/' + item.slug + '/';
         display: none;
       }
 
+      .zv-docs-group summary > span:first-child {
+        flex: 1 1 auto;
+      }
+
+      .zv-docs-group summary .sl-badge,
+      .zv-docs-group summary .zv-pro-badge {
+        margin-left: auto;
+        margin-inline-start: auto;
+        margin-right: 0.5rem;
+        margin-inline-end: 0.5rem;
+        flex-shrink: 0;
+      }
+
       .zv-docs-group summary :global(svg) {
         flex: 0 0 auto;
         color: var(--sl-color-gray-3);
@@ -368,10 +411,25 @@ const itemHref = (item: DrawerLink) => item.link || '/' + item.slug + '/';
       }
 
       .zv-docs-group-links a {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
         padding: 0.55rem 0.75rem;
         color: var(--sl-color-gray-3);
         font-size: var(--sl-text-sm);
         font-weight: 500;
+      }
+
+      .zv-docs-group-links a > span:first-child {
+        flex: 1 1 auto;
+      }
+
+      .zv-docs-group-links a .sl-badge,
+      .zv-docs-group-links a .zv-pro-badge {
+        margin-left: auto;
+        margin-inline-start: auto;
+        flex-shrink: 0;
       }
 
       .zv-docs-group-links a[aria-current='page'] {

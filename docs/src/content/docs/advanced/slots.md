@@ -1,9 +1,9 @@
 ---
 title: Vue Slots & Template Customization
-description: Extend or replace Zonvoir Table toolbars, headers, cells, empty states, and pagination using Vue 3 scoped slots.
+description: Extend or replace Zonvoir Table toolbars, filters, headers, cells, empty states, and pagination using Vue 3 scoped slots.
 ---
 
-Zonvoir Table exposes Vue slots for each customizable part of its default interface: the toolbar, table, header, body, individual cells, loading state, empty state, and pagination. Use a small injection slot to add controls without changing the default layout, or replace a larger region when your UI needs a different structure.
+Zonvoir Table exposes Vue slots for each customizable part of its default interface: the toolbar, filters, table, header, body, individual cells, loading state, empty state, and pagination. Use a small injection slot to add controls without changing the default layout, or replace a larger region when your UI needs a different structure.
 
 For Vue slot syntax, see the [Vue slots documentation](https://vuejs.org/guide/components/slots.html).
 
@@ -19,6 +19,11 @@ For Vue slot syntax, see the [Vue slots documentation](https://vuejs.org/guide/c
 | exports | Replaces the default export controls. |
 | actions | Replaces the default bulk-action controls. |
 | afterActions | Content after exports and bulk actions. |
+| `filter-button` <span class="zv-pro-tag">★ Pro</span> | Replaces the filter toggle button in the toolbar. |
+| `filter-header` <span class="zv-pro-tag">★ Pro</span> | Replaces the horizontal filter bar in header layout. |
+| `filter-panel` <span class="zv-pro-tag">★ Pro</span> | Replaces the entire slide-out filter panel / sidebar container. |
+| `filters` <span class="zv-pro-tag">★ Pro</span> | Container wrapper slot around filter-panel. |
+| `filter(attribute)` <span class="zv-pro-tag">★ Pro</span> | Replaces the editor UI for a specific filter attribute. |
 | table | Replaces the complete table element inside its scroll container. |
 | thead | Replaces the table header. |
 | header | Replaces every default column header label. |
@@ -50,7 +55,7 @@ Use a targeted slot when you only need to add something to the default table UI.
 
 ## Toolbar slots
 
-The default toolbar keeps search on the left and column, export, and bulk-action controls on the right.
+The default toolbar keeps search on the left and column, export, bulk-action, and filter controls on the right.
 
 | Slot | Props |
 | --- | --- |
@@ -62,8 +67,113 @@ The default toolbar keeps search on the left and column, export, and bulk-action
 | exports | table, selected-keys, state |
 | actions | table, table-api |
 | afterActions | None |
+| `filter-button` <span class="zv-pro-tag">★ Pro</span> | table, open, toggle, table-api |
 
 The exports slot receives selected-keys and state. State includes the active page, page size, search, sort, direction, visible columns, and sticky columns.
+
+## Filter slots
+
+:::tip[Pro Feature]
+Advanced table filtering is a premium capability included with **[Zonvoir Table Pro](https://github.com/Zonvoir-technologies/laravel-inertia-table-pro)** (`zonvoir/laravel-inertia-table-pro` on the backend, supported natively by `@zonvoir/inertia-table-vue`). These slots allow you to fully customize or replace any part of the Pro filter UI.
+:::
+
+Zonvoir Table and its Pro extension provide scoped slots to customize or completely replace filtering UI at both container and field levels:
+
+| Slot | Props | Description |
+| --- | --- | --- |
+| `filter-button` <span class="zv-pro-tag">★ Pro</span> | `table`, `open`, `toggle`, `table-api` | Replaces the filter trigger button in the toolbar. |
+| `filter-panel` <span class="zv-pro-tag">★ Pro</span> | `table`, `open`, `close`, `table-api` | Replaces the entire slide-out filter sidebar / panel container. |
+| `filters` <span class="zv-pro-tag">★ Pro</span> | `table`, `open`, `close`, `layout`, `table-api` | Container wrapper slot around `filter-panel`. |
+| `filter-header` <span class="zv-pro-tag">★ Pro</span> | `table`, `open`, `close`, `table-api` | Replaces the horizontal filter bar displayed above the table in header layout. |
+| `filter(attribute)` <span class="zv-pro-tag">★ Pro</span> | `filter`, `value`, `update`, `table`, `close` | Replaces the editor input for a specific filter attribute while keeping the panel intact. |
+
+### Replacing the Entire Filter Section (`filter-panel` / `filters`)
+
+Just like `#toolbar` or `#pagination`, you can replace the entire filter section to build your own custom filtering sidebar, accordion, or off-canvas layout:
+
+~~~vue
+<ZonvoirTable :table="users">
+  <template #filter-panel="{ open, close, table }">
+    <aside
+      v-if="open"
+      class="w-80 rounded-lg border border-slate-200 bg-white p-4 shadow-sm shrink-0 ml-2"
+    >
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <h3 class="font-semibold text-sm text-slate-800">Custom Filter Panel</h3>
+        <button
+          type="button"
+          @click="close"
+          class="rounded p-1 text-slate-400 hover:text-slate-600"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="py-4 space-y-4">
+        <!-- Custom filter inputs and controls -->
+      </div>
+    </aside>
+  </template>
+</ZonvoirTable>
+~~~
+
+### Replacing the Filter Toggle Button (`filter-button`)
+
+Use `#filter-button` to render a custom button, badge counter, or dropdown trigger in the toolbar:
+
+~~~vue
+<ZonvoirTable :table="users">
+  <template #filter-button="{ open, toggle }">
+    <button
+      type="button"
+      @click="toggle"
+      :class="open ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700'"
+      class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium"
+    >
+      <span>Filters</span>
+      <span v-if="open" class="text-xs">✕</span>
+    </button>
+  </template>
+</ZonvoirTable>
+~~~
+
+### Replacing the Filter Header Bar (`filter-header`)
+
+When using `filterLayout: 'header'`, use `#filter-header` to customize the horizontal filter bar shown directly above the table headers:
+
+~~~vue
+<ZonvoirTable :table="users">
+  <template #filter-header="{ open, close, table }">
+    <div v-if="open" class="flex items-center justify-between border-b bg-slate-50 px-4 py-2 text-xs">
+      <span>Header filter bar</span>
+      <button type="button" @click="close" class="text-slate-500 hover:text-slate-700">Close</button>
+    </div>
+  </template>
+</ZonvoirTable>
+~~~
+
+### Customizing Individual Filter Fields (`filter(attribute)`)
+
+If you want to keep the built-in Pro drawer or header and only replace the input control for a specific filter (such as `status`), use `#filter(attribute)`:
+
+~~~vue
+<ZonvoirTable :table="users">
+  <template #filter(status)="{ filter, value, update }">
+    <div class="py-2">
+      <label class="block text-xs font-medium text-slate-700 mb-1">{{ filter.label }}</label>
+      <select
+        :value="value"
+        @change="update(($event.target as HTMLSelectElement).value)"
+        class="w-full rounded-md border border-slate-300 text-xs px-2 py-1.5"
+      >
+        <option value="">All Statuses</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+    </div>
+  </template>
+</ZonvoirTable>
+~~~
 
 ## Structure slots
 

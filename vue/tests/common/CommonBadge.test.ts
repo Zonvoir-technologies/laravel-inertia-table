@@ -37,4 +37,16 @@ describe('CommonBadge', () => {
       ['brand', 'solid', 'bg-brand-500'],
     ]) expect(mount(CommonBadge, { props: { color, variant: variant as never } }).classes()).toContain(expected);
   });
+
+  it('applies size and round classes correctly', () => {
+    const defaultBadge = mount(CommonBadge);
+    expect(defaultBadge.classes()).toContain('min-w-16');
+
+    const smBadge = mount(CommonBadge, { props: { size: 'sm' } });
+    expect(smBadge.classes()).toContain('min-w-10');
+
+    const xsBadge = mount(CommonBadge, { props: { size: 'xs', round: true } });
+    expect(xsBadge.classes()).toContain('min-w-4');
+    expect(xsBadge.classes()).toContain('rounded-full');
+  });
 });
