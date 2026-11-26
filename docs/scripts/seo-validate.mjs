@@ -134,6 +134,8 @@ for (const file of htmlFiles) {
           const parsed = JSON.parse(m[1]);
           if (!parsed['@context'] || !parsed['@graph']) {
             warnings.push(`[${route}] JSON-LD graph does not have standard @graph format.`);
+          } else if (route === '/' && !parsed['@graph'].some((item) => item['@type'] === 'FAQPage')) {
+            errors.push('[/] Homepage JSON-LD is missing FAQPage structured data.');
           }
         } catch (e) {
           errors.push(`[${route}] Malformed JSON-LD: ${e.message}`);

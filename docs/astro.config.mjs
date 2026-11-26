@@ -21,7 +21,7 @@ export default defineConfig({
         alt: 'Zonvoir Table Logo',
       },
       favicon: '/favicon.ico',
-      description: 'Build Laravel Inertia tables with Zonvoir Table, a free, open-source Vue data table package with server-side search, sorting and pagination.',
+      description: 'Build Laravel Inertia tables for Vue with a free open-source core and optional Pro filters and column reordering. Kanban and inline editing are in progress.',
       head: [
         {
           tag: 'script',
@@ -54,7 +54,7 @@ export default defineConfig({
           attrs: {
             name: 'keywords',
             content:
-              'laravel data table, laravel table, laravel table component, laravel data table package, laravel table package, inertia table, inertia.js table, laravel inertia table, laravel inertia components, vue data table, vue 3 data table, vue table component, laravel vue data table, server side data table, eloquent data table, inertia vue table, laravel datatables alternative, vue 3 data table component, laravel eloquent datatable, server side pagination laravel, tailwind data table, laravel dynamic table, inertia data grid, vue data grid',
+              'laravel data table, laravel table, laravel table component, laravel data table package, laravel table package, inertia table, inertia.js table, laravel inertia table, laravel inertia table pro, laravel inertia components, vue data table, vue 3 data table, vue table component, laravel vue data table, server side data table, eloquent data table, inertia vue table, laravel datatables alternative, vue 3 data table component, laravel eloquent datatable, server side pagination laravel, tailwind data table, laravel dynamic table, inertia data grid, vue data grid, laravel kanban board, laravel inline editing, laravel advanced filters, vue kanban board, laravel pdf export, laravel table pdf export',
           },
         },
         {

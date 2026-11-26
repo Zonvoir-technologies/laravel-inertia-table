@@ -1,25 +1,25 @@
 ---
-title: Free Laravel Inertia Tables for Vue
-description: Build Laravel Inertia tables with Zonvoir Table, a free, open-source Vue data table package with server-side search, sorting and pagination.
+title: Laravel Inertia Tables for Vue — Free & Pro
+description: Build Laravel Inertia tables for Vue with a free open-source core and optional Pro filters and column reordering. Kanban and inline editing are in progress.
 template: splash
 head:
     - tag: title
-      content: Zonvoir Table — Free Laravel Inertia Table for Vue
+      content: Laravel Inertia Table for Vue — Free & Pro | Zonvoir Table
     - tag: meta
       attrs:
           property: og:title
-          content: Zonvoir Table — Free Laravel Inertia Table for Vue
+          content: Laravel Inertia Table for Vue — Free & Pro | Zonvoir Table
     - tag: meta
       attrs:
           property: og:description
-          content: Build Laravel Inertia tables with Zonvoir Table, a free, open-source Vue data table package with server-side search, sorting and pagination.
+          content: Build Laravel Inertia tables for Vue with a free open-source core and optional Pro filters and column reordering. Kanban and inline editing are in progress.
     - tag: meta
       attrs:
           property: og:type
           content: website
 hero:
-    title: Free Laravel Inertia <br />Tables for <span>Vue.</span>
-    tagline: Zonvoir Table is a free, open-source Laravel Inertia table package for Vue applications. Define tables in PHP using Eloquent, then render searchable, sortable, paginated tables with the Vue adapter.
+    title: Laravel Inertia <br />Tables for <span>Vue.</span>
+    tagline: Start with the complete free, open-source table package for Laravel, Inertia and Vue. Pro currently adds advanced filters and persisted column order, with Kanban boards and inline editing in development.
     actions:
         - text: Start building
           link: /getting-started/installation/
@@ -48,12 +48,12 @@ hero:
 <div class="zv-ledger-row core" role="row"><span>01</span><span>Table Definition</span><span>PHP</span><span><em>Core</em></span></div>
 <div class="zv-ledger-row core" role="row"><span>02</span><span>Typed Columns</span><span>PHP</span><span><em>Core</em></span></div>
 <div class="zv-ledger-row live" role="row"><span>03</span><span>Search &amp; Sort</span><span>Query</span><span><em>Live</em></span></div>
-<div class="zv-ledger-row filtered" role="row"><span>04</span><span>Table Filters</span><span>Query</span><span><em>Drawer &amp; Header</em></span></div>
+<div class="zv-ledger-row filtered" role="row"><span>04</span><span>Advanced Table Filters</span><span>Query</span><span><em>Pro</em></span></div>
 <div class="zv-ledger-row cursor" role="row"><span>05</span><span>Pagination</span><span>Query</span><span><em>Standard / Cursor</em></span></div>
 <div class="zv-ledger-row interactive" role="row"><span>06</span><span>Row &amp; Bulk Actions</span><span>Vue</span><span><em>Interactive</em></span></div>
 <div class="zv-ledger-row interactive" role="row"><span>07</span><span>Column Visibility &amp; Sticky</span><span>Vue</span><span><em>Interactive</em></span></div>
-<div class="zv-ledger-row interactive" role="row"><span>08</span><span>Column Reordering</span><span>Vue</span><span><em>Drag &amp; Drop</em></span></div>
-<div class="zv-ledger-row filtered" role="row"><span>09</span><span>Excel Exports</span><span>Server</span><span><em>Filtered / Selected</em></span></div>
+<div class="zv-ledger-row interactive" role="row"><span>08</span><span>Column Reordering</span><span>Vue</span><span><em>Pro</em></span></div>
+<div class="zv-ledger-row filtered" role="row"><span>09</span><span>Excel, CSV &amp; PDF Exports</span><span>Server</span><span><em>Filtered / Selected</em></span></div>
 <div class="zv-ledger-row generated" role="row"><span>10</span><span>TypeScript Types</span><span>Frontend</span><span><em>Generated</em></span></div>
 </div>
 
@@ -165,16 +165,16 @@ hero:
 <label for="feature-table">Table Definition</label>
 <label for="feature-search">Search State</label>
 <label for="feature-sorting">Sorting</label>
-<label for="feature-filters">Filters</label>
+<label for="feature-filters">Advanced Filters · Pro</label>
 <label for="feature-pagination">Pagination</label>
 <label for="feature-actions">Row Actions & Links</label>
 <label for="feature-bulk">Bulk Actions</label>
 <p>Presentation</p>
 <label for="feature-columns">Columns</label>
-<label for="feature-reorder">Column Reordering</label>
+<label for="feature-reorder">Column Reordering · Pro</label>
 <label for="feature-sticky">Sticky Columns</label>
 <p>Data</p>
-<label for="feature-exports">Excel Exports</label>
+<label for="feature-exports">Excel, CSV &amp; PDF</label>
 <label for="feature-url">URL State</label>
 <label for="feature-multiple">Multiple Tables</label>
 </aside>
@@ -186,8 +186,8 @@ hero:
 <div class="feature-panel panel-sorting"><p class="feature-breadcrumb">features <span>/</span> sorting.php</p><h2><span>#</span> Sorting</h2><p>Sortable columns expose direction-aware query state while the backend stays in charge of the query.</p><div class="feature-content"><ul><li>Enable sorting per column.</li><li>Use `-column` for descending defaults.</li><li>Override sorting with `sortUsing()` when needed.</li></ul><div class="terminal-window" aria-label="Sorting PHP example"><div class="terminal-bar"><span></span><span></span><span></span><strong>sorting.php</strong></div><pre><code><span class="ln">1</span>  <b>protected</b> ?string $defaultSort = '-created_at';
 <span class="ln">2</span>
 <span class="ln">3</span>  TextColumn::make('name')->sortable();</code></pre></div><p class="read-mr" style="margin-top: 1rem;"><a href="/core-concepts/sorting/">Read the Sorting Guide →</a></p></div></div>
-<div class="feature-panel panel-filters"><p class="feature-breadcrumb">features <span>/</span> filters.php</p><h2><span>#</span> Table Filters</h2><p>Strongly-typed filter builders support text, numeric, set, date, and boolean clauses in drawer or header layouts.</p><div class="feature-content"><ul><li>Add `HasFilters` or `HasProFeatures` to your table class.</li><li>Define `TextFilter`, `SetFilter`, `DateFilter`, or custom clauses in `filters()`.</li><li>Persist active filter clauses seamlessly in URL query state.</li></ul><div class="terminal-window" aria-label="Filters PHP example"><div class="terminal-bar"><span></span><span></span><span></span><strong>filters.php</strong></div><pre><code><span class="ln">1</span>  <b>use</b> Zonvoir\InertiaTable\Filters\TextFilter;
-<span class="ln">2</span>  <b>use</b> Zonvoir\InertiaTable\Filters\SetFilter;
+<div class="feature-panel panel-filters"><p class="feature-breadcrumb">pro <span>/</span> filters.php</p><h2><span>#</span> Advanced Table Filters · Pro</h2><p>Strongly-typed filter builders support text, numeric, set, boolean, date, and date-time clauses in drawer or header layouts.</p><div class="feature-content"><ul><li>Add `HasFilters` or `HasProFeatures` to your table class.</li><li>Define `TextFilter`, `SetFilter`, `DateFilter`, or custom clauses in `filters()`.</li><li>Persist active filter clauses seamlessly in URL query state.</li></ul><div class="terminal-window" aria-label="Pro filters PHP example"><div class="terminal-bar"><span></span><span></span><span></span><strong>filters.php</strong></div><pre><code><span class="ln">1</span>  <b>use</b> Zonvoir\InertiaTablePro\Filters\TextFilter;
+<span class="ln">2</span>  <b>use</b> Zonvoir\InertiaTablePro\Filters\SetFilter;
 <span class="ln">3</span>
 <span class="ln">4</span>  <b>public function</b> filters(): array
 <span class="ln">5</span>  {
@@ -206,7 +206,7 @@ hero:
 <div class="feature-panel panel-columns"><p class="feature-breadcrumb">features <span>/</span> columns.php</p><h2><span>#</span> Columns</h2><p>One Columns guide covers common options plus text, numeric, boolean, badge, image, date, date-time, and action columns.</p><div class="feature-content"><ul><li>Shared visibility, sizing, sticky, search, and sort metadata.</li><li>Column-specific display settings.</li><li>Export labels, values, formats, and styles.</li></ul><div class="terminal-window" aria-label="Columns PHP example"><div class="terminal-bar"><span></span><span></span><span></span><strong>columns.php</strong></div><pre><code><span class="ln">1</span>  BadgeColumn::make('status')
 <span class="ln">2</span>      ->colors(['active' =&gt; 'success'])
 <span class="ln">3</span>      ->solid();</code></pre></div><p class="read-mr" style="margin-top: 1rem;"><a href="/core-concepts/columns/">Read the Typed Columns Guide →</a></p></div></div>
-<div class="feature-panel panel-reorder"><p class="feature-breadcrumb">features <span>/</span> column-reorder.php</p><h2><span>#</span> Column Reordering</h2><p>Interactive drag-and-drop column reordering with per-user database persistence across sessions.</p><div class="feature-content"><ul><li>Rearrange columns via header drag-and-drop or visibility menu handles.</li><li>Automatically persist customized column order per authenticated user.</li><li>Clear the saved order and restore the PHP-defined order on the next table response.</li></ul><div class="terminal-window" aria-label="Column reordering PHP example"><div class="terminal-bar"><span></span><span></span><span></span><strong>column-reorder.php</strong></div><pre><code><span class="ln">1</span>  <b>use</b> Zonvoir\InertiaTablePro\Concerns\HasColumnPersistence;
+<div class="feature-panel panel-reorder"><p class="feature-breadcrumb">pro <span>/</span> column-reorder.php</p><h2><span>#</span> Column Reordering · Pro</h2><p>Interactive drag-and-drop column reordering with per-user database persistence across sessions.</p><div class="feature-content"><ul><li>Rearrange columns via header drag-and-drop or visibility menu handles.</li><li>Automatically persist customized column order per authenticated user.</li><li>Clear the saved order and restore the PHP-defined order on the next table response.</li></ul><div class="terminal-window" aria-label="Pro column reordering PHP example"><div class="terminal-bar"><span></span><span></span><span></span><strong>column-reorder.php</strong></div><pre><code><span class="ln">1</span>  <b>use</b> Zonvoir\InertiaTablePro\Concerns\HasColumnPersistence;
 <span class="ln">2</span>
 <span class="ln">3</span>  <b>final class</b> UsersTable <b>extends</b> Table
 <span class="ln">4</span>  {
@@ -215,7 +215,7 @@ hero:
 <div class="feature-panel panel-sticky"><p class="feature-breadcrumb">features <span>/</span> sticky-columns.php</p><h2><span>#</span> Sticky Columns</h2><p>Sticky columns keep high-value identifiers visible while users scan wide data sets.</p><div class="feature-content"><ul><li>Enable sticky behavior per column.</li><li>Pair with width metadata for predictable layout.</li><li>Allow sticky overrides through table state.</li></ul><div class="terminal-window" aria-label="Sticky columns PHP example"><div class="terminal-bar"><span></span><span></span><span></span><strong>sticky-columns.php</strong></div><pre><code><span class="ln">1</span>  TextColumn::make('name')
 <span class="ln">2</span>      ->sticky()
 <span class="ln">3</span>      ->width('16rem');</code></pre></div><p class="read-mr" style="margin-top: 1rem;"><a href="/core-concepts/sticky-columns/">Read the Sticky Columns Guide →</a></p></div></div>
-<div class="feature-panel panel-exports"><p class="feature-breadcrumb">features <span>/</span> exports.php</p><h2><span>#</span> Excel Exports</h2><p>Return export definitions from the table and choose filtered or selected-row export scope.</p><div class="feature-content"><ul><li>Expose export controls in table metadata.</li><li>Limit to filtered or selected rows.</li><li>Queue large exports when needed.</li></ul><div class="terminal-window" aria-label="Excel exports PHP example"><div class="terminal-bar"><span></span><span></span><span></span><strong>exports.php</strong></div><pre><code><span class="ln">1</span>  Export::make('Users', 'users.xlsx')
+<div class="feature-panel panel-exports"><p class="feature-breadcrumb">features <span>/</span> exports.php</p><h2><span>#</span> Excel, CSV &amp; PDF Exports</h2><p>Return export definitions from the table and choose filtered or selected-row export scope. PDF output requires a compatible renderer.</p><div class="feature-content"><ul><li>Export XLSX and CSV with the standard installation.</li><li>Add DOMPDF, mPDF, or TCPDF for PDF output.</li><li>Limit to filtered or selected rows and queue large exports.</li></ul><div class="terminal-window" aria-label="Excel exports PHP example"><div class="terminal-bar"><span></span><span></span><span></span><strong>exports.php</strong></div><pre><code><span class="ln">1</span>  Export::make('Users', 'users.xlsx')
 <span class="ln">2</span>      ->limitToFilteredRows();</code></pre></div><p class="read-mr" style="margin-top: 1rem;"><a href="/core-concepts/exports/">Read the Exports Guide →</a></p></div></div>
 <div class="feature-panel panel-url"><p class="feature-breadcrumb">features <span>/</span> url-state.php</p><h2><span>#</span> URL State</h2><p>Table state is represented in query string keys for page, per-page, cursor, search, sort, direction, columns, and sticky overrides.</p><div class="feature-content"><ul><li>Name tables to namespace query state.</li><li>Generate navigation URLs from the current state.</li><li>Keep reloads and browser history predictable.</li></ul><div class="terminal-window" aria-label="URL state PHP example"><div class="terminal-bar"><span></span><span></span><span></span><strong>url-state.php</strong></div><pre><code><span class="ln">1</span>  $table->navigation()->search('olivia');
 <span class="ln">2</span>  $table->navigation()->sort('name');</code></pre></div><p class="read-mr" style="margin-top: 1rem;"><a href="/api/configuration/#tablestate">Read the Table State & URL API →</a></p></div></div>
@@ -225,7 +225,7 @@ hero:
 </section>
 </div>
 
-<div class="shpcl-wr">
+<div class="shpcl-wr pricing-wrapper">
 <div class="shape-wrp-cl">
 <div class="shape-ring shape-ring-1"></div>
 <div class="shape-ring shape-ring-2"></div>
@@ -239,7 +239,7 @@ hero:
 <div class="zv-ledger-head text-center max-w-3xl mx-auto">
 <p class="zv-eyebrow the-capability-ledger">Pricing &amp; Plans</p>
 <h2>Simple, transparent <span>pricing.</span></h2>
-<p class="zn-tb-sb">Start free with our open-source core, or supercharge your tables with Zonvoir Table Pro.</p>
+<p class="zn-tb-sb">Start free. Scale with Pro. Keep all the features of the core package while unlocking advanced capabilities as your application grows.</p>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 items-stretch mt-11 mb-16">
@@ -248,14 +248,14 @@ hero:
 <div class="mb-4">
 <span class="inline-block text-[11px] font-bold tracking-wider uppercase text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 px-2.5 py-1 rounded-full mb-3">Community</span>
 <h3 class="m-0! text-2xl font-extrabold text-slate-900 dark:text-white border-0!">Open Source</h3>
-<p class="m-0! mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed min-h-[2.75rem]">The expressive core library for standard Eloquent tables and Inertia Vue rendering.</p>
+<p class="m-0! mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed min-h-[2.75rem]">The complete open-source package for Eloquent tables and Inertia Vue rendering.</p>
 </div>
 <div class="flex items-baseline gap-1 mt-5 mb-1">
 <span class="text-2xl font-bold text-orange-500 dark:text-orange-400 leading-none">$</span>
 <span class="text-5xl font-extrabold text-slate-900 dark:text-white leading-none tracking-tight">0</span>
 <span class="text-sm text-slate-500 dark:text-slate-400 ml-1 font-medium">/ forever</span>
 </div>
-<p class="m-0! mt-1 mb-5! text-xs text-slate-500 dark:text-slate-400 font-medium">Free forever • MIT License</p>
+<p class="m-0! mt-1 mb-5! text-xs text-slate-500 dark:text-slate-400 font-medium">Free forever • Apache License 2.0</p>
 <div class="h-px bg-slate-200 dark:bg-slate-800 my-4"></div>
 <ul class="list-none! p-0! m-0! mb-4! flex-1">
 <li class="flex items-start gap-2.5 text-[13.5px] text-slate-700 dark:text-slate-300 mb-2.5! leading-snug">
@@ -272,7 +272,7 @@ hero:
 </li>
 <li class="flex items-start gap-2.5 text-[13.5px] text-slate-700 dark:text-slate-300 mb-2.5! leading-snug">
 <svg class="w-4.5 h-4.5 shrink-0 mt-0.5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-<span>Row actions, bulk actions &amp; Excel exports</span>
+<span>Row actions, bulk actions &amp; Excel/CSV exports</span>
 </li>
 <li class="flex items-start gap-2.5 text-[13.5px] text-slate-700 dark:text-slate-300 mb-2.5! leading-snug">
 <svg class="w-4.5 h-4.5 shrink-0 mt-0.5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
@@ -281,7 +281,7 @@ hero:
 </ul>
 <div class="rounded-xl px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 my-3 text-left">
   <p class="text-[12px] text-slate-600 dark:text-slate-400 leading-snug m-0!">
-    <strong class="text-slate-900 dark:text-white font-semibold">Open source:</strong> Free forever under the permissive MIT license.
+    <strong class="text-slate-900 dark:text-white font-semibold">Open source:</strong> Free forever under the Apache License 2.0.
   </p>
 </div>
 <a href="/getting-started/installation/" class="inline-flex items-center justify-center gap-2 w-full text-center font-bold text-sm md:text-base py-3 px-5 rounded-xl no-underline! text-slate-800! dark:text-white! bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#f05a45] hover:bg-[#f05a45]/10">
@@ -298,7 +298,7 @@ Get Started Free
   <h3 class="m-0! text-2xl font-extrabold text-slate-900 dark:text-white border-0!">Single Project</h3>
   <span class="inline-flex items-center text-xs font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 rounded-full px-2.5 py-0.5">Lifetime usage</span>
 </div>
-<p class="m-0! mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed min-h-[2.75rem]">For production apps requiring customizable column ordering and multi-clause filtering.</p>
+<p class="m-0! mt-2 text-sm text-slate-600 dark:text-slate-400 leading-relaxed min-h-[2.75rem]">For production apps that need advanced data workflows beyond the free table package.</p>
 </div>
 <div class="flex items-baseline gap-1 mt-5 mb-1">
 <span class="text-2xl font-bold text-orange-500 dark:text-orange-400 leading-none">$</span>
@@ -418,12 +418,12 @@ Get Unlimited Projects
   </div>
 </div>
 
-<!-- Upcoming Pro Features Showcase ("Many more to come") -->
+<!-- Pro feature showcase -->
 <div class="bg-white dark:bg-[#0b1220] border border-[#f05a45]/25 dark:border-slate-800 rounded-3xl p-6 sm:p-10 md:p-12 mt-14 mb-16 shadow-[0_12px_36px_rgba(15,23,42,0.05)] dark:shadow-[0_10px_35px_rgba(0,0,0,0.2)] relative overflow-hidden">
 <div class="text-center max-w-2xl mx-auto mb-10">
-<p class="zv-eyebrow the-capability-ledger">Pro Roadmap</p>
-<h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white m-0! mt-2! mb-3! border-0!">Continuous evolution. <span class="text-[#f05a45]">Many more to come.</span></h3>
-<p class="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed m-0!">Zonvoir Table Pro is under active, rapid development. Your Pro license includes all upcoming feature releases in the 1.x pipeline with zero upgrade fees.</p>
+<p class="zv-eyebrow the-capability-ledger">Optional Pro Features</p>
+<h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white m-0! mt-2! mb-3! border-0!">Available now. <span class="text-[#f05a45]">More in progress.</span></h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed m-0!">Advanced filters and persisted column reordering are available in Pro today. Kanban boards and inline editing are actively in development. The free package remains fully usable on its own.</p>
 </div>
 
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">
@@ -432,30 +432,30 @@ Get Unlimited Projects
 <div class="w-10.5 h-10.5 rounded-xl flex items-center justify-center bg-[#f05a45]/15 text-[#f05a45]">
 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="10" rx="1.5"/><rect x="17" y="4" width="5" height="13" rx="1.5"/></svg>
 </div>
-<span class="text-[11px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/30">Planned</span>
+<span class="text-[11px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30">In progress</span>
 </div>
 <h4 class="text-lg font-bold text-slate-900 dark:text-white m-0! mb-2! border-0!">Kanban Board</h4>
-<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed m-0!">Switch seamlessly between table view and drag-and-drop Kanban boards. Group records across status lanes with smooth transitions and instant Eloquent updates.</p>
+<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed m-0!"><strong>In development:</strong> switch between table and drag-and-drop Kanban views, group records into lanes, and update Eloquent-backed status fields.</p>
 </div>
 <div class="bg-[#fff8f6] dark:bg-[#111c2f] border border-[#f05a45]/20 dark:border-slate-800 rounded-2xl p-6 m-0! mt-0! flex flex-col h-full transition-all duration-200 hover:-translate-y-1 hover:border-[#f05a45]">
 <div class="flex items-center justify-between mb-4">
 <div class="w-10.5 h-10.5 rounded-xl flex items-center justify-center bg-[#f05a45]/15 text-[#f05a45]">
 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
 </div>
-<span class="text-[11px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/30">Planned</span>
+<span class="text-[11px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">Available</span>
 </div>
-<h4 class="text-lg font-bold text-slate-900 dark:text-white m-0! mb-2! border-0!">Saved Table Views &amp; Presets</h4>
-<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed m-0!">Allow end-users to save, name, and switch between custom filter, sort, and column visibility combinations (e.g. &ldquo;Pending Invoices&rdquo;).</p>
+<h4 class="text-lg font-bold text-slate-900 dark:text-white m-0! mb-2! border-0!">Advanced Typed Filters</h4>
+<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed m-0!">Compose text, numeric, set, boolean, date and date-time conditions in drawer or header layouts, with URL state and filtered exports.</p>
 </div>
 <div class="bg-[#fff8f6] dark:bg-[#111c2f] border border-[#f05a45]/20 dark:border-slate-800 rounded-2xl p-6 m-0! mt-0! flex flex-col h-full transition-all duration-200 hover:-translate-y-1 hover:border-[#f05a45]">
 <div class="flex items-center justify-between mb-4">
 <div class="w-10.5 h-10.5 rounded-xl flex items-center justify-center bg-[#f05a45]/15 text-[#f05a45]">
 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
 </div>
-<span class="text-[11px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/30">Planned</span>
+<span class="text-[11px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30">In progress</span>
 </div>
 <h4 class="text-lg font-bold text-slate-900 dark:text-white m-0! mb-2! border-0!">Inline Cell Editing</h4>
-<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed m-0!">Click-to-edit capabilities directly within table cells for strings, numbers, booleans, and dates, with optimistic UI and instant Eloquent updates.</p>
+<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed m-0!"><strong>In development:</strong> edit supported strings, numbers, booleans, and dates directly in table cells with validation and Eloquent updates.</p>
 </div>
 </div>
 </div>
@@ -516,7 +516,7 @@ Get Unlimited Projects
 <td class="px-6 py-3.5 bg-[#f05a45]/[0.02] dark:bg-[#f05a45]/[0.04]"><span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-800 dark:text-slate-200"><svg class="w-4 h-4 text-[#f05a45] shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Included</span></td>
 </tr>
 <tr class="border-t border-[#f3f4f6cc] dark:border-slate-800/80 hover:bg-[#f05a45]/[0.02] dark:hover:bg-slate-800/30 transition-colors">
-<td class="px-6 py-3.5 text-sm font-medium text-slate-800 dark:text-slate-200"><span class="text-xs font-mono text-slate-400 dark:text-slate-500 mr-2.5">08</span>Advanced Table Filters (5 Typed Builders)</td>
+<td class="px-6 py-3.5 text-sm font-medium text-slate-800 dark:text-slate-200"><span class="text-xs font-mono text-slate-400 dark:text-slate-500 mr-2.5">08</span>Advanced Table Filters (6 Typed Builders)</td>
 <td class="px-6 py-3.5"><span class="text-slate-300 dark:text-slate-700 font-light text-base select-none">—</span></td>
 <td class="px-6 py-3.5 bg-[#f05a45]/[0.02] dark:bg-[#f05a45]/[0.04]"><span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-800 dark:text-slate-200"><svg class="w-4 h-4 text-[#f05a45] shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Included</span></td>
 </tr>
@@ -524,6 +524,16 @@ Get Unlimited Projects
 <td class="px-6 py-3.5 text-sm font-medium text-slate-800 dark:text-slate-200"><span class="text-xs font-mono text-slate-400 dark:text-slate-500 mr-2.5">09</span>Slide-Out Filter Drawer &amp; Header Filter Bars</td>
 <td class="px-6 py-3.5"><span class="text-slate-300 dark:text-slate-700 font-light text-base select-none">—</span></td>
 <td class="px-6 py-3.5 bg-[#f05a45]/[0.02] dark:bg-[#f05a45]/[0.04]"><span class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-800 dark:text-slate-200"><svg class="w-4 h-4 text-[#f05a45] shrink-0" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>Included</span></td>
+</tr>
+<tr class="border-t border-[#f3f4f6cc] dark:border-slate-800/80 hover:bg-[#f05a45]/[0.02] dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-3.5 text-sm font-medium text-slate-800 dark:text-slate-200"><span class="text-xs font-mono text-slate-400 dark:text-slate-500 mr-2.5">10</span>Interactive Kanban Board View</td>
+<td class="px-6 py-3.5"><span class="text-slate-300 dark:text-slate-700 font-light text-base select-none">—</span></td>
+<td class="px-6 py-3.5 bg-[#f05a45]/[0.02] dark:bg-[#f05a45]/[0.04]"><span class="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 dark:text-amber-300">In progress</span></td>
+</tr>
+<tr class="border-t border-[#f3f4f6cc] dark:border-slate-800/80 hover:bg-[#f05a45]/[0.02] dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-3.5 text-sm font-medium text-slate-800 dark:text-slate-200"><span class="text-xs font-mono text-slate-400 dark:text-slate-500 mr-2.5">11</span>Inline Cell Editing</td>
+<td class="px-6 py-3.5"><span class="text-slate-300 dark:text-slate-700 font-light text-base select-none">—</span></td>
+<td class="px-6 py-3.5 bg-[#f05a45]/[0.02] dark:bg-[#f05a45]/[0.04]"><span class="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 dark:text-amber-300">In progress</span></td>
 </tr>
 </tbody>
 </table>
@@ -599,7 +609,7 @@ Get Unlimited Projects
 <div class="zv-section-header">
 <p class="zv-eyebrow">100% Free &amp; Open Source</p>
 <h2>Complete Laravel Inertia Table functionality. <span>Zero paywalls.</span></h2>
-<p class="zv-section-desc">Zonvoir Table is published under the permissive Apache License 2.0. Both the Laravel Eloquent backend package (<code>zonvoir/laravel-inertia-table</code>) and the Inertia Vue 3 adapter (<code>@zonvoir/inertia-table-vue</code>) are completely free for personal and commercial applications.</p>
+<p class="zv-section-desc">Zonvoir Table is published under the permissive Apache License 2.0. The Laravel Eloquent backend package (<code>zonvoir/laravel-inertia-table</code>) and Inertia Vue 3 adapter (<code>@zonvoir/inertia-table-vue</code>) remain free for personal and commercial applications. Pro is an optional extension that adds advanced capabilities without restricting the core.</p>
 </div>
 
 <div class="zv-free-grid">
@@ -652,8 +662,8 @@ Get Unlimited Projects
 <div class="zv-free-card-icon">
 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
 </div>
-<h3>Excel &amp; CSV Exports</h3>
-<p>Download filtered subsets or selected rows directly from table state, with background queue support for large datasets.</p>
+<h3>Excel, CSV &amp; PDF Exports</h3>
+<p>Download filtered subsets or selected rows from table state, with background queue support for large datasets. PDF output is available after installing and selecting a supported PDF renderer.</p>
 <a href="/core-concepts/exports/" class="zv-card-link">Exports Guide →</a>
 </div>
 </div>
@@ -669,7 +679,7 @@ Get Unlimited Projects
 <div class="zv-faq-list">
 <div class="zv-faq-item">
 <h3>Is Zonvoir Table really free for commercial projects?</h3>
-<p>Yes. Zonvoir Table is 100% free and open-source software licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noopener noreferrer">Apache License 2.0</a>. There is no "Pro" version, paid license, or feature gating. You can use it in commercial SaaS apps, internal dashboards, and client deliverables subject to the Apache License 2.0 conditions.</p>
+<p>Yes. The core Zonvoir Table package remains free and open-source under the <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noopener noreferrer">Apache License 2.0</a>. You can use it in commercial SaaS apps, internal dashboards, and client deliverables. Zonvoir Table Pro is a separate, optional package for advanced features.</p>
 </div>
 
 <div class="zv-faq-item">

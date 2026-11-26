@@ -1,6 +1,6 @@
 ---
-title: Excel & CSV Data Exports
-description: Configure Excel and CSV exports in Zonvoir Table with filtered rows, selected rows, custom filenames, and queued exports.
+title: Excel, CSV & PDF Data Exports
+description: Configure Excel, CSV and PDF exports in Zonvoir Table with filtered rows, selected rows, custom filenames, queued exports, and PDF renderer setup.
 ---
 
 Zonvoir Table includes export definitions through `Zonvoir\InertiaTable\Export`. Exports are returned from a table class and serialized into the table metadata so the Vue adapter can render export controls and submit to the package export endpoint.
@@ -43,6 +43,10 @@ Export::make('Export CSV', 'users.csv')
 Export::make('Export Excel', 'users.xlsx')
     ->type(Excel::XLSX);
 
+// Export as PDF after installing a PDF renderer
+Export::make('Export PDF', 'users.pdf')
+    ->type(Excel::DOMPDF);
+
 // Export as TSV, HTML, or ODS
 Export::make('Export TSV', 'users.tsv')
     ->type(Excel::TSV);
@@ -54,7 +58,53 @@ You can also pass the format as the third parameter of `Export::make()`:
 Export::make('Users CSV', 'users.csv', Excel::CSV);
 ```
 
-Supported types include any writer format provided by `Maatwebsite\Excel\Excel` (such as `Excel::XLSX`, `Excel::CSV`, `Excel::TSV`, `Excel::ODS`, `Excel::HTML`, `Excel::MPDF`, `Excel::DOMPDF`, etc.).
+Spreadsheet types include the writer formats provided by `Maatwebsite\Excel\Excel`, such as `Excel::XLSX`, `Excel::CSV`, `Excel::TSV`, `Excel::ODS`, and `Excel::HTML`. PDF writer constants such as `Excel::DOMPDF`, `Excel::MPDF`, and `Excel::TCPDF` require a separate PDF rendering package.
+
+## PDF Exports Require Additional Configuration
+
+PDF export is supported, but a PDF renderer is not installed by Zonvoir Table or Laravel Excel. Install one renderer in your Laravel application. DOMPDF is the default mapping in Laravel Excel:
+
+```bash
+composer require dompdf/dompdf
+```
+
+Then explicitly select the matching writer type in the export definition:
+
+```php
+use Maatwebsite\Excel\Excel;
+use Zonvoir\InertiaTable\Export;
+
+Export::make('Users PDF', 'users.pdf')
+    ->type(Excel::DOMPDF)
+    ->limitToFilteredRows();
+```
+
+You may use mPDF or TCPDF instead:
+
+```bash
+composer require mpdf/mpdf
+# or
+composer require tecnickcom/tcpdf
+```
+
+Match the installed package with `Excel::MPDF` or `Excel::TCPDF`. If your application uses extension-based writer detection, publish Laravel Excel's configuration and confirm the `pdf` entry under `extension_detector` uses the same renderer:
+
+```bash
+php artisan vendor:publish --provider="Maatwebsite\Excel\ExcelServiceProvider" --tag=config
+```
+
+```php
+use Maatwebsite\Excel\Excel;
+
+'extension_detector' => [
+    // Other extensions...
+    'pdf' => Excel::DOMPDF,
+],
+```
+
+:::caution[PDF renderer required]
+Using a PDF writer constant without installing its matching renderer will fail at export time. The filename should end in `.pdf`, and the configured writer must match the installed package.
+:::
 
 ## Keys & Custom Identifiers
 
