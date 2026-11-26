@@ -55,6 +55,9 @@ const normalizeBadge = (badge?: DrawerBadge) => {
 <nav class:list={['zv-drawer-nav', { 'zv-docs-nav': hasSidebar }]} aria-label="Mobile">
           {hasSidebar ? (
             <>
+              <a href="https://app.zonvoir-table.com/login" target="_blank" rel="noopener noreferrer">
+                <Icon name="external" /><span>Sign In</span>
+              </a>
               {drawerGroups.map((group) => {
                 const groupBadge = normalizeBadge(group.badge);
                 return (
@@ -98,6 +101,9 @@ const normalizeBadge = (badge?: DrawerBadge) => {
               <a href="/"><Icon name="star" /><span>Home</span></a>
               <a href="/getting-started/introduction/"><Icon name="document" /><span>Documentation</span></a>
               <a href="/#pricing"><Icon name="rocket" /><span>Pricing</span></a>
+              <a href="https://app.zonvoir-table.com/login" target="_blank" rel="noopener noreferrer">
+                <Icon name="external" /><span>Sign In</span>
+              </a>
               <a href="https://demo.zonvoir-table.com" target="_blank" rel="noopener noreferrer">
                 <Icon name="rocket" /><span>Demo</span>
               </a>

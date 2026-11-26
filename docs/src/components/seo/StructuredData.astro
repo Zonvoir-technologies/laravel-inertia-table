@@ -1,6 +1,7 @@
 ---
 import {
   generateBreadcrumbSchema,
+  generateHomeFaqSchema,
   generateOrganizationSchema,
   generateSoftwareSourceCodeSchema,
   generateTechArticleSchema,
@@ -18,6 +19,10 @@ const graph: Record<string, unknown>[] = [
   generateSoftwareSourceCodeSchema(),
   generateWebSiteSchema(),
 ];
+
+if (isHome) {
+  graph.push(generateHomeFaqSchema());
+}
 
 if (!isHome && cleanSlug !== '404') {
   const breadcrumbs = generateBreadcrumbSchema(cleanSlug, entry.data.title);

@@ -1551,6 +1551,18 @@ body {
   grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
 }
 
+@media (max-width: 60rem) {
+  .zv-code {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .zv-code-copy,
+  .zv-terminal-shell {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
 .terminal-window {
   min-width: 0;
 }
@@ -3017,6 +3029,64 @@ ul.top-level li {
 }
 
 @media (max-width: 640px) {
+
+  .zv-code {
+    gap: 1.25rem;
+    width: 100%;
+  }
+
+  .zv-code-wrapper .terminal-bar {
+    overflow: hidden;
+    padding-inline: 0.6rem !important;
+  }
+
+  .zv-code-wrapper .terminal-tabs {
+    min-width: 0;
+    margin-inline-start: 0.55rem !important;
+  }
+
+  .zv-code-wrapper .hero-tab-btn {
+    gap: 0.25rem !important;
+    padding-inline: 0.45rem !important;
+    font-size: 0.68rem !important;
+  }
+
+  .feature-console,
+  .wrap-console .feature-panel {
+    min-height: 0;
+  }
+
+  .wrap-console .feature-panel {
+    display: none;
+  }
+
+  #feature-table:checked ~ .feature-main .panel-table,
+  #feature-search:checked ~ .feature-main .panel-search,
+  #feature-sorting:checked ~ .feature-main .panel-sorting,
+  #feature-filters:checked ~ .feature-main .panel-filters,
+  #feature-pagination:checked ~ .feature-main .panel-pagination,
+  #feature-actions:checked ~ .feature-main .panel-actions,
+  #feature-bulk:checked ~ .feature-main .panel-bulk,
+  #feature-columns:checked ~ .feature-main .panel-columns,
+  #feature-reorder:checked ~ .feature-main .panel-reorder,
+  #feature-sticky:checked ~ .feature-main .panel-sticky,
+  #feature-exports:checked ~ .feature-main .panel-exports,
+  #feature-url:checked ~ .feature-main .panel-url,
+  #feature-multiple:checked ~ .feature-main .panel-multiple {
+    display: block;
+  }
+
+  .feature-console {
+    margin-bottom: 1.5rem;
+  }
+
+  .pricing-wrapper {
+    padding-top: 0;
+  }
+
+  #pricing {
+    margin-top: 2.5rem !important;
+  }
 
   .shape-wrp-cl,
   .floating-tags {

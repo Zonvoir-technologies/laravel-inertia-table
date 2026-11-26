@@ -10,6 +10,22 @@
 - **Frontend Stack**: Inertia.js 2.x/3.x, Vue 3.4+, Tailwind CSS 3.4+/4.0+
 - **License**: Apache-2.0
 
+## Free and Pro Editions
+
+The core Laravel package and Vue adapter remain free and open source. Existing free features continue to work as before, including table classes, typed columns, server-side search, sorting, pagination, row and bulk actions, column visibility, sticky columns, exports, dark mode, and TypeScript support.
+
+`zonvoir/laravel-inertia-table-pro` is a separate, optional Composer package that installs on top of the core package. It currently adds:
+
+- Advanced typed filters with drawer and header layouts
+- Drag-and-drop column reordering with per-user database persistence
+
+In active development, but not yet complete:
+
+- Interactive Kanban board views
+- Inline editing for supported table and Kanban fields
+
+The same `@zonvoir/inertia-table-vue` adapter supports both editions; there is no separate Pro npm package.
+
 ## Architecture & Core Philosophy
 
 Zonvoir Table consolidates table configuration into a single backend PHP class:
@@ -96,13 +112,15 @@ defineProps<{ users: object }>();
 - [Usage - Basic Usage](https://zonvoir-table.com/core-concepts/basic-usage/)
 - [Usage - Typed Columns](https://zonvoir-table.com/core-concepts/columns/)
 - [Usage - Column Visibility & Toggle](https://zonvoir-table.com/core-concepts/toggle-columns/)
+- [Pro - Column Reordering & Persistence](https://zonvoir-table.com/core-concepts/column-reorder/)
 - [Usage - Column Sorting](https://zonvoir-table.com/core-concepts/sorting/)
 - [Usage - Search Queries & Filters](https://zonvoir-table.com/core-concepts/searching/)
+- [Pro - Advanced Filters](https://zonvoir-table.com/core-concepts/filters/)
 - [Usage - Pagination Modes](https://zonvoir-table.com/core-concepts/pagination/)
 - [Usage - Sticky Headers & Columns](https://zonvoir-table.com/core-concepts/sticky-columns/)
 - [Usage - Row Actions & Links](https://zonvoir-table.com/core-concepts/row-actions/)
 - [Usage - Bulk Actions](https://zonvoir-table.com/core-concepts/bulk-actions/)
-- [Usage - Excel & CSV Exports](https://zonvoir-table.com/core-concepts/exports/)
+- [Usage - Excel, CSV & PDF Exports](https://zonvoir-table.com/core-concepts/exports/) — PDF requires a separately installed DOMPDF, mPDF, or TCPDF renderer.
 - [Usage - Empty States](https://zonvoir-table.com/core-concepts/empty-state/)
 - [Usage - Images & Avatars](https://zonvoir-table.com/core-concepts/images/)
 - [Usage - Icons](https://zonvoir-table.com/core-concepts/icons/)

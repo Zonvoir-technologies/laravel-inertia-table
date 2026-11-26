@@ -1,6 +1,6 @@
 ---
 title: Exports API Reference
-description: Detailed method reference for Zonvoir\InertiaTable\Export defining Excel and CSV spreadsheet export capabilities.
+description: Detailed method reference for Zonvoir\InertiaTable\Export defining Excel, CSV and configured PDF export capabilities.
 ---
 
 `Zonvoir\InertiaTable\Export` is a serializable export definition. Return exports from `Table::exports()` to expose export controls in the frontend payload.
@@ -111,7 +111,7 @@ public static function make(
     <div class="api-method-body">
       <p><strong>Signature</strong></p>
       <pre><code>public function type(?string $type): self</code></pre>
-      <p>Set the Excel writer type. Defaults to XLSX.</p>
+      <p>Set the Laravel Excel writer type. Defaults to XLSX. PDF types require a matching renderer package; see the Exports guide.</p>
     </div>
   </details>
   <details class="api-method" name="api-methods">

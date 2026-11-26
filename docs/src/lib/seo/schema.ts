@@ -53,6 +53,39 @@ export function generateWebSiteSchema() {
   };
 }
 
+export function generateHomeFaqSchema() {
+  return {
+    '@type': 'FAQPage',
+    '@id': `${siteConfig.siteUrl}/#faq`,
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'Is Zonvoir Table free for commercial projects?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes. The core Zonvoir Table package is free and open source under the Apache License 2.0 and can be used in commercial applications. Zonvoir Table Pro is a separate optional package for advanced features.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'Will the free package keep working now that Zonvoir Table Pro exists?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes. Existing free features continue to work as before. Pro currently adds advanced filters and persisted column reordering. Kanban boards and inline editing are in development; Pro does not replace the free package.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'What versions does Zonvoir Table support?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Zonvoir Table supports PHP 8.3 or newer, Laravel 11 through 13, Inertia.js 2.x and 3.x, Vue 3.4 or newer, and Tailwind CSS 3.4 or 4.x.',
+        },
+      },
+    ],
+  };
+}
+
 const sectionLabels: Record<string, string> = {
   'getting-started': 'Getting Started',
   'core-concepts': 'Usage & Core Concepts',
